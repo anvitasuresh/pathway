@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+.DS_Store
+eval/results/*.json
+eval/results/*.csv
+node_modules/
+.ipynb_checkpoints/
