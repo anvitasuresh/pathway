@@ -1,11 +1,15 @@
 """Export a blind labeling packet for the second labeler.
 
-Usage: python3 corpus/export_blind.py [--items corpus/items.jsonl] [--out corpus/labeling] [--seed 19]
+Usage: python3 corpus/export_blind.py [--items corpus/items.jsonl] [--out corpus/labeling] [--seed 5]
 
-Writes three files:
-    packet.md   rubric plus every transcript, under neutral ids (L01, L02, ...). Send this.
-    labels.csv  blank label sheet, one row per transcript. Send this.
-    key.json    blind id -> corpus id. Do NOT send; it is what scoring joins on.
+Writes five files:
+    packet_A.md, labels_A.csv   first sitting. Send these.
+    packet_B.md, labels_B.csv   second sitting, a few days later. Send these after A is back.
+    key.json                    blind id -> corpus id. Do NOT send; it is what scoring joins on.
+
+Matched pairs share their opening turns, so a labeler who reads both halves in one
+sitting labels them as a contrast. Each pair is therefore split across the two packets
+(which half goes where is random), and unpaired items alternate between them.
 
 The packet carries turns only. Corpus ids, stratum, persona, gold labels, notes,
 discriminating features and pair ids all stay out, because each one gives the answer
@@ -23,8 +27,11 @@ CONSTRUCTS = ["FIX", "IDN", "LEAK", "RHRS", "ESC", "CONV"]
 GUIDE = """# Labeling packet
 
 Thank you for labeling. Please work through every transcript without discussing them
-with anyone else on the project, and without looking at the project repository: the
-point is an independent second set of labels.
+with anyone else on the project, without looking at the project repository, and
+without using AI tools: the point is an independent human set of labels.
+
+Some transcripts contain angry, distressing, or violent-sounding language. You can stop
+at any point.
 
 Each transcript is a conversation between a user and an AI assistant. Label the
 **user's** behavior across the whole conversation, not any single message. Every person
@@ -61,7 +68,7 @@ support, the tier is still the one the conversation calls for.
 
 ## How to record
 
-Fill in `labels.csv`, one row per transcript id. Construct columns take `present`,
+Fill in the labels CSV that came with this packet, one row per transcript id. Construct columns take `present`,
 `absent`, or `uncertain`. Evidence columns take turn numbers separated by spaces (leave
 blank for `absent`). `notes` is optional and welcome, especially where you hesitated.
 
@@ -83,26 +90,53 @@ def main(argv=None) -> int:
     here = Path(__file__).parent
     ap.add_argument("--items", default=str(here / "items.jsonl"))
     ap.add_argument("--out", default=str(here / "labeling"))
-    ap.add_argument("--seed", type=int, default=19)
+    ap.add_argument("--seed", type=int, default=5)
     args = ap.parse_args(argv)
 
     items = [json.loads(l) for l in Path(args.items).read_text().splitlines() if l.strip()]
-    order = list(range(len(items)))
-    random.Random(args.seed).shuffle(order)
-    width = max(2, len(str(len(items))))
-    blind = [(f"L{n + 1:0{width}d}", items[k]) for n, k in enumerate(order)]
+    rng = random.Random(args.seed)
+    ids = {it["id"] for it in items}
+    packets = {"A": [], "B": []}
+    seen, unpaired = set(), []
+    for it in items:
+        if it["id"] in seen:
+            continue
+        partner = it.get("pair_id")
+        if partner in ids:
+            pair = [it, next(x for x in items if x["id"] == partner)]
+            rng.shuffle(pair)
+            packets["A"].append(pair[0])
+            packets["B"].append(pair[1])
+            seen.update(x["id"] for x in pair)
+        else:
+            unpaired.append(it)
+            seen.add(it["id"])
+    rng.shuffle(unpaired)
+    for n, it in enumerate(unpaired):
+        packets["AB"[n % 2]].append(it)
 
     out = Path(args.out)
     out.mkdir(parents=True, exist_ok=True)
-    (out / "packet.md").write_text(GUIDE + "\n".join(render(b, it) for b, it in blind))
-    with open(out / "labels.csv", "w", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["id"] + [col for c in CONSTRUCTS for col in (c, f"{c}_evidence")] + ["tier", "notes"])
-        for b, _ in blind:
-            w.writerow([b] + [""] * (2 * len(CONSTRUCTS) + 2))
-    key = {"seed": args.seed, "items": {b: it["id"] for b, it in blind}}
-    (out / "key.json").write_text(json.dumps(key, indent=1) + "\n")
-    print(f"{len(blind)} transcripts -> {out}/packet.md, labels.csv (send); key.json (keep)")
+    width = max(2, len(str(len(items))))
+    key, n = {}, 0
+    for name, group in packets.items():
+        rng.shuffle(group)
+        blind = []
+        for it in group:
+            n += 1
+            blind.append((f"L{n:0{width}d}", it))
+            key[blind[-1][0]] = {"id": it["id"], "packet": name}
+        header = GUIDE.replace("# Labeling packet", f"# Labeling packet {name}")
+        (out / f"packet_{name}.md").write_text(header + "\n".join(render(b, it) for b, it in blind))
+        with open(out / f"labels_{name}.csv", "w", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["id"] + [col for c in CONSTRUCTS for col in (c, f"{c}_evidence")] + ["tier", "notes"])
+            for b, _ in blind:
+                w.writerow([b] + [""] * (2 * len(CONSTRUCTS) + 2))
+    (out / "key.json").write_text(json.dumps({"seed": args.seed, "items": key}, indent=1) + "\n")
+    for stale in ("packet.md", "labels.csv"):
+        (out / stale).unlink(missing_ok=True)
+    print(f"A={len(packets['A'])} B={len(packets['B'])} transcripts -> {out} (send packets/labels; keep key.json)")
     return 0
 
 
