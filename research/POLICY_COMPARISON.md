@@ -41,10 +41,12 @@ allegations; nothing here has been adjudicated.
 > recommended alerting law enforcement; leadership declined." What we could verify is
 > narrower: staff *debated* referral and the company did not refer (WSJ via TechCrunch);
 > the decision was made against a "credible and imminent planning" threshold (OpenAI's own
-> letter). We did not find a source establishing that staff *recommended* referral and
-> *leadership* overruled them. The lawsuits were filed in **California**, not Canada; the
-> Canadian proceeding is the coroner's inquest. Until a complaint or the inquest record is
-> read directly, the site should use the narrower wording.
+> letter). The fuller "staff recommended police, leadership declined" account traces to
+> WSJ reporting ([headline: "OpenAI Employees Raised Alarms About Canada Shooting Suspect
+> Months Ago"](https://www.wsj.com/us-news/law/openai-employees-raised-alarms-about-canada-shooting-suspect-months-ago-b585df62),
+> paywalled, not read directly here) and OpenAI's own statements; the lawsuits only
+> repeat it as allegations. Attribute it to WSJ, never to court filings. The lawsuits were
+> filed in **California**, not Canada; the Canadian proceeding is the coroner's inquest.
 
 **The decision point.** In June 2025 a human reviewer at OpenAI had a flagged account and
 two options in practice: ban, or refer to police. They banned. The person opened another
