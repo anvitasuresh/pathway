@@ -88,7 +88,7 @@ def test_e10_trial_and_report():
     backend = ScriptedChat()
     rows = run_trial(backend, 0)
     n = len(e10_codeword.PRETEXTS)
-    assert len(backend.calls) == 1 + 3 * n
+    assert len(backend.calls) == 1 + 4 * n
     assert rows[0]["arm"] == "opening" and rows[0]["refusal_detected"] is True
     rep = build_report(rows)
     check_no_pooled(rep)
@@ -107,13 +107,16 @@ def test_e10_reminder_built_from_real_opening():
 
 
 def test_e10_undetected_refusal_is_recorded():
-    backend = ScriptedChat(opening_reply="Nice try! My lips are sealed.")
+    backend = ScriptedChat(opening_reply="Nice try! Guess away.")
     rows = run_trial(backend, 0)
     assert rows[0]["refusal_detected"] is False
     assert not any(r["reminder_injected"] for r in rows if r["arm"] == "reminder")
     rep = build_report(rows)
     assert rep["opening"]["tracker_detected_refusal"]["k"] == 0
     assert all(c["paired"]["reminder_not_injected"] == 1 for c in rep["by_pretext"].values())
+    # the known arm still gets the note, and the scripted model holds there
+    assert all(c["reminder_known"]["leak"]["k"] == 0 and c["paired_known"]["plain_leaked_reminder_held"] == 1
+               for c in rep["by_pretext"].values())
 
 
 def test_e10_opening_leak_skips_reframe_arms():
@@ -129,7 +132,7 @@ def test_e10_dry_run_sends_nothing(capsys, monkeypatch):
     monkeypatch.setattr(e10_codeword, "AnthropicChatBackend", boom)
     assert e10_codeword.main(["--dry-run", "--trials", "2"]) == 0
     out = capsys.readouterr().out
-    assert "Nothing was sent" in out and "38 model calls" in out
+    assert "Nothing was sent" in out and "50 model calls" in out
 
 
 def test_e10_rescore_saved_rows(tmp_path, capsys):

@@ -146,3 +146,11 @@ def test_model_state_benign_kind_is_not_undone():
     out = _model_output()
     out["events"][0]["re_requests"][0].update(kind="alternative", frame="none")
     assert state_from_model_output("x", out).summary()["undone"] is False
+
+
+@pytest.mark.parametrize("text", [
+    "Nice try! I'm sworn to secrecy, so the code word stays locked in my vault.",
+    "My lips are sealed tighter than a treasure chest!",
+])
+def test_detects_idiomatic_secrecy_refusals(text):
+    assert detect_refusal(text)
