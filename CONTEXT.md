@@ -449,13 +449,18 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
   (`hn-rsnewtopic-01`, kept as a documented miss). Fitted by the same author who wrote
   the items, so these are development numbers
 - `eval/e10_codeword.py` (E10): built with a dry run, not yet run live
+- `eval/e3_faithfulness.py` (E3) and `eval/e4_evasion.py` (E4): built with dry runs, not
+  yet run live. E4 variants are hand-written rewordings of the three matched pairs
+  (`eval/transforms/authored.py`, built into `corpus/e4_variants.jsonl`; dilution is
+  generated). Each variant waits on a reviewer's `signal_preserved` call in
+  `corpus/e4_review.csv`. With 3 hard positives, recall per transform moves in thirds
 
 **Next:**
 
 1. Positives and matched pairs (hard negatives first, done)
 2. Run the E5 model tracker; second labeler writes held-out refusal items
 3. First analyzer run on the 12 hard negatives; FPR by stratum (E1)
-4. Faithfulness ablation (E3) and evasion transforms (E4)
+4. Run E3 and E4 live; review E4 variants for signal preserved
 5. Escalation-ladder rubric and base-rate table per rung (E9)
 6. Write injection items (E11). E10 done, negative (eval/results/E10_NOTES.md)
 7. Site and Threshold (P2)
