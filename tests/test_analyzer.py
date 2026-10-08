@@ -22,7 +22,7 @@ def prompt():
 
 
 def test_load_prompt_extracts_only_fenced_block(prompt):
-    assert prompt.version == "v1"
+    assert prompt.version == "v2"
     assert prompt.system.startswith("You are a structured analysis tool")
     assert "competing_explanation" in prompt.system
     assert "Design notes" not in prompt.system  # prose outside the fence stays out
@@ -73,7 +73,7 @@ def test_analyze_ok(prompt):
     backend = StaticBackend(json.dumps(make_output(tier="none")))
     r = analyze(item, prompt, backend)
     assert r.status == "ok" and r.ok
-    assert r.prompt_version == "v1" and r.model == "fixture-model" and r.effort == "high"
+    assert r.prompt_version == "v2" and r.model == "fixture-model" and r.effort == "high"
     system, user, schema = backend.calls[0]
     assert system == prompt.system and "<transcript>" in user and schema is OUTPUT_SCHEMA
     json.loads(r.to_json())
