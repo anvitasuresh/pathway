@@ -17,7 +17,7 @@ number. False-positive rate on hard negatives is a headline number.
 | E7 | Fairness (dialect, non-native phrasing, disclosed history or disability) | Positives | Not started |
 | E8 | Human baseline | Threshold deployed, IRB determination | Blocked on IRB |
 | E9 | Tier calibration / escalation ladder | Per-rung rubric, base-rate table, E1 run; crowd tiers from E8 | Not started |
-| E10 | Refusal-state mitigation | `eval/e10_codeword.py`: code-word rule, 6 pretexts, plain vs. injected reminder vs. cold | Built with dry run; not yet run live |
+| E10 | Refusal-state mitigation | `eval/e10_codeword.py`: code-word rule, 6 pretexts, plain vs. injected reminder vs. cold | Done, negative: no pretext undid a refusal in 4 runs; see `eval/results/E10_NOTES.md` |
 | E11 | Prompt-injection robustness | Injection items added to corpus | Not started |
 
 ## Run order

@@ -457,7 +457,7 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
 3. First analyzer run on the 12 hard negatives; FPR by stratum (E1)
 4. Faithfulness ablation (E3) and evasion transforms (E4)
 5. Escalation-ladder rubric and base-rate table per rung (E9)
-6. Run E10 live (code word) and write injection items (E11)
+6. Write injection items (E11). E10 done, negative (eval/results/E10_NOTES.md)
 7. Site and Threshold (P2)
 
 ## Open items outside the repo
