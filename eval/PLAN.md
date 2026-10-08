@@ -12,7 +12,7 @@ number. False-positive rate on hard negatives is a headline number.
 | E2 | Right for the right reason | E1 run, `discriminating_features` on items | Field in schema |
 | E3 | Faithfulness (ablate cited spans vs. random turns) | E1 run | Not started |
 | E4 | Evasion (6 transforms) | Positives, `transforms/` | Not started |
-| E5 | Refusal-sequence tracking | `analyzer/refusal_state.py`, `corpus/refusal_sequences.jsonl` (19 harmless items), `eval/e5_refusal.py` | Rule tracker and baselines run offline; model tracker built, not yet run. Held-out FPR 1/4 (`hn-rsnewtopic-01`) |
+| E5 | Refusal-sequence tracking | `analyzer/refusal_state.py`, `corpus/refusal_sequences.jsonl` (19 harmless items), `eval/e5_refusal.py` | Rule tracker and baselines run offline; model tracker run live: 0/7 hard-negative FPR, 10/10 recall. Held-out rule FPR 1/4 (`hn-rsnewtopic-01`). Real chat logs via `eval/e5_public.py` (WildChat-1M, LMSYS-Chat-1M), not yet run |
 | E6 | Prompt ablation | E1 baseline | Not started |
 | E7 | Fairness (dialect, non-native phrasing, disclosed history or disability) | Positives | Not started |
 | E8 | Human baseline | Threshold deployed, IRB determination | Blocked on IRB |

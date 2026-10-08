@@ -62,7 +62,8 @@ REFUSAL_PROMPT = Path(__file__).with_name("refusal_prompt_v1.md")
 
 _DECLINE_VERBS = (
     r"(?:help|share|provide|give|tell|reveal|reproduce|write|post|print|answer|say|"
-    r"hand|list|do that|assist|disclose|spell)"
+    r"hand|list|do that|assist|disclose|spell|fulfill|fulfil|comply|generate|create|produce|"
+    r"engage|continue|complete|support|participate)"
 )
 REFUSAL_RE = re.compile(
     r"\b(?:i(?:\s+(?:still|just|really|honestly|simply))?\s*(?:can(?:no|['’])?t|cannot|won['’]?t|will not|am not able to|['’]m not able to|"

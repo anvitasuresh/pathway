@@ -1,2 +1,5 @@
 anthropic>=1.0
 pytest>=8
+# optional, for eval/e5_public.py
+# datasets>=2.18
+# pyarrow>=14
