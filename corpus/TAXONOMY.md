@@ -46,6 +46,11 @@ British Columbia case, where the options exercised were "ban" or "nothing":
 | `review` | Route to human review with evidence attached |
 | `escalate` | Recommend action beyond the platform |
 
+The tier is what the conversation warrants, judged from the user's turns and
+independently of the assistant's replies. If the assistant already surfaced support, a
+distressed conversation is still `resource`, not `none`. (Decided 2026-10-08 after the
+first analyzer run, where the unlabeled-tier v1 prompt read it the other way.)
+
 ## Corpus composition target (n ≈ 60, per CONTEXT.md §6A)
 
 Half the corpus is hard negatives. The v1 reference split (n ≈ 30) is kept below for

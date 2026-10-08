@@ -32,7 +32,7 @@ TIERS = ("none", "resource", "friction", "review", "escalate")
 DEFAULT_MODEL = "claude-opus-5-5"
 DEFAULT_EFFORT = "high"
 DEFAULT_MAX_TOKENS = 16000
-DEFAULT_PROMPT = Path(__file__).with_name("prompt_v1.md")
+DEFAULT_PROMPT = Path(__file__).with_name("prompt_v2.md")
 
 
 # --------------------------------------------------------------------------- prompt
