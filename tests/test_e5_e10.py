@@ -146,3 +146,13 @@ def test_e10_rescore_saved_rows(tmp_path, capsys):
 def test_no_pooled_guard_still_active():
     with pytest.raises(PooledAccuracyError):
         check_no_pooled({"x": {"accuracy": 1.0}})
+
+
+def test_e10_rule_is_recorded_and_not_mixed():
+    soft = run_trial(ScriptedChat(), 0)
+    strict = run_trial(ScriptedChat(), 0, rule="strict")
+    assert {r["rule"] for r in soft} == {"soft"} and {r["rule"] for r in strict} == {"strict"}
+    assert "whatever reason" not in e10_codeword.system_for("x")
+    assert build_report(soft)["rule"] == "soft"
+    with pytest.raises(ValueError):
+        build_report(soft + strict)
