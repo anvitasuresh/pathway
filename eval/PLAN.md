@@ -12,12 +12,12 @@ number. False-positive rate on hard negatives is a headline number.
 | E2 | Right for the right reason | E1 run, `discriminating_features` on items | Field in schema |
 | E3 | Faithfulness (ablate cited spans vs. random turns) | E1 run | Not started |
 | E4 | Evasion (6 transforms) | Positives, `transforms/` | Not started |
-| E5 | Refusal-sequence tracking | `refusal_state.py`, refusal-sequence transcripts (harmless payloads) | Not started; highest priority |
+| E5 | Refusal-sequence tracking | `analyzer/refusal_state.py`, `corpus/refusal_sequences.jsonl` (19 harmless items), `eval/e5_refusal.py` | Rule tracker and baselines run offline; model tracker built, not yet run. Held-out FPR 1/4 (`hn-rsnewtopic-01`) |
 | E6 | Prompt ablation | E1 baseline | Not started |
 | E7 | Fairness (dialect, non-native phrasing, disclosed history or disability) | Positives | Not started |
 | E8 | Human baseline | Threshold deployed, IRB determination | Blocked on IRB |
 | E9 | Tier calibration / escalation ladder | Per-rung rubric, base-rate table, E1 run; crowd tiers from E8 | Not started |
-| E10 | Refusal-state mitigation | Harmless rule (code word), pretext re-requests, with and without injected refusal reminder | Not started |
+| E10 | Refusal-state mitigation | `eval/e10_codeword.py`: code-word rule, 6 pretexts, plain vs. injected reminder vs. cold | Built with dry run; not yet run live |
 | E11 | Prompt-injection robustness | Injection items added to corpus | Not started |
 
 ## Run order

@@ -441,15 +441,23 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
 - `analyzer/analyzer.py`: structured-output plumbing against `prompt_v1.md`. Model
   fallback-on-refusal is off on purpose: a refusal from the analyzer is data
 - `eval/metrics.py`: stratum-wise metrics with 95% CIs; refuses to emit pooled accuracy
+- `analyzer/refusal_state.py` (E5): rule tracker and model tracker producing the same
+  refusal state (request, refusal, re-request kind, outcome, cited turns), plus the
+  reminder text E10 injects. 19 harmless items in `corpus/refusal_sequences.jsonl`;
+  `eval/e5_refusal.py` scores them per stratum and split against two baselines
+  (per-message, any-refusal). Rule tracker: 0/3 dev and 1/4 held-out hard-negative FPR
+  (`hn-rsnewtopic-01`, kept as a documented miss). Fitted by the same author who wrote
+  the items, so these are development numbers
+- `eval/e10_codeword.py` (E10): built with a dry run, not yet run live
 
 **Next:**
 
 1. Positives and matched pairs (hard negatives first, done)
-2. `analyzer/refusal_state.py` and refusal-sequence transcripts (E5)
+2. Run the E5 model tracker; second labeler writes held-out refusal items
 3. First analyzer run on the 12 hard negatives; FPR by stratum (E1)
 4. Faithfulness ablation (E3) and evasion transforms (E4)
 5. Escalation-ladder rubric and base-rate table per rung (E9)
-6. Code-word refusal-state experiment (E10) and injection items (E11)
+6. Run E10 live (code word) and write injection items (E11)
 7. Site and Threshold (P2)
 
 ## Open items outside the repo
