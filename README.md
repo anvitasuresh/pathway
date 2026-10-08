@@ -20,3 +20,16 @@ threshold/   public artifact
 ## Status
 
 Scoping complete, implementation starting. See `CONTEXT.md` §10 for immediate tasks.
+
+## Running
+
+```
+pip install -r requirements.txt
+python -m pytest -q                                              # no network, bland fixtures
+python -m analyzer.analyzer --items corpus/items.jsonl --dry-run # render requests, call nothing
+python -m analyzer.analyzer --items corpus/items.jsonl --out eval/results/run.jsonl
+python -m eval.metrics --items corpus/items.jsonl --preds eval/results/run.jsonl
+```
+
+Model defaults to `DEFAULT_MODEL` in `analyzer/analyzer.py`; override with `--model` or `PATHWAY_MODEL`
+(effort: `--effort` / `PATHWAY_EFFORT`).
