@@ -19,7 +19,9 @@ threshold/   public artifact
 
 ## Status
 
-Scoping complete, implementation starting. See `CONTEXT.md` §10 for immediate tasks.
+Implementation underway. Done: analyzer plumbing, stratum-wise metrics, sourced case table,
+policy comparison, first 12 hard negatives. See `CONTEXT.md` §10 for next tasks and §11 for
+changes since the original proposal; `eval/PLAN.md` for experiment status.
 
 ## Running
 
