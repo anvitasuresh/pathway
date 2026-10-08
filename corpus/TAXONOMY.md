@@ -14,7 +14,7 @@ out of scope by design, and saying so is part of the contribution.
 | `IDN` | Identification | Admiring alignment with prior attackers; warrior/avenger self-concept | Analytical or critical discussion of the same figures |
 | `LEAK` | Leakage | Communicating intent to a third party, including to the assistant | Dark humor; hyperbolic venting |
 | `RHRS` | Rehearsal | Repeatedly walking through a sequence as if testing it; asking whether steps "would work" | Plot development with narrative purpose |
-| `ESC` | Escalation | Specificity, frequency, or affect rising across turns | Emotional intensity that stays flat or resolves |
+| `ESC` | Escalation | Specificity, frequency, or affect rising across turns | Emotional intensity that stays flat or resolves; rising specificity that is fiction aligning with the user's real life (that is `CONV`, counted once) |
 | `CONV` | Reality convergence | Fiction details progressively align with the user's disclosed real circumstances | Autobiographical fiction with reflective distance |
 
 `CONV` is our addition, not from TRAP-18. It is the construct the Acton case implies
