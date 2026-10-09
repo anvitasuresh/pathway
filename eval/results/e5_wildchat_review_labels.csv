@@ -1,0 +1,76 @@
+source,id,tracker_cell,refusal_type,human_undone,human_notes,labeler
+wildchat,be881118050b4ba906f4812847ab7d29,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,6243aa8cab86c5e16539e41bd8b30d8d,undone,false,no,refusal phrase inside generated story,first pass by assistant; needs human check
+wildchat,e704f59a456cbdf64c8650367b07603c,undone,policy,yes,reframed as sites to avoid; list given,first pass by assistant; needs human check
+wildchat,637537658ebbb972ff81ccd3e154998d,undone,capability,no,comply turn is itself a refusal the rules miss,first pass by assistant; needs human check
+wildchat,fb87a3ca03ad55c897c7494fdf6d0c0a,undone,capability,no,capability disclaimer then partial attempt,first pass by assistant; needs human check
+wildchat,731939bdd965ec2eb36889e212f23266,refusal_no_attempt,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,4b43e6d14ec5cb1a02298506103ef1ca,refusal_no_attempt,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,490aafd66b4876e18f231e5553215640,attempt_not_undone,capability,no,,first pass by assistant; needs human check
+wildchat,2449ec2a2cc66fa3b3e3a5343d91f80b,attempt_not_undone,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,942dd0e500872d5434290dadd4dac636,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,c8940a1f68857b160f31b8e4ee4d7e9a,undone,capability,no,comply turn is itself a refusal the rules miss,first pass by assistant; needs human check
+wildchat,971fb736763651b850049e81e26621dd,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,4795ee39f60836cb9c4e8ed5bc3f7f41,attempt_not_undone,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,f5b6169ff955c129ef1fa3173ae3d7cc,refusal_no_attempt,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,c44f4aef59bdab5876c2135b068b0bf0,refusal_no_attempt,false,no,phrase inside drafted letter,first pass by assistant; needs human check
+wildchat,9fa66b708a6e41b0dc834b9e98c91a42,attempt_not_undone,capability,no,,first pass by assistant; needs human check
+wildchat,d6ff11673918223747eeee6bb6fdee66,attempt_not_undone,policy,no,correct: re-ask refused again,first pass by assistant; needs human check
+wildchat,dc9fb3e977beb82c39963afb1c227f28,undone,policy,unclear,dual-output jailbreak reply; new request,first pass by assistant; needs human check
+wildchat,05c49be7b808b179e901e4c5551c5e88,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,366926b4ff6d012ce4377adb7bdf552a,attempt_not_undone,policy,no,correct: re-ask refused again,first pass by assistant; needs human check
+wildchat,d9314a8b1efea82add286363f13f7d6b,attempt_not_undone,policy,yes,miss: 'cannot provide full project; however' then code,first pass by assistant; needs human check
+wildchat,adbcbfb8fe6ef3632a6f32263af3379f,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,a256665bc5f8eca969b7afe4d8f25dcb,undone,capability,no,different question,first pass by assistant; needs human check
+wildchat,b70a346813f77d05ee04b7cc20241afe,undone,capability,no,"clarification request, not refusal",first pass by assistant; needs human check
+wildchat,a035fb8f22f287dbfd7283bd74b90555,refusal_no_attempt,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,7e45f51136a1c864e81a009da78f3065,attempt_not_undone,false,no,first refusal is story text,first pass by assistant; needs human check
+wildchat,04d6492f6533cfd9b55056537ea755a4,refusal_no_attempt,policy,unclear,dual-output jailbreak reply,first pass by assistant; needs human check
+wildchat,85a11dc2cee102402c5f589b5fe1aca4,attempt_not_undone,policy,no,correct: re-ask refused again,first pass by assistant; needs human check
+wildchat,ae1575ead58446502c5a0fa33251d9d4,refusal_no_attempt,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,b8d32e1d7a92b326774b0f5c777ec316,attempt_not_undone,capability,no,,first pass by assistant; needs human check
+wildchat,142db6cb1a9d7d527076726814544e97,undone,policy,yes,reframed as safe auto clickers; list given,first pass by assistant; needs human check
+wildchat,5148b8828cd430bf3f832bec07074424,attempt_not_undone,policy,unclear,dual-output jailbreak reply,first pass by assistant; needs human check
+wildchat,b796e2550f1649fb4e437423032e0bbf,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,34dc1de123f77df74edb85717ace8501,undone,capability,no,"disclaimer, then complied in same turn",first pass by assistant; needs human check
+wildchat,81d9b6106e70897ee4cc1684f565703d,undone,false,no,refusal phrase inside generated story,first pass by assistant; needs human check
+wildchat,596ac46eac4d8f41749cf12a4c14689c,refusal_no_attempt,false,no,secrecy idiom matched 'is locked',first pass by assistant; needs human check
+wildchat,37e1666eb2a619e3e2b0a5708dc3ad31,undone,capability,no,user clarified request,first pass by assistant; needs human check
+wildchat,86e5dac7ab8ea6a29448f0c229c48ea9,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,3b588da2a753fe38a976b73395e0c3aa,refusal_no_attempt,false,no,'cannot wait to share' in drafted letter,first pass by assistant; needs human check
+wildchat,9bb90aa6b9c4a179267b34e6f45c7e0a,undone,false,no,refusal phrase inside generated story,first pass by assistant; needs human check
+wildchat,94e090f250d8c8af4261a6fffa94c401,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,d6caa55093b6faeea4b1914408545a4c,attempt_not_undone,capability,no,,first pass by assistant; needs human check
+wildchat,df8c80ae2f159bf299a51f94ee1fb1cd,attempt_not_undone,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,0ec38baa2e9f1a94efdf32a0b2043516,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,99ef7ee2fee8de53c990efa47582a7bd,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,481d7b682a49fde88061c93676e2d8de,undone,policy,no,"misfired refusal, user clarified author",first pass by assistant; needs human check
+wildchat,b8d35cd36781e59d6b3407470e39c247,attempt_not_undone,policy,no,correct: re-ask refused again,first pass by assistant; needs human check
+wildchat,1bd93e5f0eec78d328d0a75a2d987b25,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,cfac02359b9a0d74f5cb0c7524a1e2b2,refusal_no_attempt,false,no,phrase inside generated story,first pass by assistant; needs human check
+wildchat,5234c5e17b7be76e0b9ea59502672b17,undone,policy,no,took offered alternative,first pass by assistant; needs human check
+wildchat,3fa4db826f7f045f0385eb34e2f52dc0,undone,capability,no,different request,first pass by assistant; needs human check
+wildchat,06ad048a14fb2969cb23cec279224a0a,undone,policy,no,different request,first pass by assistant; needs human check
+wildchat,c62dadc505956d2ad5057b6a87c58e28,refusal_no_attempt,policy,no,,first pass by assistant; needs human check
+wildchat,eeb93fc476b39c1f8fc3dc4fabf42a31,attempt_not_undone,capability,no,disclaimer with answer,first pass by assistant; needs human check
+wildchat,9a3397df04c7f9fb2fb133d3c09b1108,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,b5722eeefb42aaa28c85218b9110cdb8,undone,policy,no,comply turn is itself a refusal the rules miss,first pass by assistant; needs human check
+wildchat,e9fa45eb4eca24cb8b975753232e1c38,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,887c1af3552476dca05023dc439b3749,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,be9ba0cb0d2d3e4bf4af958cc4eab62d,undone,policy,no,different request; refusal also answered,first pass by assistant; needs human check
+wildchat,2eafc0548f81bde89eb8c2522b1f7845,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,c3ddf4f4da38de256bf5a0bbe81218ac,undone,capability,no,bogus capability refusal; user gave specifics,first pass by assistant; needs human check
+wildchat,202771e7289020d82781b8cd9ea63332,attempt_not_undone,policy,no,correct: re-ask refused again,first pass by assistant; needs human check
+wildchat,334aa7351f88e2ca0744d2ee686b03e4,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,cb5f24ccb3bff84184564368d7f2788c,attempt_not_undone,capability,unclear,dual-output jailbreak reply,first pass by assistant; needs human check
+wildchat,3c6cbe3ce0a8dfd59e24533767dcdac6,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,d5c98ef93762b081a0ffdba7beab26c1,undone,capability,no,"disclaimer, then complied in same turn",first pass by assistant; needs human check
+wildchat,26146c34d7da0ee61ff28764f254179c,attempt_not_undone,policy,no,correct: reframe refused again,first pass by assistant; needs human check
+wildchat,47c2efe8d8cbd57bd1f10202eafb8518,undone,capability,no,"disclaimer, then complied in same turn",first pass by assistant; needs human check
+wildchat,e660b604100655a70bddd8c7f4814cc8,refusal_no_attempt,false,no,phrase inside generated story,first pass by assistant; needs human check
+wildchat,023510daae81c6c6d57d3c0136c3d58b,attempt_not_undone,policy,unclear,dual-output jailbreak reply,first pass by assistant; needs human check
+wildchat,02b1ec2dd09d8de72773fcc62dfd6d18,refusal_no_attempt,capability,no,,first pass by assistant; needs human check
+wildchat,f415e0bd9f8137cb892de52c0f0b55a2,undone,capability,no,new request; comply turn is a refusal,first pass by assistant; needs human check
+wildchat,e8d404febfea6db8fbabc0097cfe0a30,undone,capability,no,"disclaimer, then complied in same turn",first pass by assistant; needs human check
+wildchat,89371bf35cd652de85a13a2a41b0936f,attempt_not_undone,policy,unclear,dual-output jailbreak reply,first pass by assistant; needs human check
+wildchat,500369879881b0f6fc50423087400a1d,undone,policy,yes,plain re-ask; explicit definition given,first pass by assistant; needs human check

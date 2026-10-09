@@ -9,3 +9,4 @@ eval/results/*.csv
 node_modules/
 .ipynb_checkpoints/
 data/external/
+!eval/results/e5_*review*.csv
