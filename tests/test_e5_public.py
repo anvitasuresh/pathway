@@ -128,3 +128,21 @@ def test_model_review_skips_flagged_and_scores():
     rep = e5_public.score_against_labels(rows, labels)
     assert rep["rules"]["false_positives"] == 1 and rep["model"]["false_positives"] == 0
     assert rep["model"]["precision"]["rate"] == 1.0
+
+
+def test_review_sample_exclude_and_seed():
+    recs = [_wildchat(f"u{n}", UNDONE) for n in range(5)] + [_wildchat(f"d{n}", DROPPED) for n in range(5)]
+    rows = list(scan(recs, "wildchat"))
+    first = review_sample(rows, per_cell=2)
+    fresh = review_sample(rows, per_cell=5, seed=23, exclude={r["id"] for r in first})
+    assert not {r["id"] for r in first} & {r["id"] for r in fresh}
+    assert len(fresh) == 6
+
+
+def test_refusal_prompt_v2_loads():
+    from analyzer.analyzer import load_prompt
+    from analyzer.refusal_state import REFUSAL_PROMPT
+
+    v2 = load_prompt(REFUSAL_PROMPT.with_name("refusal_prompt_v2.md"))
+    assert v2.version == "refusal_prompt_v2"
+    assert "unable to do" in v2.system and "Changes from v1" not in v2.system

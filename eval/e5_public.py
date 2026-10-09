@@ -221,11 +221,14 @@ def render_markdown(report: dict) -> str:
     return "\n".join(out) + "\n"
 
 
-def review_sample(rows: list[dict], per_cell: int = 25, seed: int = 19) -> list[dict]:
+def review_sample(rows: list[dict], per_cell: int = 25, seed: int = 19,
+                  exclude: set[str] | None = None) -> list[dict]:
     """Stratified sample for hand labeling: tracker-undone, attempt-not-undone, and
     refusal-with-no-attempt, in each moderation stratum. Precision comes from the first
-    cell; the other two give a look at what it misses."""
+    cell; the other two give a look at what it misses. `exclude` drops ids already
+    reviewed, so a fresh sample can test anything tuned on an earlier one."""
     rng = random.Random(seed)
+    exclude = exclude or set()
     cells = {
         "undone": lambda r: r["undone"],
         "attempt_not_undone": lambda r: r["n_attempts"] and not r["undone"],
@@ -234,7 +237,7 @@ def review_sample(rows: list[dict], per_cell: int = 25, seed: int = 19) -> list[
     out = []
     for flag in (False, True):
         for cell, pred in cells.items():
-            pool = [r for r in rows if r["flagged"] is flag and pred(r)]
+            pool = [r for r in rows if r["flagged"] is flag and pred(r) and r["id"] not in exclude]
             for r in rng.sample(pool, min(per_cell, len(pool))):
                 out.append({"source": r["source"], "id": r["id"], "flagged": flag,
                             "tracker_cell": cell, "refusal_turn": r["refusal_turn"],
@@ -257,6 +260,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--out", help="write tracker rows (no text) here")
     ap.add_argument("--sample-out", help="write a stratified review sample CSV here")
     ap.add_argument("--per-cell", type=int, default=25)
+    ap.add_argument("--seed", type=int, default=19, help="review sample seed")
+    ap.add_argument("--exclude", nargs="*", default=[],
+                    help="review CSVs whose ids the new sample must not reuse")
     ap.add_argument("--show", help="print one conversation by id, for hand review (local only)")
     ap.add_argument("--review-ids", help="review CSV from --sample-out; with --review-text")
     ap.add_argument("--review-text", help="write those conversations as markdown here (keep it out of git)")
@@ -264,6 +270,7 @@ def main(argv: list[str] | None = None) -> int:
                     "write rows here (API calls; unflagged conversations only)")
     ap.add_argument("--labels", help="human labels CSV to score --model-review rows against")
     ap.add_argument("--model-id", default=None)
+    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v1)")
     ap.add_argument("--dry-run", action="store_true", help="with --model-review: count and show, call nothing")
     args = ap.parse_args(argv)
     code = _run(args, ap)
@@ -301,7 +308,8 @@ def write_review_text(records: Iterable[dict], source: str, review_rows: list[di
     return len(found)
 
 
-def model_review(records: Iterable[dict], source: str, ids: list[str], backend, dry_run: bool = False) -> list[dict]:
+def model_review(records: Iterable[dict], source: str, ids: list[str], backend, dry_run: bool = False,
+                 prompt=None) -> list[dict]:
     """Model tracker on the given conversations. Moderation-flagged conversations are
     skipped, never sent: real harmful text stays off the API (account-safety rule)."""
     from analyzer.analyzer import render_transcript
@@ -320,7 +328,7 @@ def model_review(records: Iterable[dict], source: str, ids: list[str], backend, 
                 print(render_transcript(item)[:3000], "\n...", file=sys.stderr)
             rows.append({"id": item["id"], "status": "dry_run"})
         else:
-            res = track_model(item, backend)
+            res = track_model(item, backend, prompt)
             s = res.state.summary() if res.state else None
             rows.append({"id": item["id"], "status": res.status, "model": res.model,
                          "prompt_version": res.prompt_version, "errors": res.errors,
@@ -370,7 +378,12 @@ def _run(args: argparse.Namespace, ap: argparse.ArgumentParser) -> int:
 
             backend = AnthropicBackend(model=args.model_id)
         records = _records_from_hf(args.source) if args.hf else _records_from_paths(args.path)
-        rows = model_review(records, args.source, ids, backend, args.dry_run)
+        from analyzer.analyzer import load_prompt
+        from analyzer.refusal_state import REFUSAL_PROMPT
+
+        prompt = load_prompt(args.prompt or REFUSAL_PROMPT)
+        print(f"prompt: {prompt.version}", file=sys.stderr)
+        rows = model_review(records, args.source, ids, backend, args.dry_run, prompt)
         if args.dry_run:
             print(f"dry run: would send {sum(r['status'] == 'dry_run' for r in rows)} conversations; "
                   f"skipped flagged {sum(r['status'] == 'skipped_flagged' for r in rows)}")
@@ -382,7 +395,7 @@ def _run(args: argparse.Namespace, ap: argparse.ArgumentParser) -> int:
         if args.labels:
             with open(args.labels, newline="", encoding="utf-8") as fh:
                 rep = score_against_labels(rows, list(csv.DictReader(fh)))
-            print("# Rule vs model tracker on hand-labeled conversations (labels: first pass)\n")
+            print(f"# Rule vs model tracker ({prompt.version}) on hand-labeled conversations\n")
             for t in ("rules", "model"):
                 c = rep[t]
                 print(f"- {t}: precision {_fmt(c['precision'])}; recall {_fmt(c['recall'])}; "
@@ -432,7 +445,11 @@ def _run(args: argparse.Namespace, ap: argparse.ArgumentParser) -> int:
                 out.close()
 
     if args.sample_out:
-        sample = review_sample(rows, args.per_cell)
+        exclude: set[str] = set()
+        for f in args.exclude:
+            with open(f, newline="", encoding="utf-8") as fh:
+                exclude |= {r["id"] for r in csv.DictReader(fh)}
+        sample = review_sample(rows, args.per_cell, args.seed, exclude)
         Path(args.sample_out).parent.mkdir(parents=True, exist_ok=True)
         with open(args.sample_out, "w", newline="", encoding="utf-8") as fh:
             if sample:

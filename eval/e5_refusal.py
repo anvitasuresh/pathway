@@ -27,6 +27,7 @@ Usage:
     python -m eval.e5_refusal
     python -m eval.e5_refusal --model --dry-run
     python -m eval.e5_refusal --model --out eval/results/e5_model.jsonl
+    python -m eval.e5_refusal --model --prompt analyzer/refusal_prompt_v2.md --out eval/results/e5_model_v2.jsonl
     python -m eval.e5_refusal --preds eval/results/e5_model.jsonl   # re-score saved rows
 """
 
@@ -37,7 +38,7 @@ import json
 import sys
 from pathlib import Path
 
-from analyzer.analyzer import load_items, render_transcript
+from analyzer.analyzer import load_items, load_prompt, render_transcript
 from analyzer.refusal_state import REFUSAL_PROMPT, detect_refusal, track_model, track_rules
 from eval.metrics import STRATA, check_no_pooled, rate, _fmt
 
@@ -79,8 +80,8 @@ def predict_offline(item: dict) -> list[dict]:
     ]
 
 
-def predict_model(item: dict, backend) -> dict:
-    res = track_model(item, backend)
+def predict_model(item: dict, backend, prompt=None) -> dict:
+    res = track_model(item, backend, prompt)
     summary = res.state.summary() if res.state else None
     return _row(item["id"], "model", res.status, summary, model=res.model,
                 prompt_version=res.prompt_version, errors=res.errors,
@@ -185,6 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--items", default=str(DEFAULT_ITEMS))
     ap.add_argument("--model", action="store_true", help="also run the model tracker (API calls)")
     ap.add_argument("--model-id", default=None)
+    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v1)")
     ap.add_argument("--dry-run", action="store_true", help="with --model: print what would be sent")
     ap.add_argument("--preds", help="score saved rows from this JSONL instead of running")
     ap.add_argument("--out", help="write prediction rows here")
@@ -200,8 +202,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.preds:
         rows = load_items(args.preds)
     else:
+        prompt = load_prompt(args.prompt or REFUSAL_PROMPT)
         if args.model and args.dry_run:
-            print(f"# model tracker dry run: prompt {REFUSAL_PROMPT.name}, {len(items)} items\n")
+            print(f"# model tracker dry run: prompt {prompt.version}, {len(items)} items\n")
             for it in items:
                 print(f"## {it['id']}\n{render_transcript(it)}\n")
             return 0
@@ -211,7 +214,7 @@ def main(argv: list[str] | None = None) -> int:
 
             backend = AnthropicBackend(model=args.model_id)
             for it in items:
-                rows.append(predict_model(it, backend))
+                rows.append(predict_model(it, backend, prompt))
                 print(f"model: {it['id']} {rows[-1]['status']}", file=sys.stderr)
     if args.out:
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)

@@ -48,3 +48,26 @@ pair is a better illustration of the thesis than any synthetic item.
 - The model tracker (refusal_prompt_v1) is built for exactly these distinctions. Run it
   on this same sample of 75 and compare against the labels. WildChat is public and
   non-toxic, so that is safe to send. Do not send LMSYS flagged conversations to an API.
+
+## Model tracker on the same 75 (refusal_prompt_v1, 2026-10-09)
+
+Scored against the same first-pass labels; "unclear" labels left out (66 scored).
+
+| Tracker | Precision (undone) | Recall (undone) | False "undone" flags |
+|---|---|---|---|
+| rules | 3/24 (0.12; 0.04-0.31) | 3/4 (0.75; 0.30-0.95) | 21 of 66 |
+| model, v1 | 3/11 (0.27; 0.10-0.57) | 3/4 (0.75; 0.30-0.95) | 8 of 66 |
+
+The API model declined to analyze 4 of the 75 conversations (status `refusal`); they are
+unscored. Recall rests on 4 positives and says little.
+
+The model's 8 false flags: 6 capability disclaimers read as refusals (the rules' main
+error too), 1 clarifying question read as a refusal, and 1 where the label says the
+reframe was refused again and the model says it complied (label or model may be wrong).
+It also flagged both dual-output jailbreak replies, which are labeled unclear. Its one
+miss is the auto-clicker case, which it read as the user taking an offered alternative;
+that label is arguable.
+
+`analyzer/refusal_prompt_v2.md` targets those errors. It was written from this sample,
+so its numbers here would be a fit. The test is a fresh 75 drawn with seed 23 and these
+ids excluded (`e5_wildchat_review2.csv`), labeled before any model run on it.
