@@ -85,3 +85,13 @@ def test_cli_local_jsonl(tmp_path, capsys):
     assert len(out.read_text().splitlines()) == 3
     assert e5_public.main(["--source", "wildchat", "--path", str(p), "--show", "u"]) == 0
     assert "[turn 2] USER" in capsys.readouterr().out
+
+
+def test_review_text(tmp_path):
+    recs = [_wildchat("u", UNDONE), _wildchat("d", DROPPED)]
+    rows = list(scan(recs, "wildchat"))
+    sample = review_sample(rows, per_cell=5)
+    out = tmp_path / "review.md"
+    n = e5_public.write_review_text(recs, "wildchat", sample, str(out))
+    text = out.read_text()
+    assert n == 2 and "## u" in text and "<- tracker: reframe" in text and "Paper Lanterns" in text

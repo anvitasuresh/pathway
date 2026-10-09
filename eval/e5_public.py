@@ -38,6 +38,11 @@ Usage:
     python -m eval.e5_public --rows eval/results/e5_wildchat.jsonl            # re-report
     python -m eval.e5_public --rows eval/results/e5_wildchat.jsonl --sample-out eval/results/e5_wildchat_review.csv
     python -m eval.e5_public --source wildchat --hf --show <conversation id>
+    python -m eval.e5_public --source wildchat --hf --review-ids eval/results/e5_wildchat_review.csv \
+        --review-text data/external/e5_wildchat_review.md   # sampled conversations, local only
+
+With --hf the script exits hard once its output is written: the streaming reader keeps
+background threads open that otherwise stop Python from quitting.
 """
 
 from __future__ import annotations
@@ -46,6 +51,7 @@ import argparse
 import csv
 import glob
 import json
+import os
 import random
 import sys
 from pathlib import Path
@@ -252,7 +258,54 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--sample-out", help="write a stratified review sample CSV here")
     ap.add_argument("--per-cell", type=int, default=25)
     ap.add_argument("--show", help="print one conversation by id, for hand review (local only)")
+    ap.add_argument("--review-ids", help="review CSV from --sample-out; with --review-text")
+    ap.add_argument("--review-text", help="write those conversations as markdown here (keep it out of git)")
     args = ap.parse_args(argv)
+    code = _run(args, ap)
+    if args.hf:  # streaming leaves non-daemon threads alive; do not hang at exit
+        sys.stdout.flush()
+        sys.stderr.flush()
+        os._exit(code)
+    return code
+
+
+def write_review_text(records: Iterable[dict], source: str, review_rows: list[dict], path: str) -> int:
+    """Write the sampled conversations, with the tracker's turn marks, as markdown."""
+    wanted = {r["id"]: r for r in review_rows}
+    found: dict[str, str] = {}
+    for rec in records:
+        item = to_item(rec, source)
+        if item is None or item["id"] not in wanted or item["id"] in found:
+            continue
+        r = wanted[item["id"]]
+        marks = {int(r[k]): k.replace("_turn", "") for k in ("refusal_turn", "reframe_turn", "comply_turn")
+                 if str(r.get(k, "")).strip() not in ("", "None")}
+        lines = [f"## {item['id']}", "",
+                 f"Tracker cell: {r['tracker_cell']}. Flagged: {item['flagged']}. "
+                 "Label in the CSV: human_undone = yes / no / unclear.", ""]
+        for t in item["turns"]:
+            tag = f" <- tracker: {marks[t['i']]}" if t["i"] in marks else ""
+            lines.append(f"**[turn {t['i']}] {t['role'].upper()}{tag}**\n\n{t['text'].strip()}\n")
+        found[item["id"]] = "\n".join(lines)
+        if len(found) == len(wanted):
+            break
+    Path(path).parent.mkdir(parents=True, exist_ok=True)
+    order = [r["id"] for r in review_rows if r["id"] in found]
+    with open(path, "w", encoding="utf-8") as fh:
+        fh.write("# E5 review sample (local only; do not commit)\n\n" + "\n---\n\n".join(found[i] for i in order))
+    return len(found)
+
+
+def _run(args: argparse.Namespace, ap: argparse.ArgumentParser) -> int:
+    if args.review_text:
+        if not (args.review_ids and args.source and (args.path or args.hf)):
+            ap.error("--review-text needs --review-ids, --source and --path or --hf")
+        with open(args.review_ids, newline="", encoding="utf-8") as fh:
+            review_rows = list(csv.DictReader(fh))
+        records = _records_from_hf(args.source) if args.hf else _records_from_paths(args.path)
+        n = write_review_text(records, args.source, review_rows, args.review_text)
+        print(f"wrote {n} of {len(review_rows)} conversations to {args.review_text}", file=sys.stderr)
+        return 0
 
     if args.rows:
         with open(args.rows, encoding="utf-8") as fh:
