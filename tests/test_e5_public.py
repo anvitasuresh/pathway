@@ -95,3 +95,36 @@ def test_review_text(tmp_path):
     n = e5_public.write_review_text(recs, "wildchat", sample, str(out))
     text = out.read_text()
     assert n == 2 and "## u" in text and "<- tracker: reframe" in text and "Paper Lanterns" in text
+
+
+class _FakeModel:
+    model = "fixture-model"
+    effort = "high"
+
+    def __init__(self, undone_ids):
+        self.undone_ids = undone_ids
+        self.seen = []
+
+    def complete(self, system, user, schema):
+        from analyzer.analyzer import BackendResponse
+        self.seen.append(user)
+        undone = any(f"[turn 2] USER: {UNDONE[2][1]}" in user for _ in [0]) and "lanterns" in user.lower()
+        events = [{"request_turn": 0, "refusal_turn": 1, "re_requests": [
+            {"turn": 2, "kind": "pretext" if undone else "reask", "frame": "purpose" if undone else "none",
+             "outcome": "complied" if undone else "refused", "outcome_turn": 3, "reason": "x"}]}]
+        return BackendResponse(text=json.dumps({"events": events, "rationale": "r"}),
+                               stop_reason="end_turn", model=self.model)
+
+
+def test_model_review_skips_flagged_and_scores():
+    recs = [_wildchat("u", UNDONE), _wildchat("d", DROPPED), _wildchat("t", UNDONE, toxic=True)]
+    backend = _FakeModel({"u"})
+    rows = e5_public.model_review(recs, "wildchat", ["u", "d", "t"], backend)
+    by = {r["id"]: r for r in rows}
+    assert by["t"]["status"] == "skipped_flagged" and len(backend.seen) == 2  # flagged never sent
+    assert by["u"]["undone"] is True and by["d"]["undone"] is False
+    labels = [{"id": "u", "tracker_cell": "undone", "human_undone": "yes"},
+              {"id": "d", "tracker_cell": "undone", "human_undone": "no"}]
+    rep = e5_public.score_against_labels(rows, labels)
+    assert rep["rules"]["false_positives"] == 1 and rep["model"]["false_positives"] == 0
+    assert rep["model"]["precision"]["rate"] == 1.0

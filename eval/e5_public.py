@@ -260,6 +260,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--show", help="print one conversation by id, for hand review (local only)")
     ap.add_argument("--review-ids", help="review CSV from --sample-out; with --review-text")
     ap.add_argument("--review-text", help="write those conversations as markdown here (keep it out of git)")
+    ap.add_argument("--model-review", help="run the model tracker on the --review-ids conversations; "
+                    "write rows here (API calls; unflagged conversations only)")
+    ap.add_argument("--labels", help="human labels CSV to score --model-review rows against")
+    ap.add_argument("--model-id", default=None)
+    ap.add_argument("--dry-run", action="store_true", help="with --model-review: count and show, call nothing")
     args = ap.parse_args(argv)
     code = _run(args, ap)
     if args.hf:  # streaming leaves non-daemon threads alive; do not hang at exit
@@ -296,7 +301,95 @@ def write_review_text(records: Iterable[dict], source: str, review_rows: list[di
     return len(found)
 
 
+def model_review(records: Iterable[dict], source: str, ids: list[str], backend, dry_run: bool = False) -> list[dict]:
+    """Model tracker on the given conversations. Moderation-flagged conversations are
+    skipped, never sent: real harmful text stays off the API (account-safety rule)."""
+    from analyzer.analyzer import render_transcript
+    from analyzer.refusal_state import track_model
+
+    wanted, rows = set(ids), []
+    for rec in records:
+        item = to_item(rec, source)
+        if item is None or item["id"] not in wanted:
+            continue
+        wanted.discard(item["id"])
+        if item["flagged"]:
+            rows.append({"id": item["id"], "status": "skipped_flagged"})
+        elif dry_run:
+            if not rows:
+                print(render_transcript(item)[:3000], "\n...", file=sys.stderr)
+            rows.append({"id": item["id"], "status": "dry_run"})
+        else:
+            res = track_model(item, backend)
+            s = res.state.summary() if res.state else None
+            rows.append({"id": item["id"], "status": res.status, "model": res.model,
+                         "prompt_version": res.prompt_version, "errors": res.errors,
+                         "undone": s["undone"] if s else None, "attempt": s["attempt"] if s else None,
+                         "n_refusals": s["n_refusals"] if s else None,
+                         "re_request_kinds": [r.kind for r in res.state.re_requests] if res.state else None})
+            print(f"model: {item['id'][:10]} {res.status}", file=sys.stderr)
+        if not wanted:
+            break
+    return rows
+
+
+def score_against_labels(model_rows: list[dict], labels: list[dict]) -> dict:
+    """Rule tracker vs model tracker on the same hand-labeled conversations.
+    'unclear' labels are left out of both; nothing is pooled across trackers."""
+    lab = {r["id"]: r for r in labels if r.get("human_undone") in ("yes", "no")}
+    mod = {r["id"]: r for r in model_rows if r.get("status") == "ok"}
+
+    def cell(pred):  # pred: id -> bool
+        ids = [i for i in lab if i in pred]
+        tp = sum(pred[i] and lab[i]["human_undone"] == "yes" for i in ids)
+        fp = sum(pred[i] and lab[i]["human_undone"] == "no" for i in ids)
+        fn = sum(not pred[i] and lab[i]["human_undone"] == "yes" for i in ids)
+        return {"n": len(ids), "precision": rate(tp, tp + fp), "recall": rate(tp, tp + fn),
+                "false_positives": fp}
+
+    common = set(lab) & set(mod)
+    report = {
+        "rules": cell({i: lab[i]["tracker_cell"] == "undone" for i in common}),
+        "model": cell({i: bool(mod[i]["undone"]) for i in common}),
+        "model_statuses": dict(sorted({s: sum(r.get("status") == s for r in model_rows)
+                                       for s in {r.get("status") for r in model_rows}}.items())),
+    }
+    check_no_pooled(report)
+    return report
+
+
 def _run(args: argparse.Namespace, ap: argparse.ArgumentParser) -> int:
+    if args.model_review:
+        if not (args.review_ids and args.source and (args.path or args.hf)):
+            ap.error("--model-review needs --review-ids, --source and --path or --hf")
+        with open(args.review_ids, newline="", encoding="utf-8") as fh:
+            ids = [r["id"] for r in csv.DictReader(fh)]
+        backend = None
+        if not args.dry_run:
+            from analyzer.analyzer import AnthropicBackend
+
+            backend = AnthropicBackend(model=args.model_id)
+        records = _records_from_hf(args.source) if args.hf else _records_from_paths(args.path)
+        rows = model_review(records, args.source, ids, backend, args.dry_run)
+        if args.dry_run:
+            print(f"dry run: would send {sum(r['status'] == 'dry_run' for r in rows)} conversations; "
+                  f"skipped flagged {sum(r['status'] == 'skipped_flagged' for r in rows)}")
+            return 0
+        Path(args.model_review).parent.mkdir(parents=True, exist_ok=True)
+        with open(args.model_review, "w", encoding="utf-8") as fh:
+            for r in rows:
+                fh.write(json.dumps(r) + "\n")
+        if args.labels:
+            with open(args.labels, newline="", encoding="utf-8") as fh:
+                rep = score_against_labels(rows, list(csv.DictReader(fh)))
+            print("# Rule vs model tracker on hand-labeled conversations (labels: first pass)\n")
+            for t in ("rules", "model"):
+                c = rep[t]
+                print(f"- {t}: precision {_fmt(c['precision'])}; recall {_fmt(c['recall'])}; "
+                      f"false positives {c['false_positives']} of {c['n']}")
+            print(f"- model statuses: {rep['model_statuses']}")
+        return 0
+
     if args.review_text:
         if not (args.review_ids and args.source and (args.path or args.hf)):
             ap.error("--review-text needs --review-ids, --source and --path or --hf")
