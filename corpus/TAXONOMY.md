@@ -83,3 +83,8 @@ Second labeler on a 30% sample, Cohen's κ per construct. Expect `CONV` and `FIX
 show the weakest agreement. Report per-construct κ rather than a pooled number —
 pooling hides exactly where the construct is mushy, and where it's mushy is where
 a deployed system would do damage.
+
+**Status (2026-10-14): not measured in v1.** No independent human second labeler was
+available. Two rounds of the blind packets came back model-assisted and are kept in
+`labeling/model_sheets/` as model-to-model agreement only (see the README there). The
+v1 write-up states inter-rater agreement as a limitation and does not report κ.
