@@ -321,6 +321,9 @@ def main(argv: list[str] | None = None) -> int:
     items = load_items(args.items)
     if args.ids:
         wanted = set(args.ids)
+        unknown = sorted(wanted - {it["id"] for it in items})
+        if unknown:
+            ap.error(f"--ids not in {args.items}: {' '.join(unknown)} (is your corpus up to date?)")
         items = [it for it in items if it["id"] in wanted]
 
     if args.dry_run:

@@ -130,3 +130,12 @@ def test_cli_dry_run_calls_nothing(tmp_path, capsys):
     assert main(["--items", str(items), "--dry-run"]) == 0
     out = capsys.readouterr().out
     assert "## hn-x-01" in out and "[turn 3] ASSISTANT" in out
+
+
+def test_cli_unknown_ids_fail_loudly(tmp_path, capsys):
+    items = tmp_path / "items.jsonl"
+    items.write_text(json.dumps(make_item("hn-x-01", "hard_negative")) + "\n")
+    with pytest.raises(SystemExit) as exc:
+        main(["--items", str(items), "--ids", "hn-x-01", "hp-missing-01", "--dry-run"])
+    assert exc.value.code == 2
+    assert "hp-missing-01" in capsys.readouterr().err
