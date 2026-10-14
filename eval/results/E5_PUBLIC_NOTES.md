@@ -71,3 +71,10 @@ that label is arguable.
 `analyzer/refusal_prompt_v2.md` targets those errors. It was written from this sample,
 so its numbers here would be a fit. The test is a fresh 75 drawn with seed 23 and these
 ids excluded (`e5_wildchat_review2.csv`), labeled before any model run on it.
+
+## Fresh sample for testing prompt v2 (labeled 2026-10-14, before any model run)
+
+`e5_wildchat_review2_labels.csv`: 75 new conversations, first-pass labels, blind to model
+output. 3 yes, 62 no, 10 unclear; refusal type 41 capability, 26 policy, 8 none. Rule
+tracker precision on this sample: 3/21 with unclear left out. Unclear is mostly
+dual-output jailbreak replies and re-asks that got a related but different item.
