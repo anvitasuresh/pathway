@@ -34,6 +34,8 @@ sourced very differently.
 | 4 | Acton, MA double homicide | Aug 2026 | Minor accused, indicted, pending | **B** | **B** (DA press conference) | Only with §4 caveats |
 | 5 | Pirkkala school stabbing (Finland) | 20 May 2025 | Convicted of 3 attempted murders; not criminally responsible | **A/B** | **B** (prosecutor in court, Yle) | Yes |
 | 6 | Gangbuk motel killings (Seoul) | Jan–Feb 2026 | Convicted, life; under appeal | **A/B** | **A/B** (indictment and ruling, reported) | Yes |
+| 7 | Adams / Soelberg (Greenwich, CT) | Aug 2025 | Murder-suicide; civil suit pending | **B** | **C** (civil complaint, unproven) | Yes, as alleged |
+| 8 | Hamilton County, TN (Darron Lee) | 5 Feb 2026 | Accused awaiting trial (Sept 2027) | **B** | **B** (detective testimony at preliminary hearing, reported) | Yes, as allegations; post-incident use |
 
 ## Corrections to CONTEXT.md §2.1–2.2
 
@@ -260,3 +262,47 @@ Sources:
 - SBS (prosecution appeal) — https://news.sbs.co.kr/english/article.do?news_id=N1008734254
 
 TODO: recheck appeal outcome before publishing.
+
+## 7. Adams / Soelberg murder-suicide — Greenwich, CT
+
+**Facts (B).** Early Aug 2025. Police said Stein-Erik Soelberg, 56, killed his mother,
+Suzanne Adams, 83, at their home and then himself.
+
+**AI-related claim (C).** Civil complaint by Adams's estate, filed Dec 2025 in San
+Francisco Superior Court against OpenAI, Microsoft, Sam Altman and others. It alleges
+ChatGPT (GPT-4o) affirmed his persecutory beliefs (that his mother was surveilling him,
+that a printer was a surveillance device, that he was being poisoned through his car's
+vents), never suggested professional help, and did not decline delusional content.
+**Allegations only.** The public chats (his own YouTube videos) reportedly do not show
+conversations about killing his mother; the estate says it lacks the full history.
+OpenAI did not address the merits. Wikipedia is not a source for this case.
+
+**Why it matters here.** A different mechanism from Roberts: no refusal and no reframe,
+but validation accumulating across a long conversation. Same unit-of-analysis argument;
+motivates E13 (sycophancy drift).
+
+Sources:
+- WBUR / AP, 11 Dec 2025 — https://www.wbur.org/news/2025/12/11/open-ai-chatgpt-lawsuit-connecticut-murder-suicide/
+- Boston Globe, 11 Dec 2025 — https://www.bostonglobe.com/2025/12/11/business/openai-microsoft-chatgpt-wrongful-death-lawsuit/
+
+TODO: get the complaint itself (case number) and replace the press citations.
+
+## 8. Hamilton County, TN (Darron Lee) — post-incident use
+
+**Facts (B).** Gabriella Perpétuo, 29, found unresponsive at her Ooltewah home on
+5 Feb 2026 and pronounced dead. Darron Lee, a former NFL player, is charged with her
+murder; bound over to the grand jury at a 9 Mar 2026 preliminary hearing; trial set for
+27 Sept 2027. **Presumed innocent, case pending.**
+
+**AI-related claim (B).** A Hamilton County Sheriff's detective testified at the
+preliminary hearing that Lee messaged ChatGPT ("she isn't waking up or responding, what
+do I do?") about a day before officers were called; the DA argued he used it to help
+cover up the death. No confession in the messages.
+
+**Fit.** Post-incident use, not warning behaviour before harm. Out of scope for the
+analyzer's constructs; cite only as a contrast (the per-message duty to direct someone
+to emergency help).
+
+Sources:
+- Local 3 News — https://www.local3news.com/local-news/update-ex-nfl-player-charged-with-murder-of-girlfriend-given-trial-date-in-2027/article_515b5c92-0423-493d-aa89-a419a755d3f7.html
+- NewsChannel 9 (preliminary hearing) — https://newschannel9.com/news/local/body-camera-footage-shown-at-preliminary-hearing-for-former-nfl-player-charged-with-murder-darron-lee-preliminary-hearing-ooltewah-homicide-update-gabriella-carvalho-perpetuo-case-former-nfl-player-murder-charge-hamilton-county-courtroom

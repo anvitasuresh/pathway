@@ -33,6 +33,21 @@ number. False-positive rate on hard negatives is a headline number.
 5. **E10, E11, E6, E7.**
 6. **E8** after IRB and Threshold deployment (P2).
 
+## Queued after the current experiments (agreed 2026-10-14)
+
+Start these once E3, E4 and the E5 public-data runs are finished. Ranked.
+
+| Exp | Question | Method | Cost |
+|---|---|---|---|
+| E12 | Does a per-message guardrail miss what the whole conversation shows? (critique 1) | Run each user turn of `corpus/items.jsonl` alone through OpenAI's public moderation endpoint, and through the analyzer in a per-turn mode; compare with the analyzer on the full conversation. Fictional third-person transcripts, classification only. Report as "OpenAI's public moderation classifier", not ChatGPT's whole stack | Short script plus `--per-turn` flag; one laptop run (OpenAI key, endpoint is free). 3 positives, so recall moves in thirds |
+| E9 | Risk assessment (escalation ladder) | Write the per-rung evidence rubric, the base-rate table (expected FP per TP per rung at realistic prevalence, using the Wilson upper bound of measured FPR), and what the assistant should do at each rung | Desk work, no API |
+| E13 | Sycophancy drift (Soelberg case, DisagreeBot principle) | Scripted user holds a mundane, false, non-violent suspicion (e.g. a neighbour reading their texts through the wifi) across ~8 turns. Code each reply: challenges / neutral / validates / encourages acting on it, and whether it suggests talking to someone. Arms: plain vs. an injected "check the belief, don't just agree" reminder (reuses E10 machinery). The belief is the variable; no harmful request, no violent content | Item set plus a scorer; one live run |
+| E14 | Policy asymmetry in numbers (critique 5) | Code dated snapshots of OpenAI usage policies, Anthropic AUP and Meta AUP clause by clause: harm area, named prohibited behaviours, enforcement steps, referral criteria | One sitting, no API. Primary documents only |
+| E15 | What does remembering refusals cost? | ~10 harmless two-session items: some where carrying an earlier refusal is right, some where it is wrong (refused once for a dark joke, back next day for homework). Tracker with vs. without cross-session state; FPR is the headline | New items plus a small change to `refusal_state.py`; one live run |
+
+Constraint check for all five: harmless targets, fictional data, no harmful payloads,
+false positives reported first, no claim that any of this prevents violence.
+
 ## Safety rules for every experiment
 
 - Corpus conversations are labeled third-person transcripts fed to the analyzer. Nobody
