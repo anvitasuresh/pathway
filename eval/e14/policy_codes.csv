@@ -1,0 +1,36 @@
+provider,dimension,code,evidence,url,doc_date,quality
+anthropic,D1_unit_of_detection,not_stated,Anthropic's Safeguards Team implements detection and monitoring to enforce our Usage Policy.,https://www.anthropic.com/legal/aup,2026-11-12,P
+openai,D1_unit_of_detection,cross_conversation_claimed,a broader pattern within a long conversation—or across conversations—can suggest something more concerning.,https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D1_unit_of_detection,not_stated,(no monitoring or review text in the Llama AUP),https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D2_refusal_memory_model,within_conversation,"It’s also fine for [the model] to be more wary for the remainder of the interaction, even if the person claims to be joking or asks for something else.",https://www.anthropic.com/constitution,2026-01,P
+openai,D2_refusal_memory_model,cross_session_aspiration_selfharm,"we're researching ways to ensure robust behavior across multiple conversations. [example given is suicidal intent in one chat, then another]",https://openai.com/index/helping-people-when-they-need-it-most/,2025-08-26,P (extract)
+meta,D2_refusal_memory_model,not_stated,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D3_block_as_enforcement_signal,explicitly_not_by_itself,encountering a block does not by itself indicate a violation of the Usage Policy.,https://www.anthropic.com/legal/aup,2026-11-12,P
+openai,D3_block_as_enforcement_signal,not_stated,"We work to train our models to refuse requests for instructions, tactics, or planning ... that could meaningfully enable violence. [no text on what a refusal feeds]",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D3_block_as_enforcement_signal,not_stated,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D4_enforcement_steps,warn;throttle;limit;suspend;terminate;block_output,"we may warn you or throttle, limit, suspend, or terminate your access to our products and services.",https://www.anthropic.com/legal/aup,2026-11-12,P
+anthropic,D4_enforcement_steps_previous,throttle;suspend;terminate;block_or_modify_output,"If we learn that you have violated our Usage Policy, we may throttle, suspend, or terminate your access",https://www.anthropic.com/legal/archive/22742366-2ef0-4c7a-a833-6523f10d3944,2025-09-15,P
+openai,D4_enforcement_steps,revoke_access;ban_other_accounts;block_new_accounts;other_penalties_unnamed,breaking or circumventing our rules and safeguards may mean you lose access to our systems or experience other penalties.,https://openai.com/policies/usage-policies/,2025-10-29,P (extract)
+meta,D4_enforcement_steps,none_stated,(no enforcement or consequence text; the only mechanism is reporting violations to LlamaUseReport@meta.com),https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D5_rung_between_ban_and_referral,no (warn/throttle exist but are generic AUP steps with no risk-to-others criteria),"we may warn you or throttle, limit, suspend, or terminate your access",https://www.anthropic.com/legal/aup,2026-11-12,P
+openai,D5_rung_between_ban_and_referral,undefined,"in some sensitive cases, we may contact others who are best positioned to help. [who, when and on what criteria not stated]",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D5_rung_between_ban_and_referral,no,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D6_referral_criteria_others,permission_only,we have a good-faith belief that disclosure is reasonably necessary to ... (ii) prevent serious harm to any person or to property,https://www.anthropic.com/legal/privacy,2026-09-10,P
+openai,D6_referral_criteria_others,published_threshold,"When conversations indicate an imminent and credible risk of harm to others, we notify law enforcement.",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+openai,D6_referral_criteria_others_note,threshold_flexible,"our referral criteria is flexible to account for the fact that a user may not explicitly discuss the target, [means, or timing]",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D6_referral_criteria_others,inbound_only,[emergency requests from police] involving imminent harm to a child or risk of death or serious physical injury to any person,https://www.meta.com/safety/communities/law/guidelines/,not re-fetched 2026-10-14,P (from POLICY_COMPARISON 2026-10-08)
+anthropic,D7_referral_accuracy_published,no,,https://www.anthropic.com/legal/privacy,2026-09-10,P
+openai,D7_referral_accuracy_published,no,"[no counts of reports, referrals, bans, or notifications on the page]",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D7_referral_accuracy_published,no,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D8_ban_persistence,user_obligation,"Circumvent a ban through the use of a different account, such as the creation of a new account",https://www.anthropic.com/legal/aup,2026-11-12,P
+openai,D8_ban_persistence,detection_commitment,"banning other accounts of the same user, and taking steps to detect and stop the opening of new accounts.",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D8_ban_persistence,not_stated,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D9_human_review,not_stated_in_policy,[privacy policy: conversations may be 'flagged for safety review'; who reviews not stated],https://www.anthropic.com/legal/privacy,2026-09-10,P
+openai,D9_human_review,yes,"When an account or conversation is flagged, it is assessed in context by trained personnel.",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D9_human_review,not_stated,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D10_mandatory_report_areas,child_safety_only,"we will report our findings to relevant authorities. [CSAM, or a minor at imminent risk of sexual abuse or exploitation]",https://www.anthropic.com/legal/aup,2026-11-12,P
+openai,D10_mandatory_report_areas,child_safety_in_policy; violence_in_blog,We report apparent child sexual abuse material and child endangerment [to NCMEC],https://openai.com/policies/usage-policies/,2025-10-29,P (extract)
+meta,D10_mandatory_report_areas,none_in_llama_aup,,https://dev.meta.ai/llama/llama3/use-policy,undated,P (extract)
+anthropic,D11_resource_tier,self_harm_only_decoupled,there are no consequences for your account based on your decision to access resources. ... it won't appear again for about two hours,https://support.claude.com/en/articles/13171706-crisis-helpline-support-in-claude,2026-03-16,P
+openai,D11_resource_tier,self_harm_and_teen_parent_alert,"ChatGPT surfaces localized crisis resources, encourages people to reach out to mental health professionals",https://openai.com/index/our-commitment-to-community-safety/,2026-04-28,P (extract)
+meta,D11_resource_tier,teen_selfharm_parent_alert (reported),,https://www.kwtx.com/2026/07/16/meta-releases-new-protection-that-alerts-parents-teens-showing-signs-distress-conversations-with-ai/,2026-07-16,S

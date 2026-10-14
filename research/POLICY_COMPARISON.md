@@ -3,7 +3,8 @@
 OpenAI vs. Anthropic vs. Meta, read against the Tumbler Ridge, British Columbia case
 (CONTEXT.md §2.2, §4.2 items 4, 5 and 7).
 
-**Last verified:** 2026-10-08. Policies change; re-check every quoted line before it goes
+**Last verified:** 2026-10-08; superseded where they differ by the clause-level coding in
+`research/E14_POLICY_CODING.md` (accessed 2026-10-14). Policies change; re-check every quoted line before it goes
 on the site or into the write-up, and update the "as of" dates.
 
 **Source-quality legend** (same discipline as `research/CASES.md`):
@@ -69,7 +70,7 @@ As of 2026-10-08. "Not stated" means we did not find it in the published text li
 | | OpenAI | Anthropic | Meta (Meta AI / Llama) |
 |---|---|---|---|
 | **Violent-ideation rule** | Usage policies prohibit "threats, intimidation, harassment" and "terrorism or violence" (P). No text on users *expressing* intent vs. *requesting help* | AUP: "Facilitate or promote any act of violence or intimidation targeting individuals, groups, animals, or property" (P). Constitution: the model should not "Assist someone who has clearly displayed an intention to harm others" and "could address the expressed intent to cause harm" (P) | Llama AUP: "Violence or terrorism"; "threatening, or bullying"; content "intended to incite or promote violence" (P). Community Standards cover "threats of violence that could lead to death" and "coded statements where the threat of violence is not clearly articulated" (P, via Oversight Board) — whether this standard governs private Meta AI chats is **not stated** |
-| **Escalation tiers** | None published. Flags may "require[] escalation for more detailed human review" or be dismissed (P). Outcomes named: ban, refer | None published. AUP: "throttle, suspend, or terminate" access; "block or modify model outputs" (P) | None published for harm to others. Parental alerts exist for teen **self-harm/suicide** only (S, Jul 2026) |
+| **Escalation tiers** | None published. Flags may "require[] escalation for more detailed human review" or be dismissed (P). Outcomes named: ban, refer | None published for harm to others. AUP (eff. 12 Nov 2026) adds generic steps: "warn you or throttle, limit, suspend, or terminate" (P); earlier version had no "warn" | None published for harm to others. Parental alerts exist for teen **self-harm/suicide** only (S, Jul 2026) |
 | **Human review** | Yes: "assessed in context by trained personnel" (P); a "small team trained on our usage policies" (P, Aug 2025) | AUP describes "detection and monitoring" only (P). Privacy policy: conversations "flagged for safety review" (P). Human review before referral is reported, not published (S, Oct 2026) | Not stated for Meta AI chats |
 | **Referral threshold** | Aug 2025: "imminent threat of serious physical harm to others" (P). Apr 2026: "imminent and credible risk of harm to others"; criteria made "more flexible" so target, means and timing need not be stated (P) | No referral policy for violence. Only child-safety reporting is a stated commitment (P). Privacy policy permits disclosure to "prevent serious harm to any person or to property" (P) — a permission, not a threshold | Law-enforcement guidelines cover *inbound* emergency requests ("risk of death or serious physical injury to any person") (P). No published *proactive* referral threshold for AI chats found |
 | **Persistence across accounts** | Bans may extend to "other accounts of the same user" and "detect and stop the opening of new accounts" (P). Post-BC: commitment to strengthen repeat-violator detection (P) | AUP prohibits "Circumvent a ban through the use of a different account" (P) — a user obligation, not a detection commitment | Not stated for Meta AI |
@@ -198,7 +199,9 @@ would actually have done.
   between "do nothing" and "ban or refer". OpenAI's post-BC changes moved the referral
   threshold; they did not add a rung. The analyzer's graduated tier
   (`none`/`resource`/`friction`/`review`/`escalate`) has no published counterpart.
-- **Critique 5 (policy asymmetry) is visible on the page.** OpenAI names CBRNE and
+- **Critique 5 (policy asymmetry) holds for enforcement, not prohibitions** (corrected
+  by E14, which counts items per harm area: violence to persons is not the least
+  specified area by count). Original reading, kept for the record: OpenAI names CBRNE and
   conventional weapons development in the same sentence and commits to mandatory NCMEC
   reporting; violence toward a person gets a two-word item. Anthropic's AUP has one
   authority-reporting commitment, for child safety. Meta's only AI-chat escalation is for

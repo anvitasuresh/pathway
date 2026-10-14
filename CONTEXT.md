@@ -164,7 +164,7 @@ Columbia — and there the flag was raised, reviewed, and not referred.
 | | CSAM | Violent ideation |
 |---|---|---|
 | Artifact | A file; exists or doesn't | None. Only language |
-| Detection | Hash match + classifier | No deployed conversation-level system |
+| Detection | Hash match + classifier | Conversation-level review claimed by one provider (OpenAI), described by none |
 | Legal duty | Mandatory reporting (US) | None |
 | Base rate | Low but tractable | Vanishingly low |
 | False-positive cost | Serious | Severe, borne by the innocent |
@@ -228,13 +228,19 @@ are **aimed at a different threat model than the one in these cases**.
    the trajectory, and the strongest safety program in the industry is a rounding error
    if the user opens a different tab.
 
-**Calibration (from `research/POLICY_COMPARISON.md`).** "Nothing tracks trajectories"
-is too strong. After BC, OpenAI no longer requires a named target, means, and timing
-before referring, and Anthropic's published guidance tells its model to stay more wary
-for the rest of an interaction after a concerning request. The defensible claim: refusals
-are not stored as state carried across sessions or accounts, no provider publishes a
-graduated option between ban and police referral, individual interpersonal violence is
-the least specified harm area, and no provider publishes referral accuracy.
+**Calibration (from `research/POLICY_COMPARISON.md` and E14,
+`research/E14_POLICY_CODING.md`).** "Nothing tracks trajectories" is too strong. After
+BC, OpenAI no longer requires a named target, means, and timing before referring, and
+says its review considers patterns "within a long conversation—or across
+conversations". Anthropic's published guidance tells its model to stay more wary for the
+rest of an interaction after a concerning request. The defensible claims: no provider
+publishes that refusals persist as state across sessions or accounts (Anthropic says a
+block "does not by itself indicate a violation"); conversation-level review is claimed
+by one provider and described by none; generic graduated enforcement exists (Anthropic
+now names "warn" and "limit") but no provider publishes a rung between ban and police
+referral for risk to others, with criteria; the asymmetry is in enforcement (mandatory
+reporting exists for child safety, not violence), not in how many prohibitions each
+area gets; and no provider publishes referral volume or accuracy.
 
 ## 4.3 The design proposal that follows
 
@@ -242,7 +248,7 @@ the least specified harm area, and no provider publishes referral accuracy.
 observation entering conversation-level state. One refusal means nothing. A refusal
 followed by the same request reframed means something specific — and it is exactly the
 sequence Roberts documents. Cheap, requires no new detection capability, uses a signal
-every provider already generates and discards, and is directly evaluable here.
+every provider already generates and no provider publishes keeping, and is directly evaluable here.
 
 **This is the project's most defensible novel contribution. Prioritize it.**
 
@@ -476,7 +482,7 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
 7. Site and Threshold (P2)
 8. After the current experiments: E12 (per-message guardrail baseline; built as
    `eval/e12_per_message.py`, waiting on the live run), E9, E13
-   (sycophancy drift), E14 (policy coding), E15 (cost of remembering refusals), then
+   (sycophancy drift), E14 (policy coding, done: `research/E14_POLICY_CODING.md`), E15 (cost of remembering refusals), then
    E16 (public demo, last, if time). See
    `eval/PLAN.md`
 

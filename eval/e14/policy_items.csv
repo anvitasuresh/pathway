@@ -1,0 +1,42 @@
+provider,document,section,item_excerpt,harm_area
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Incite Violence or Hateful Behavior,"Facilitate or promote any act of violence or intimidation targeting individuals, groups, animals, or property",violence_to_persons
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct","Shame, humiliate, intimidate, bully, harass, or celebrate the suffering of individuals",violence_to_persons
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct",Coordinate the harassment or intimidation of an individual or group,violence_to_persons
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct","Promote, trivialize, or glorify graphic violence, gore, sexual violence, or animal cruelty or abuse",violence_to_persons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Incite Violence or Hateful Behavior,"Incite, facilitate, or promote violent extremism, terrorism, or hateful behavior",extremism_terrorism
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Incite Violence or Hateful Behavior,Provide material support for organizations or individuals associated with violent extremism,extremism_terrorism
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,"Develop, produce, modify, design, or test weapons, explosives, dangerous materials",weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,Develop or operate software or components for the testing or operation of weapons,weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,"Weaponize or integrate weapons onto drones, vehicles, or any unmanned or autonomous platforms",weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,"Illegally acquire, sell, or transfer weapons, or circumvent regulatory controls",weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,"Design, synthesize, produce, acquire, operate, test, deploy, or plan the deployment of biological, chemical, radiological, or nuclear weapons",weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Develop or Design Weapons,"Modify, design, or test biological or chemical agents to adjust or optimize their lethality",weapons
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Create, distribute, promote, or facilitate the creation of child sexual abuse material",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Facilitate the trafficking, sextortion, or any other form of exploitation of a minor",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Facilitate minor grooming, including generating content designed to impersonate a minor",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Facilitate child abuse of any form, including instructions for how to conceal abuse",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Promote or facilitate pedophilic relationships, including via roleplay with the model",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),Do Not Compromise Children's Safety,"Fetishize or sexualize minors, including in fictional settings or via roleplay with the model",child_safety
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct","Promote, facilitate, or glamorize suicide or self-harm",self_harm
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct","Promote or facilitate eating disorders",self_harm
+anthropic,Usage Policy (eff. 2026-11-12),"Do Not Engage in Cruel, Abusive, or Psychologically Harmful Conduct","Create or share content that promotes harmful idealization of body weight, shape, or type",self_harm
+openai,Usage Policies (eff. 2025-10-29),Protect people,"threats, intimidation, harassment, or defamation",violence_to_persons
+openai,Usage Policies (eff. 2025-10-29),Protect people,"terrorism or violence, including hate-based violence",extremism_terrorism
+openai,Usage Policies (eff. 2025-10-29),Protect people,"weapons development, procurement, or use, including conventional weapons or CBRNE",weapons
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,"child sexual abuse material (CSAM), whether or not any portion is AI generated",child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,grooming of minors,child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,"exposing minors to age-inappropriate content, such as graphic self-harm",child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,promoting unhealthy dieting or exercise behavior to minors,child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,shaming or otherwise stigmatizing the body type or appearance of minors,child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,dangerous challenges for minors,child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,underaged sexual or violent roleplay,child_safety
+openai,Usage Policies (eff. 2025-10-29),Keep minors safe,underaged access to age-restricted goods or activities,child_safety
+openai,Usage Policies (eff. 2025-10-29),Protect people,"suicide, self-harm, or disordered eating promotion or facilitation",self_harm
+meta,Llama 3 Acceptable Use Policy (undated),1.b,"Engage in, promote, incite, or facilitate the harassment, abuse, threatening, or bullying of individuals",violence_to_persons
+meta,Llama 3 Acceptable Use Policy (undated),2.f,"Any content intended to incite or promote violence, abuse, or any infliction of bodily harm to an individual",violence_to_persons
+meta,Llama 3 Acceptable Use Policy (undated),1.a.i,Violence or terrorism,extremism_terrorism
+meta,Llama 3 Acceptable Use Policy (undated),2.a,"Military, warfare, nuclear industries or applications, espionage",weapons
+meta,Llama 3 Acceptable Use Policy (undated),2.b,Guns and illegal weapons (including weapon development),weapons
+meta,Llama 3 Acceptable Use Policy (undated),1.a.ii,"Exploitation or harm to children, including the solicitation, creation",child_safety
+meta,Llama 3 Acceptable Use Policy (undated),1.a.iv,The illegal distribution of information or materials to minors,child_safety
+meta,Llama 3 Acceptable Use Policy (undated),2.e,"Self-harm or harm to others, including suicide, cutting, and eating disorders",self_harm
