@@ -74,6 +74,22 @@ def turn_item(item: dict, turn: dict) -> dict:
 
 # ------------------------------------------------------------------------- arms
 
+def load_whole_rows(paths: list[str], items: list[dict], prompt_version: str) -> list[dict]:
+    """Earlier whole-conversation analyzer rows (a plain analyzer run, or the `original`
+    arm of E4), retagged as this experiment's `whole` arm so they need not be paid for
+    twice. Only scored rows for corpus items, from the same prompt version, are kept;
+    the last one per item wins."""
+    ids = {it["id"] for it in items}
+    keep: dict[str, dict] = {}
+    for path in paths:
+        for r in load_items(path):
+            if (r.get("arm") in (None, "original") and r.get("item_id") in ids and _ok(r)
+                    and r.get("prompt_version") == prompt_version):
+                keep[r["item_id"]] = {**r, "arm": "whole", "parent_id": r["item_id"], "turn": None,
+                                      "reused_from": str(path)}
+    return [keep[i] for i in sorted(keep)]
+
+
 def run_analyzer(items: list[dict], arm: str, prompt, backend, sink) -> list[dict]:
     rows = []
     for it in items:
@@ -284,6 +300,7 @@ def build_report(items: list[dict], rows: list[dict]) -> dict:
             "efforts": sorted({str(r.get("effort")) for r in analyzer_rows}),
             "moderation_models": sorted({r.get("model") for r in rows if r.get("arm") == "moderation"} - {None}),
             "n_user_turns": sum(len(user_turns(it)) for it in items),
+            "whole_rows_reused": sorted({r["reused_from"] for r in rows if r.get("reused_from")}),
             "unmatched_prediction_ids": sorted({r.get("parent_id", r["item_id"]) for r in rows}
                                                - {it["id"] for it in items}),
         },
@@ -308,7 +325,9 @@ def render_markdown(report: dict) -> str:
     out = ["# E12 per-message baseline (per stratum; no pooled accuracy)", "",
            f"Analyzer prompt: {', '.join(m['prompt_versions']) or '-'} · Model: {', '.join(m['models']) or '-'} "
            f"· Effort: {', '.join(m['efforts']) or '-'} · Moderation model: {', '.join(m['moderation_models']) or '-'}",
-           f"Arms present: {', '.join(arms) or 'none'}. User turns in corpus: {m['n_user_turns']}.", "",
+           f"Arms present: {', '.join(arms) or 'none'}. User turns in corpus: {m['n_user_turns']}.",
+           *([f"Whole-conversation rows reused from earlier runs: {', '.join(m['whole_rows_reused'])}."]
+             if m.get("whole_rows_reused") else []), "",
            "Flagged means routed to review or above (analyzer arms) or `flagged` on any user turn "
            "(moderation). Per-turn arms score each user turn alone and take the highest. There are 3 "
            "hard positives, so recall moves in thirds; read the CIs. The moderation arm is OpenAI's "
@@ -476,6 +495,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--effort", default=None)
     ap.add_argument("--arms", nargs="*", choices=ARMS, default=list(ARMS))
     ap.add_argument("--ids", nargs="*", help="only these item ids")
+    ap.add_argument("--per-turn-ids", nargs="*",
+                    help="run the per_turn arm on these items only (it costs one call per user turn)")
+    ap.add_argument("--whole-from", nargs="*", default=[],
+                    help="reuse whole-conversation rows from these earlier runs (same prompt version); "
+                         "the whole arm then only calls items they do not cover")
     ap.add_argument("--dry-run", action="store_true", help="print what would be sent; call nothing")
     ap.add_argument("--preds", nargs="*", help="score saved rows from these JSONL files instead of running")
     ap.add_argument("--out", help="write rows here (one per analyzer call, one per item for moderation)")
@@ -484,23 +508,36 @@ def main(argv: list[str] | None = None) -> int:
     args = ap.parse_args(argv)
 
     items = load_items(args.items)
+    known = {it["id"] for it in items}
+    unknown = sorted((set(args.ids or ()) | set(args.per_turn_ids or ())) - known)
+    if unknown:
+        ap.error(f"ids not in {args.items}: {' '.join(unknown)} (is your corpus up to date?)")
     if args.ids:
         items = [it for it in items if it["id"] in set(args.ids)]
+    prompt = load_prompt(args.prompt)
+    reused = load_whole_rows(args.whole_from, items, prompt.version)
+    reused_ids = {r["item_id"] for r in reused}
+    if reused:
+        print(f"reusing {len(reused)} whole-conversation rows (models {sorted({r.get('model') for r in reused})}, "
+              f"efforts {sorted({str(r.get('effort')) for r in reused})})", file=sys.stderr)
+    whole_items = [it for it in items if it["id"] not in reused_ids]
+    turn_items = [it for it in items if args.per_turn_ids is None or it["id"] in set(args.per_turn_ids)]
 
     if args.preds:
-        rows = [r for path in args.preds for r in load_items(path)]
+        rows = reused + [r for path in args.preds for r in load_items(path)]
     else:
-        prompt = load_prompt(args.prompt)
-        n_turns = sum(len(user_turns(it)) for it in items)
-        calls = {"whole": len(items), "per_turn": n_turns, "moderation": len(items)}
+        n_turns = sum(len(user_turns(it)) for it in turn_items)
+        calls = {"whole": len(whole_items), "per_turn": n_turns, "moderation": len(items)}
         if args.dry_run:
-            print(f"# E12 dry run: prompt {prompt.version}, {len(items)} items, {n_turns} user turns")
+            print(f"# E12 dry run: prompt {prompt.version}, {len(items)} items "
+                  f"({len(reused)} whole-conversation rows reused)")
             print("# calls: " + ", ".join(f"{a}={calls[a]}" for a in args.arms)
-                  + " (moderation: one request per item, user turns as a list)\n")
+                  + f" (analyzer calls: {sum(calls[a] for a in ANALYZER_ARMS if a in args.arms)}; "
+                  "moderation is one free request per item, user turns as a list)\n")
             for it in items:
-                if "whole" in args.arms:
+                if "whole" in args.arms and it in whole_items:
                     print(f"## {it['id']} [whole]\n{render_transcript(it)}\n")
-                if "per_turn" in args.arms:
+                if "per_turn" in args.arms and it in turn_items:
                     for t in user_turns(it):
                         u = turn_item(it, t)
                         print(f"## {u['id']} [per_turn]\n{render_transcript(u)}\n")
@@ -511,7 +548,7 @@ def main(argv: list[str] | None = None) -> int:
         if not args.out:
             ap.error("live runs need --out so the rows are kept")
         Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-        rows = []
+        rows = list(reused)
         with open(args.out, "w", encoding="utf-8") as fh:
             def sink(row: dict) -> dict:
                 fh.write(json.dumps(row, ensure_ascii=False) + "\n")
@@ -521,7 +558,7 @@ def main(argv: list[str] | None = None) -> int:
             if analyzer_arms:
                 backend = AnthropicBackend(model=args.model, effort=args.effort)
                 for arm in analyzer_arms:
-                    rows += run_analyzer(items, arm, prompt, backend, sink)
+                    rows += run_analyzer(whole_items if arm == "whole" else turn_items, arm, prompt, backend, sink)
             if "moderation" in args.arms:
                 client = ModerationClient()
                 for it in items:

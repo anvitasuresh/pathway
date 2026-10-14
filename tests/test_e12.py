@@ -148,3 +148,29 @@ def test_real_corpus_dry_run_and_figure(capsys, tmp_path):
     svg = tmp_path / "f.svg"
     assert e12.main(["--preds", str(preds), "--figure", str(svg)]) == 0
     assert svg.read_text().startswith("<svg") and "hp-memoir-01" in svg.read_text()
+
+
+def test_whole_rows_are_reused_only_for_same_prompt_and_scored_items(tmp_path):
+    items = _items()
+    old = [make_result("hp-1", make_output(tier="review")),
+           {**make_result("hn-1", make_output(tier="none")), "arm": "original"},
+           {**make_result("hn-1__paraphrase", make_output(tier="none")), "arm": "paraphrase"},
+           make_result("hn-2", None, status="refusal"),
+           {**make_result("hn-2", make_output(tier="none")), "prompt_version": "v9"}]
+    f = tmp_path / "old.jsonl"
+    f.write_text("".join(json.dumps(r) + "\n" for r in old))
+    rows = e12.load_whole_rows([str(f)], items, "v1")
+    assert [r["item_id"] for r in rows] == ["hn-1", "hp-1"]
+    assert all(r["arm"] == "whole" and r["turn"] is None and r["reused_from"] == str(f) for r in rows)
+    assert e12.collapse(items, rows)["whole"]["hp-1"]["tier"] == "review"
+
+
+def test_dry_run_counts_only_what_would_be_paid_for(capsys):
+    items = load_items(e12.ITEMS_PATH)
+    hp = [it["id"] for it in items if it["stratum"] == "hard_positive"][:2]
+    assert e12.main(["--dry-run", "--whole-from", "results_v2.jsonl", "--per-turn-ids", *hp]) == 0
+    out = capsys.readouterr().out
+    n_hn = sum(it["stratum"] == "hard_negative" for it in items)
+    turns = sum(len(e12.user_turns(it)) for it in items if it["id"] in hp)
+    assert f"whole={len(items) - n_hn}, per_turn={turns}," in out
+    assert out.count("[per_turn]") == turns and out.count("[whole]") == len(items) - n_hn
