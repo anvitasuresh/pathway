@@ -469,7 +469,8 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
 5. Escalation-ladder rubric and base-rate table per rung (E9)
 6. Write injection items (E11). E10 done, negative (eval/results/E10_NOTES.md)
 7. Site and Threshold (P2)
-8. After the current experiments: E12 (per-message guardrail baseline), E9, E13
+8. After the current experiments: E12 (per-message guardrail baseline; built as
+   `eval/e12_per_message.py`, waiting on the live run), E9, E13
    (sycophancy drift), E14 (policy coding), E15 (cost of remembering refusals), then
    E16 (public demo, last, if time). See
    `eval/PLAN.md`
