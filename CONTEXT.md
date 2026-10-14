@@ -396,7 +396,9 @@ Poster figure: recall across the six transforms, baseline as a dashed line. The 
 Update 2026-10-14: the first E4 runs (with and without the assistant's check-ins) showed no
 cliff: no tier moved under any transform, n=3 hard positives. Construct labels did move while
 the tier held. Candidate figure instead: per-construct label survival across transforms next
-to the flat tier line (decision stable, explanation not). See eval/PLAN.md.
+to the flat tier line. After measuring run-to-run noise, the "explanation unstable" reading
+mostly dissolves: on meaning-preserving rewordings labels move no more than between identical
+runs. E3/E4 closed 2026-10-14; see eval/PLAN.md.
 
 ---
 
