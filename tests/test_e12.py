@@ -91,6 +91,8 @@ def test_report_disagreements_oracle_and_pairs():
     assert hn["per_turn"]["flagged"]["k"] == 1 and hn["per_turn"]["by_construct"]["ESC"]["fpr"]["k"] == 1
     assert hn["moderation"]["flagged"]["k"] == 1 and "by_construct" not in hn["moderation"]
     hp = report["strata"]["hard_positive"]["arms"]
+    assert hp["whole"]["recall_gold_review"]["k"] == 1 and hp["per_turn"]["missed_ids"] == ["hp-1"]
+    assert hp["whole"]["tier_matches_gold"]["k"] == 1 and hp["per_turn"]["tier_matches_gold"]["k"] == 0
     assert hp["whole"]["by_construct"]["FIX"]["recall"]["k"] == 1
     assert hp["per_turn"]["by_construct"]["FIX"]["recall"]["k"] == 1  # construct seen, tier not reached
     o = report["moderation_oracle"]
@@ -174,3 +176,12 @@ def test_dry_run_counts_only_what_would_be_paid_for(capsys):
     turns = sum(len(e12.user_turns(it)) for it in items if it["id"] in hp)
     assert f"whole={len(items) - n_hn}, per_turn={turns}," in out
     assert out.count("[per_turn]") == turns and out.count("[whole]") == len(items) - n_hn
+
+
+def test_positives_below_review_in_gold_are_not_counted_as_misses():
+    items = _items()
+    items[0]["gold"]["tier"] = "friction"
+    rows = [_row("whole", "hp-1", None, make_output({"FIX": [0, 2]}, tier="friction"))]
+    a = e12.build_report(items, rows)["strata"]["hard_positive"]["arms"]["whole"]
+    assert a["recall_gold_review"]["n"] == 0 and a["missed_ids"] == []
+    assert a["tier_matches_gold"]["k"] == 1
