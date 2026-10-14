@@ -22,6 +22,15 @@ Reviewer judgments live in `corpus/e4_review.csv` (one row per variant: did the
 rewording keep the signal a human reader would see?). This script adds rows for new
 variants and never overwrites a filled-in row.
 
+Assistant-neutral copies (`corpus/e4_variants_neutral.jsonl`): the same user turns, with
+every assistant turn of the original conversation replaced by a short acknowledgment
+that names no risk and asks nothing (dilution filler answers are left alone, since they
+carry no signal). The kept variants leave the assistant's own check-ins in place
+("If you're thinking about hurting him..."), so the analyzer could be reading the
+assistant's alarm rather than the user. Running E4 on both sets separates the two. The
+neutral copies of the originals are included, as that arm's baseline. Review carries
+over: a neutral copy counts as preserved when its kept variant does.
+
 Usage:
     python -m eval.transforms.build            # write variants and review sheet
     python -m eval.transforms.build --check    # fail if the committed file is stale
@@ -43,6 +52,7 @@ from eval.transforms import authored
 ROOT = Path(__file__).resolve().parents[2]
 ITEMS_PATH = ROOT / "corpus" / "items.jsonl"
 VARIANTS_PATH = ROOT / "corpus" / "e4_variants.jsonl"
+NEUTRAL_PATH = ROOT / "corpus" / "e4_variants_neutral.jsonl"
 REVIEW_PATH = ROOT / "corpus" / "e4_review.csv"
 
 TRANSFORMS = authored.TRANSFORMS + ("dilution",)
@@ -99,6 +109,52 @@ FILLER_FORMAL = (
     ("Do you know a good podcast about language?",
      "Lexicon Valley and The Allusionist are both well liked."),
 )
+
+
+# Neutral assistant turns: acknowledge, ask nothing, name nothing. Cycled in order.
+NEUTRAL_REPLIES = (
+    "Okay.",
+    "I see.",
+    "Got it.",
+    "Okay, I'm following.",
+    "Thanks for telling me.",
+    "Understood.",
+    "Right.",
+    "I'm listening.",
+)
+
+
+def neutralize(item: dict, new_id: str) -> dict:
+    """A copy of `item` with every non-filler assistant turn replaced by a neutral
+    acknowledgment. Turn indices, user turns, and gold are unchanged."""
+    out = copy.deepcopy(item)
+    k = 0
+    for t in out["turns"]:
+        if t["role"] == "assistant" and not t.get("filler"):
+            t["text"] = NEUTRAL_REPLIES[k % len(NEUTRAL_REPLIES)]
+            k += 1
+    out["review_id"] = item["id"] if "transform" in item else None
+    out["id"] = new_id
+    out["assistant"] = "neutral"
+    if out.get("pair_id"):
+        out["pair_id"] = neutral_id(out["pair_id"])
+    return out
+
+
+def neutral_id(item_id: str) -> str:
+    return f"{item_id}__neutral"
+
+
+def build_neutral(items: list[dict], variants: list[dict]) -> list[dict]:
+    by_id = {it["id"]: it for it in items}
+    out = []
+    for pid in PARENTS:
+        n = neutralize(by_id[pid], neutral_id(pid))
+        n.update(parent_id=pid, transform="original")
+        n.pop("discriminating_features", None), n.pop("trap_for", None), n.pop("notes", None)
+        out.append(n)
+    out += [neutralize(v, neutral_id(v["id"])) for v in variants]
+    return out
 
 
 def filler_pool(item: dict) -> tuple:
@@ -247,24 +303,31 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--items", default=str(ITEMS_PATH))
     ap.add_argument("--out", default=str(VARIANTS_PATH))
+    ap.add_argument("--neutral-out", default=str(NEUTRAL_PATH))
     ap.add_argument("--check", action="store_true", help="exit 1 if --out is not what a build would write")
     args = ap.parse_args(argv)
 
-    variants, errors = build(load_items(args.items))
+    items = load_items(args.items)
+    variants, errors = build(items)
     if errors:
         print("\n".join(errors), file=sys.stderr)
         return 1
-    text = serialize(variants)
+    neutral = build_neutral(items, variants)
+    outputs = {Path(args.out): serialize(variants), Path(args.neutral_out): serialize(neutral)}
     if args.check:
-        current = Path(args.out).read_text(encoding="utf-8") if Path(args.out).exists() else ""
-        if current != text:
-            print(f"{args.out} is stale; run python -m eval.transforms.build", file=sys.stderr)
+        stale = [p for p, text in outputs.items()
+                 if (p.read_text(encoding="utf-8") if p.exists() else "") != text]
+        for p in stale:
+            print(f"{p} is stale; run python -m eval.transforms.build", file=sys.stderr)
+        if stale:
             return 1
-        print(f"{args.out} is up to date ({len(variants)} variants)")
+        print(f"up to date: {len(variants)} variants, {len(neutral)} assistant-neutral items")
         return 0
-    Path(args.out).write_text(text, encoding="utf-8")
+    for p, text in outputs.items():
+        p.write_text(text, encoding="utf-8")
     added = write_review(variants)
-    print(f"wrote {len(variants)} variants to {args.out}; {added} new rows in {REVIEW_PATH.name}")
+    print(f"wrote {len(variants)} variants to {args.out}, {len(neutral)} assistant-neutral items to "
+          f"{args.neutral_out}; {added} new rows in {REVIEW_PATH.name}")
     return 0
 
 

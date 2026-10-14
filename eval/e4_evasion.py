@@ -38,7 +38,8 @@ from pathlib import Path
 from analyzer.analyzer import (CONSTRUCTS, DEFAULT_PROMPT, TIERS, AnthropicBackend, analyze,
                                load_items, load_prompt, render_transcript)
 from eval.metrics import REVIEW_OR_ABOVE, TIER_RANK, _fmt, check_no_pooled, rate
-from eval.transforms.build import PARENTS, REVIEW_PATH, TRANSFORMS, VARIANTS_PATH, load_review
+from eval.transforms.build import (NEUTRAL_PATH, PARENTS, REVIEW_PATH, TRANSFORMS, VARIANTS_PATH, load_review,
+                                   neutral_id)
 
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS_PATH = ROOT / "corpus" / "items.jsonl"
@@ -48,9 +49,18 @@ VIEWS = ("all", "preserved")
 
 # --------------------------------------------------------------------------- data
 
-def load_arms(items_path=ITEMS_PATH, variants_path=VARIANTS_PATH) -> list[dict]:
+def load_arms(items_path=ITEMS_PATH, variants_path=VARIANTS_PATH, assistant: str = "kept",
+              neutral_path=NEUTRAL_PATH) -> list[dict]:
     """Every item E4 runs on, tagged with arm and parent: originals first, then the
-    variants in the order the build wrote them."""
+    variants in the order the build wrote them. With assistant="neutral", the
+    assistant-neutral copies of both (originals included) instead."""
+    if assistant == "neutral":
+        out = []
+        for it in load_items(neutral_path):
+            it = dict(it)
+            it["arm"] = it["transform"]
+            out.append(it)
+        return out
     by_id = {it["id"]: it for it in load_items(items_path)}
     out = []
     for pid in PARENTS:
@@ -69,7 +79,7 @@ def preserved_ids(review: dict[str, dict]) -> set[str]:
 
 
 def in_view(item: dict, view: str, preserved: set[str]) -> bool:
-    return view == "all" or item["arm"] == "original" or item["id"] in preserved
+    return view == "all" or item["arm"] == "original" or item.get("review_id", item["id"]) in preserved
 
 
 # ------------------------------------------------------------------------ scoring
@@ -137,7 +147,7 @@ def _pairs(items: list[dict], preds: dict[str, dict]) -> dict:
     return rate(k, n)
 
 
-def build_report(items: list[dict], rows: list[dict], review: dict[str, dict]) -> dict:
+def build_report(items: list[dict], rows: list[dict], review: dict[str, dict], assistant: str = "kept") -> dict:
     preds = {r["item_id"]: r for r in rows}
     preserved = preserved_ids(review)
     n_variants = sum(it["arm"] != "original" for it in items)
@@ -149,6 +159,7 @@ def build_report(items: list[dict], rows: list[dict], review: dict[str, dict]) -
             "n_variants": n_variants,
             "n_reviewed": sum(1 for row in review.values() if row.get("signal_preserved", "").strip()),
             "n_preserved": len(preserved),
+            "assistant": assistant,
             "unmatched_prediction_ids": sorted(set(preds) - {it["id"] for it in items}),
         },
         "views": {},
@@ -170,7 +181,9 @@ def render_markdown(report: dict) -> str:
            f"Prompt: {', '.join(m['prompt_versions']) or '?'} · Model: {', '.join(m['models']) or '?'} "
            f"· Effort: {', '.join(m['efforts'])}",
            f"Variants: {m['n_variants']}; reviewed {m['n_reviewed']}; marked signal preserved "
-           f"{m['n_preserved']}.", "",
+           f"{m['n_preserved']}.",
+           "Assistant turns: " + ("replaced with neutral acknowledgments (no check-ins, no questions)."
+                                  if m.get("assistant") == "neutral" else "as written (check-ins kept)."), "",
            "Transforms are in design order, not ranked. Positives are 3 hard positives per arm at "
            "most, so a single item moves recall by a third. Read the CIs."]
     if m["unmatched_prediction_ids"]:
@@ -206,6 +219,8 @@ def render_markdown(report: dict) -> str:
             row = []
             for pid in PARENTS:
                 vid = pid if arm == "original" else f"{pid}__{arm}"
+                if m.get("assistant") == "neutral":
+                    vid = neutral_id(vid)
                 row.append(tiers.get(vid, "-"))
             out.append(f"| {arm} | " + " | ".join(row) + " |")
     return "\n".join(out) + "\n"
@@ -231,6 +246,8 @@ def render_svg(report: dict, view: str = "all") -> str:
              "fiction_frame": "fiction frame", "roleplay": "roleplay",
              "translate_back": "translate &amp; back", "dilution": "dilution"}
     title = "Recall of hard positives across rewordings" + (" (reviewed variants only)" if view == "preserved" else "")
+    if report["meta"].get("assistant") == "neutral":
+        title += ", assistant turns neutral"
     parts = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
         f'font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">',
@@ -297,9 +314,11 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--json-out", help="write the report as JSON here")
     ap.add_argument("--figure", help="write the poster figure (SVG) here")
     ap.add_argument("--figure-view", choices=VIEWS, default="all")
+    ap.add_argument("--assistant", choices=("kept", "neutral"), default="kept",
+                    help="neutral: run the assistant-neutral copies (corpus/e4_variants_neutral.jsonl)")
     args = ap.parse_args(argv)
 
-    items = load_arms(args.items, args.variants)
+    items = load_arms(args.items, args.variants, args.assistant)
     if args.arms:
         items = [it for it in items if it["arm"] in args.arms]
     review = load_review(Path(args.review))
@@ -329,7 +348,7 @@ def main(argv: list[str] | None = None) -> int:
                 fh.flush()
                 print(f"{it['id']}: {res.status}", file=sys.stderr)
 
-    report = build_report(items, rows, review)
+    report = build_report(items, rows, review, args.assistant)
     if args.json_out:
         with open(args.json_out, "w", encoding="utf-8") as fh:
             json.dump(report, fh, indent=2)

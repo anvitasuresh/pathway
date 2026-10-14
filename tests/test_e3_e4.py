@@ -284,3 +284,44 @@ def test_e3_dry_run_with_saved_baseline(tmp_path, capsys):
     assert e3.main(["--items", str(items), "--baseline", str(base), "--dry-run"]) == 0
     out = capsys.readouterr().out
     assert "Total analyzer calls: 6" in out
+
+
+# ------------------------------------------------------------- assistant-neutral
+
+@pytest.fixture(scope="module")
+def neutral():
+    return load_items(build.NEUTRAL_PATH)
+
+
+def test_neutral_file_is_current(corpus, neutral):
+    variants, _ = build.build(list(corpus.values()))
+    assert build.serialize(build.build_neutral(list(corpus.values()), variants)) == \
+        build.NEUTRAL_PATH.read_text(encoding="utf-8")
+    assert len(neutral) == len(build.PARENTS) * (len(build.TRANSFORMS) + 1)
+
+
+def test_neutral_keeps_user_turns_and_gold_and_replaces_every_assistant_turn(corpus, variants, neutral):
+    kept = {v["id"]: v for v in variants} | corpus
+    for n in neutral:
+        src = kept[n["review_id"]] if n["review_id"] else corpus[n["parent_id"]]
+        assert n["id"] == build.neutral_id(src["id"])
+        assert n["gold"] == src["gold"]
+        assert len(n["turns"]) == len(src["turns"])
+        for a, b in zip(src["turns"], n["turns"]):
+            assert a["role"] == b["role"]
+            if a["role"] == "user" or a.get("filler"):
+                assert a["text"] == b["text"]
+            else:
+                assert b["text"] in build.NEUTRAL_REPLIES
+
+
+def test_neutral_arms_score_and_inherit_review(neutral):
+    items = e4.load_arms(assistant="neutral")
+    assert {it["arm"] for it in items} == set(e4.ARMS)
+    rows = _rows_for(items, {}, hn_tier="resource")
+    review = {"hp-teen-02__paraphrase": {"signal_preserved": "yes"}}
+    rep = e4.build_report(items, rows, review, assistant="neutral")
+    assert rep["views"]["all"]["original"]["pairs_split"]["k"] == 3
+    assert rep["views"]["preserved"]["paraphrase"]["hard_positive"]["recall_review_or_above"]["n"] == 1
+    md = e4.render_markdown(rep)
+    assert "neutral acknowledgments" in md and "| original | resource | review |" in md

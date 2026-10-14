@@ -34,6 +34,7 @@ python -m eval.metrics --items corpus/items.jsonl --preds eval/results/run.jsonl
 python -m eval.e3_faithfulness --out eval/results/e3_run.jsonl   # E3, see docstring
 python -m eval.transforms.build                                  # rebuild E4 variants
 python -m eval.e4_evasion --out eval/results/e4_run.jsonl --figure eval/results/e4_cliff.svg
+python -m eval.e4_evasion --assistant neutral --out eval/results/e4_neutral.jsonl
 ```
 
 Model defaults to `DEFAULT_MODEL` in `analyzer/analyzer.py`; override with `--model` or `PATHWAY_MODEL`
