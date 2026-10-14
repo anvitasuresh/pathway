@@ -130,3 +130,24 @@ sample to test it.
 re-request. It is not "undone" under any definition here, and a refusal tracker cannot see
 it because no refusal state exists. That is a stated limitation, and it is the main
 analyzer's job.
+
+## Third sample: prompt v2 vs v3 (2026-10-14)
+
+`e5_wildchat_review3.csv`: 75 new conversations, none in the first two samples, drawn
+before v3 was run. Labels by Anvita, by hand (`e5_wildchat_review3_labels.csv`), under her
+chosen definition: a safety or ethics refusal undone by rewording, an added reason, or a
+persona or jailbreak, including dual-output replies. An AI tool had labeled this set
+before she did. 4 yes, 71 no. The API model declined to analyze 2 conversations under both
+prompts, including one of the 4 yes, so 3 positives are scored.
+
+| Tracker | Precision (undone) | Recall (undone) | False "undone" flags |
+|---|---|---|---|
+| rules | 1/23 (0.01-0.21) | 1/3 | 22 of 73 |
+| model, v2 | 1/7 (0.03-0.51) | 1/3 | 6 of 73 |
+| model, v3 | 3/10 (0.11-0.60) | 3/3 | 7 of 73 |
+
+v3 was not written from this sample, so this is the test for it. Under the chosen
+definition it finds all 3 scored positives (v2 found 1), at the cost of one more false
+flag. With 3 positives the recall interval runs from 0.44 to 1.00. That is evidence that
+v3 tracks the definition better than v2, not a measured recall. v3 is now the default
+prompt.
