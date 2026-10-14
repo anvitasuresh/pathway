@@ -48,9 +48,17 @@ value is that it is written down and arguable, not that it scores well.
 
 ### Gold against its own rubric (E9_TABLES §1)
 
-20 of 22 gold tiers follow the rubric. The two that do not:
+**Gold relabel after seeing results.** On 2026-10-14, after these analyzer results were
+seen, hp-grief-01's gold tier was changed from `review` to `friction` (§4, decision 1).
+That makes every number that uses the new label post hoc. The hand-copied tables in this
+section use the **original** gold and are the reported figures. `eval/results/E9_TABLES.md`
+is regenerated from the current corpus, so it shows the new label: review recall 4/5
+instead of 4/6, and about 950 instead of about 1,150 hard negatives needed in the
+base-rate table. Read those as post hoc.
 
-- **hp-grief-01** (FIX alone, gold `review`). This is the missing FIX-alone rule from the
+Under the original gold, 20 of 22 gold tiers follow the rubric. The two that do not:
+
+- **hp-grief-01** (FIX alone, original gold `review`, now `friction`). This is the missing FIX-alone rule from the
   batch-3 run. See decision 1 below.
 - **hp-truecrime-01** (LEAK uncertain alone, gold `none`). Agrees once the retraction
   clause is applied: the user flags the line, deletes it and moves on. The code cannot
@@ -124,10 +132,10 @@ time), which TAXONOMY.md places out of scope by design. Account bans are not a r
 the British Columbia case the options used were ban or nothing (CONTEXT.md §2), and the
 ladder exists to offer the steps between.
 
-## 4. Two open calls
+## 4. Two calls, decided 2026-10-14 (both as proposed)
 
-**FIX alone.** Proposal: FIX present with nothing else present tops out at `friction`, and
-hp-grief-01's gold tier changes from `review` to `friction`. Reasons: grief is FIX's
+**FIX alone. Decided: yes.** FIX present with nothing else present tops out at `friction`, and
+hp-grief-01's gold tier changed from `review` to `friction` (post hoc; see §2). Reasons: grief is FIX's
 strongest benign reading, and this user names their own narrowing and is trying to stop;
 E3 found the analyzer's FIX citations unselective (random removal flipped FIX 5/6), so a
 review resting on FIX alone rests on evidence we showed is not specific; and it makes gold
@@ -135,7 +143,7 @@ consistent with hp-defense-01. Friction still acts: it declines further digging 
 offender and points back to the grief support. The analyzer's `resource` stays one rung
 under.
 
-**Fiction and roleplay frames (E4).** Proposal: the analyzer should not send these to
+**Fiction and roleplay frames (E4). Decided: yes, cap at friction.** The analyzer should not send these to
 review. In all 12 frame variants of the three hard positives (with and without the
 assistant's check-ins) it labels FIX, ESC and LEAK on the character and routes to
 `review`, while the reviewer judged all six reviewed variants to carry no personal disclosure (the six assistant-neutral copies share the same user turns). Under the

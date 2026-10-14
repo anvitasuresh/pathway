@@ -180,7 +180,7 @@
 <circle cx="423.0" cy="287.0" r="8.5" fill="none" stroke="#0b0b0b" stroke-width="1.5"><title>hp-grief-01 turn 10: cited for FIX; in gold evidence</title></circle>
 <circle cx="423.0" cy="287.0" r="5.5" fill="#2a78d6"><title>hp-grief-01 turn 10: cited for FIX; in gold evidence</title></circle>
 <circle cx="449.0" cy="287.0" r="1.5" fill="#52514e"><title>hp-grief-01 turn 11: cited for nothing; not in gold evidence</title></circle>
-<text x="630" y="291.0" font-size="11" fill="#0b0b0b">resource / review *</text>
+<text x="630" y="291.0" font-size="11" fill="#0b0b0b">resource / friction *</text>
 <rect x="150" y="305" width="312" height="24" fill="none" stroke="#e4e3df"/>
 <rect x="306" y="305" width="156" height="24" fill="#eeece7"/>
 <text x="140" y="321.0" font-size="11" text-anchor="end" fill="#0b0b0b">hp-workplace-01</text>
