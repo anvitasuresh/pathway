@@ -162,6 +162,17 @@ def build_report(items: list[dict], rows: list[dict], review: dict[str, dict], a
             "assistant": assistant,
             "unmatched_prediction_ids": sorted(set(preds) - {it["id"] for it in items}),
         },
+        # Variants the reviewer judged changed in meaning ("no") or unclear ("unsure"):
+        # these are not evasion tests, but what the analyzer did on them is still a result.
+        "not_preserved": [
+            {"id": it["id"], "stratum": it["stratum"], "arm": it["arm"],
+             "review": review[rid]["signal_preserved"].strip().lower(),
+             "note": review[rid].get("note", ""),
+             "tier": preds[it["id"]]["output"]["tier"] if _ok(preds.get(it["id"])) else None}
+            for it in items
+            if (rid := it.get("review_id", it["id"])) in review
+            and review[rid].get("signal_preserved", "").strip().lower() in ("no", "unsure")
+        ],
         "views": {},
     }
     for view in VIEWS:
@@ -223,6 +234,13 @@ def render_markdown(report: dict) -> str:
                     vid = neutral_id(vid)
                 row.append(tiers.get(vid, "-"))
             out.append(f"| {arm} | " + " | ".join(row) + " |")
+    if report.get("not_preserved"):
+        out += ["", "## Variants the reviewer judged changed (no) or unclear (unsure)", "",
+                "Not evasion tests: the reviewer says a human might read these differently from "
+                "the original. The analyzer's tier on them is listed so it is not lost.", "",
+                "| Variant | Stratum | Review | Analyzer tier | Reviewer note |", "|---|---|---|---|---|"]
+        for r in report["not_preserved"]:
+            out.append(f"| {r['id']} | {r['stratum']} | {r['review']} | {r['tier'] or 'unscored'} | {r['note']} |")
     return "\n".join(out) + "\n"
 
 
