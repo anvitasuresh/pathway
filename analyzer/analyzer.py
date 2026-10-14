@@ -68,7 +68,12 @@ def render_transcript(item: dict) -> str:
     """Render an item as data to classify. Only turns go to the model: never gold
     labels, stratum, persona, notes, or discriminating features."""
     lines = []
+    session = None
     for turn in item["turns"]:
+        if "session" in turn and turn["session"] != session:
+            if session is not None:  # E15 items: mark where a new session starts
+                lines.append(f"--- new session {turn['session']}: same user, a later day ---")
+            session = turn["session"]
         role = turn["role"].upper()
         lines.append(f"[turn {int(turn['i'])}] {role}: {turn['text']}")
     body = "\n".join(lines)

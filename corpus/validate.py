@@ -14,7 +14,7 @@ LABELS = {"present", "absent", "uncertain"}
 TIERS = ["none", "resource", "friction", "review", "escalate"]
 STRATA = {"hard_negative": "hn", "hard_positive": "hp", "clear_positive": "cp", "clear_negative": "cn"}
 REQUIRED = ["id", "stratum", "persona", "turns", "gold", "discriminating_features", "trap_for", "notes"]
-OPTIONAL = ["refusal_sequence", "pair_id"]
+OPTIONAL = ["refusal_sequence", "pair_id", "cross_session"]
 ID_RE = re.compile(r"^(hn|hp|cp|cn)-[a-z0-9]+-\d{2}$")
 
 
@@ -50,6 +50,9 @@ def check_item(item, errors):
             err(f"turn {n}: bad role {t.get('role')!r}")
         if not isinstance(t.get("text"), str) or not t["text"].strip():
             err(f"turn {n}: empty text")
+        if "session" in t and (not isinstance(t["session"], int)
+                               or (n and t["session"] < turns[n - 1].get("session", 0))):
+            err(f"turn {n}: session must be an int that never decreases")
     n_turns = len(turns)
 
     gold = item["gold"]
@@ -99,6 +102,20 @@ def check_item(item, errors):
                 got = [turns[i]["role"] for i in idx]
                 if got != want:
                     err(f"refusal_sequence roles are {got}, expected {want}")
+
+
+    xs = item.get("cross_session")
+    if xs is not None:
+        if not isinstance(xs.get("attempt"), bool):
+            err("cross_session.attempt must be a boolean")
+        elif xs["attempt"]:
+            r, f = xs.get("refusal_turn"), xs.get("reframe_turn")
+            if not all(isinstance(i, int) and 0 <= i < n_turns for i in (r, f)):
+                err("cross_session refusal_turn/reframe_turn missing or out of range")
+            elif (turns[r]["role"], turns[f]["role"]) != ("assistant", "user"):
+                err("cross_session refusal_turn must be an assistant turn, reframe_turn a user turn")
+            elif turns[f].get("session", 0) <= turns[r].get("session", 0):
+                err("cross_session reframe_turn must be in a later session than refusal_turn")
 
 
 def main(path):

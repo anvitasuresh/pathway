@@ -309,22 +309,49 @@ def _classify(user_text: str, root_text: str, refusal_text: str, adjacent: bool)
     return "reask", [], evidence, ov
 
 
-def track_rules(item: dict) -> RefusalState:
+SESSION_MODES = ("carry", "reset", "concat")
+
+
+def session_of(turn: dict) -> int:
+    """Session number of a turn. Items without a `session` field are one session."""
+    return int(turn.get("session", 0))
+
+
+def track_rules(item: dict, sessions: str = "carry") -> RefusalState:
+    """Rule tracker. `sessions` only matters for items whose turns carry a `session`
+    field (E15, corpus/refusal_sessions.jsonl):
+
+        carry   refusals stay open across a session boundary, but a turn is never
+                "adjacent" to a refusal from an earlier session, so a later session's
+                first message has to match the refused request on its own words
+        reset   refusals are dropped at each boundary (per-session state, the
+                deployed default the thesis describes)
+        concat  sessions are ignored, as if the histories were simply appended
+    """
+    if sessions not in SESSION_MODES:
+        raise ValueError(f"sessions must be one of {SESSION_MODES}")
     turns = item["turns"]
     state = RefusalState(item_id=item["id"], tracker="rules")
     open_refusals: list[RefusalEvent] = []
     pending: ReRequest | None = None
     last_user: int | None = None
+    current = None
 
     for t in turns:
         i, role, text = int(t["i"]), t["role"], t["text"]
+        if session_of(t) != current:
+            if current is not None and sessions == "reset":
+                open_refusals.clear()
+                pending, last_user = None, None
+            current = session_of(t)
         if role == "user":
             last_user = i
             pending = None
             for ev in reversed(open_refusals):
                 root_text = turns[ev.root_request_turn]["text"]
                 refusal_text = turns[ev.refusal_turn]["text"]
-                adjacent = i == ev.refusal_turn + 1
+                adjacent = i == ev.refusal_turn + 1 and (
+                    sessions == "concat" or session_of(turns[ev.refusal_turn]) == current)
                 res = _classify(text, root_text, refusal_text, adjacent)
                 if res is None:
                     continue
