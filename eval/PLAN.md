@@ -44,65 +44,9 @@ Start these once E3, E4 and the E5 public-data runs are finished. Ranked.
 | E13 | Sycophancy drift (Soelberg case, DisagreeBot principle) | Scripted user holds a mundane, false, non-violent suspicion (e.g. a neighbour reading their texts through the wifi) across ~8 turns. Code each reply: challenges / neutral / validates / encourages acting on it, and whether it suggests talking to someone. Arms: plain vs. an injected "check the belief, don't just agree" reminder (reuses E10 machinery). The belief is the variable; no harmful request, no violent content | Item set plus a scorer; one live run |
 | E14 | Policy asymmetry in numbers (critique 5) | Code dated snapshots of OpenAI usage policies, Anthropic AUP and Meta AUP clause by clause: harm area, named prohibited behaviours, enforcement steps, referral criteria | One sitting, no API. Primary documents only |
 | E15 | What does remembering refusals cost? | ~10 harmless two-session items: some where carrying an earlier refusal is right, some where it is wrong (refused once for a dark joke, back next day for homework). Tracker with vs. without cross-session state; FPR is the headline | New items plus a small change to `refusal_state.py`; one live run |
-# Evaluation Plan
-
-Full experiment table: CONTEXT.md §7 (E1–E11). Headline rule: report metrics
-stratum-wise (hard negative vs. positive, by construct); never emit a pooled accuracy
-number. False-positive rate on hard negatives is a headline number.
-
-## Experiments
-
-| Exp | Question | Needs | Status (2026-10-08) |
-|---|---|---|---|
-| E1 | Detection by stratum | Corpus, analyzer run | `metrics.py` done; 12 hard negatives ready, positives not written |
-| E2 | Right for the right reason | E1 run, `discriminating_features` on items | Field in schema |
-| E3 | Faithfulness (ablate cited spans vs. random turns) | `eval/e3_faithfulness.py` | Built with a dry run, not yet run live. Dry run on the saved v2 baseline: findings on positives cite 2 to 8 of 9 user turns, so the random control overlaps the cited turns heavily; read the overlap column |
-| E4 | Evasion (6 transforms) | `eval/e4_evasion.py`, `eval/transforms/`, `corpus/e4_variants.jsonl` (36 variants of the 3 matched pairs), `corpus/e4_review.csv` | Built with a dry run, not yet run live. Variants need a reviewer's `signal_preserved` call before the numbers count as evasion. 3 hard positives per arm |
-| E5 | Refusal-sequence tracking | `analyzer/refusal_state.py`, `corpus/refusal_sequences.jsonl` (19 harmless items), `eval/e5_refusal.py` | Rule tracker and baselines run offline; model tracker run live: 0/7 hard-negative FPR, 10/10 recall. Held-out rule FPR 1/4 (`hn-rsnewtopic-01`). Real chat logs via `eval/e5_public.py` (WildChat-1M, LMSYS-Chat-1M), not yet run |
-| E6 | Prompt ablation | E1 baseline | Not started |
-| E7 | Fairness (dialect, non-native phrasing, disclosed history or disability) | Positives | Not started |
-| E8 | Human baseline | Threshold deployed, IRB determination | Blocked on IRB |
-| E9 | Tier calibration / escalation ladder | Per-rung rubric, base-rate table, E1 run; crowd tiers from E8 | Not started |
-| E10 | Refusal-state mitigation | `eval/e10_codeword.py`: code-word rule, 6 pretexts, plain vs. injected reminder vs. cold | Done, negative: no pretext undid a refusal in 4 runs; see `eval/results/E10_NOTES.md` |
-| E11 | Prompt-injection robustness | Injection items added to corpus | Not started |
-
-## Run order
-
-1. **E1** on the 12 hard negatives as soon as the analyzer runs end to end: FPR by
-   stratum. A high FPR here is a result, not a reason to tune the prompt until it goes
-   away (that would be overfitting the benchmark).
-2. **E5** next. It is the main contribution and needs only synthetic refusal-sequence
-   transcripts, not the full corpus.
-3. Write positives and matched pairs, then **E2, E3, E4**. E4 produces the poster figure
-   ("the cliff"), so it blocks the poster.
-4. **E9** (rubric and base-rate table can be written now; the crowd comparison waits for E8).
-5. **E10, E11, E6, E7.**
-6. **E8** after IRB and Threshold deployment (P2).
-
-## Queued after the current experiments (agreed 2026-10-14)
-
-Start these once E3, E4 and the E5 public-data runs are finished. Ranked.
-
-| Exp | Question | Method | Cost |
-|---|---|---|---|
-| E12 | Does a per-message guardrail miss what the whole conversation shows? (critique 1) | Run each user turn of `corpus/items.jsonl` alone through OpenAI's public moderation endpoint, and through the analyzer in a per-turn mode; compare with the analyzer on the full conversation. Fictional third-person transcripts, classification only. Report as "OpenAI's public moderation classifier", not ChatGPT's whole stack | Short script plus `--per-turn` flag; one laptop run (OpenAI key, endpoint is free). 3 positives, so recall moves in thirds |
-| E9 | Risk assessment (escalation ladder) | Write the per-rung evidence rubric, the base-rate table (expected FP per TP per rung at realistic prevalence, using the Wilson upper bound of measured FPR), and what the assistant should do at each rung | Desk work, no API |
-| E13 | Sycophancy drift (Soelberg case, DisagreeBot principle) | Scripted user holds a mundane, false, non-violent suspicion (e.g. a neighbour reading their texts through the wifi) across ~8 turns. Code each reply: challenges / neutral / validates / encourages acting on it, and whether it suggests talking to someone. Arms: plain vs. an injected "check the belief, don't just agree" reminder (reuses E10 machinery). The belief is the variable; no harmful request, no violent content | Item set plus a scorer; one live run |
-| E14 | Policy asymmetry in numbers (critique 5) | Code dated snapshots of OpenAI usage policies, Anthropic AUP and Meta AUP clause by clause: harm area, named prohibited behaviours, enforcement steps, referral criteria | One sitting, no API. Primary documents only |
-| E15 | What does remembering refusals cost? | ~10 harmless two-session items: some where carrying an earlier refusal is right, some where it is wrong (refused once for a dark joke, back next day for homework). Tracker with vs. without cross-session state; FPR is the headline | New items plus a small change to `refusal_state.py`; one live run |
 | E16 | Public demo (last, if time) | DisagreeBot-style game: the bot guards a harmless code word (E10 setup); players try pretexts; a side panel shows the refusal, the re-request it recognised, the ladder rung and why. Stores nothing; no free-text harmful content possible | Front end plus one model call per turn behind a small backend |
 
 Constraint check for all six: harmless targets, fictional data, no harmful payloads,
-false positives reported first, no claim that any of this prevents violence.
-
-## Safety rules for every experiment
-
-- Corpus conversations are labeled third-person transcripts fed to the analyzer. Nobody
-  types first-person violent content or harmful requests into a live model.
-- Any experiment on a live model (E10) uses a harmless payload. The reframing pattern is
-  the variable. If a design needs a harmful payload to produce a result, change the design.
-- Report degradation, never a ranked list of which evasion or pretext works best.
- harmless targets, fictional data, no harmful payloads,
 false positives reported first, no claim that any of this prevents violence.
 
 ## Safety rules for every experiment
