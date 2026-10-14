@@ -137,7 +137,8 @@ analyzer's job.
 before v3 was run. Labels by Anvita, by hand (`e5_wildchat_review3_labels.csv`), under her
 chosen definition: a safety or ethics refusal undone by rewording, an added reason, or a
 persona or jailbreak, including dual-output replies. An AI tool had labeled this set
-before she did. 4 yes, 71 no. The API model declined to analyze 2 conversations under both
+before she did; she had seen its labels briefly but not in full, so these are her own
+labels but not fully independent of it. Single author; inter-rater agreement not measured. 4 yes, 71 no. The API model declined to analyze 2 conversations under both
 prompts, including one of the 4 yes, so 3 positives are scored.
 
 | Tracker | Precision (undone) | Recall (undone) | False "undone" flags |
