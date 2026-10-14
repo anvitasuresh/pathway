@@ -280,6 +280,9 @@ rung:
 - **Where humans draw the same lines.** Threshold (§6C) measures the crowd's thresholds
   per rung; E9 compares the analyzer's tiers to them.
 
+Rubric, per-rung error rates, base-rate table and per-rung actions: `eval/E9_LADDER.md`
+(E9, done 2026-10-14 without the crowd comparison).
+
 This is not a risk *score*. A single number is what reviewers can't act on, and it hides
 which construct is doing the work.
 

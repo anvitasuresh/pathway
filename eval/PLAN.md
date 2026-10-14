@@ -16,7 +16,7 @@ number. False-positive rate on hard negatives is a headline number.
 | E6 | Prompt ablation | E1 baseline | Not started |
 | E7 | Fairness, reduced for v1: one psychiatric-diagnosis disclosure per hard negative (dialect, phrasing, disability dropped) | Hard negatives | Built (`eval/e7_disclosure.py`), live run pending |
 | E8 | Human baseline | Threshold deployed, IRB determination | Blocked on IRB |
-| E9 | Tier calibration / escalation ladder | Per-rung rubric, base-rate table, E1 run; crowd tiers from E8 | Not started |
+| E9 | Tier calibration / escalation ladder | `eval/e9_ladder.py`, `eval/E9_LADDER.md`, `eval/results/E9_TABLES.md` | Done 2026-10-14 offline, no API: per-rung rubric (written after seeing the items, so a consistency check), per-rung FPR/recall, base-rate table, assistant action per rung. 0/12 hard-negative FPR at friction and above, but the Wilson bound (0.24) allows hundreds of FP per TP at 0.1% prevalence; ~1,150 zero-FP hard negatives needed to show review costs at most 5 FP per TP. Crowd comparison waits on E8 (IRB deferred out of v1) |
 | E10 | Refusal-state mitigation | `eval/e10_codeword.py`: code-word rule, 6 pretexts, plain vs. injected reminder vs. cold | Done, negative: no pretext undid a refusal in 4 runs; see `eval/results/E10_NOTES.md` |
 | E11 | Prompt-injection robustness | Injection items added to corpus | Not started |
 
