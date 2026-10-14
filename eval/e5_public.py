@@ -270,7 +270,7 @@ def main(argv: list[str] | None = None) -> int:
                     "write rows here (API calls; unflagged conversations only)")
     ap.add_argument("--labels", help="human labels CSV to score --model-review rows against")
     ap.add_argument("--model-id", default=None)
-    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v1)")
+    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v2)")
     ap.add_argument("--dry-run", action="store_true", help="with --model-review: count and show, call nothing")
     args = ap.parse_args(argv)
     code = _run(args, ap)

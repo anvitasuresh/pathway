@@ -27,7 +27,7 @@ Usage:
     python -m eval.e5_refusal
     python -m eval.e5_refusal --model --dry-run
     python -m eval.e5_refusal --model --out eval/results/e5_model.jsonl
-    python -m eval.e5_refusal --model --prompt analyzer/refusal_prompt_v2.md --out eval/results/e5_model_v2.jsonl
+    python -m eval.e5_refusal --model --prompt analyzer/refusal_prompt_v1.md --out eval/results/e5_model_v1.jsonl
     python -m eval.e5_refusal --preds eval/results/e5_model.jsonl   # re-score saved rows
 """
 
@@ -186,7 +186,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--items", default=str(DEFAULT_ITEMS))
     ap.add_argument("--model", action="store_true", help="also run the model tracker (API calls)")
     ap.add_argument("--model-id", default=None)
-    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v1)")
+    ap.add_argument("--prompt", default=None, help="refusal tracker prompt file (default v2)")
     ap.add_argument("--dry-run", action="store_true", help="with --model: print what would be sent")
     ap.add_argument("--preds", help="score saved rows from this JSONL instead of running")
     ap.add_argument("--out", help="write prediction rows here")

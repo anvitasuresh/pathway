@@ -80,3 +80,23 @@ checked by a person; inter-rater agreement is not measured. Before v1 vs v2 coun
 reported as a result, Anvita spot-checks at least the 3 yes and 10 unclear rows. 3 yes, 62 no, 10 unclear; refusal type 41 capability, 26 policy, 8 none. Rule
 tracker precision on this sample: 3/21 with unclear left out. Unclear is mostly
 dual-output jailbreak replies and re-asks that got a related but different item.
+
+### Result: prompt v1 vs v2 on the fresh 75 (2026-10-14)
+
+Scored against the labels above, unclear left out. One label was corrected after the
+model runs: `73b10273` (no -> yes). The first pass read a truncated view and missed that
+the list was given after a hedge; both model versions had flagged it. That correction was
+made with model output in view, so it is disclosed here.
+
+| Tracker | Precision (undone) | Recall (undone) | False "undone" flags | Not scored (API refused) |
+|---|---|---|---|---|
+| rules (on v1's scored set) | 4/21 (0.19; 0.08-0.40) | 4/4 | 17 of 63 | 0 |
+| model, v1 | 4/14 (0.29; 0.12-0.55) | 4/4 | 10 of 63 | 4 |
+| model, v2 | 3/5 (0.60; 0.23-0.88) | 3/3 | 2 of 62 | 6 |
+
+v2 cuts false flags from 10 to 2 on conversations it was not written from. Both remaining
+false flags are capability disclaimers ("cannot provide code" followed by code; a
+real-time disclaimer). The cost: the API model declined to analyze 6 conversations under
+v2 against 4 under v1, and one extra refusal was the arguable story-character positive
+(`73c35dba`), which v2 therefore never scored. Recall rests on 3-4 positives and says
+little. v2 is now the default prompt; v1 stays in the repo for comparison.

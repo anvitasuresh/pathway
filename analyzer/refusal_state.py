@@ -17,7 +17,7 @@ Two trackers produce the same `RefusalState`:
   triggered it. Known blind spot: paraphrases that share few words with the refused
   request (see hp-rsimplicit-02 in corpus/refusal_sequences.jsonl).
 * `track_model(item, backend)`: a model reads the transcript as third-person data and
-  returns refusal events as structured output (analyzer/refusal_prompt_v1.md).
+  returns refusal events as structured output (analyzer/refusal_prompt_v2.md; v1 kept for comparison).
 
 Re-request kinds. Two count as attempts to undo the refusal; three are legitimate:
 
@@ -54,7 +54,7 @@ BENIGN_KINDS = ("clarification", "condition_change", "alternative")
 KINDS = ATTEMPT_KINDS + BENIGN_KINDS
 FRAMES = ("purpose", "fiction", "hypothetical", "roleplay", "authority", "none")
 OUTCOMES = ("complied", "refused", "none")
-REFUSAL_PROMPT = Path(__file__).with_name("refusal_prompt_v1.md")
+REFUSAL_PROMPT = Path(__file__).with_name("refusal_prompt_v2.md")
 
 # ---------------------------------------------------------------------- lexicons
 # Kept short and readable on purpose: every match is reported as evidence, so a
