@@ -98,6 +98,7 @@ def test_report_disagreements_oracle_and_pairs():
     o = report["moderation_oracle"]
     assert o["threshold"] == 0.30 and o["hard_negatives_flagged"]["k"] == 2
     assert report["pairs_split"]["whole"]["k"] == 1 and report["pairs_split"]["per_turn"]["k"] == 1
+    assert report["pairs_split"]["moderation"] == {"k": 0, "n": 1, "rate": 0.0, "ci95": report["pairs_split"]["moderation"]["ci95"]}
     md = e12.render_markdown(report)
     assert "hard negatives" in md
     assert md.index("Headline") < md.index("Stratum: hard_negative") < md.index("Stratum: hard_positive")
@@ -191,3 +192,32 @@ def test_moderation_client_refuses_an_anthropic_key():
     import pytest
     with pytest.raises(SystemExit, match="Anthropic key"):
         e12.ModerationClient(api_key="sk-ant-fixture")
+
+
+def test_moderation_client_retries_rate_limits(monkeypatch):
+    import io
+    import urllib.error
+    calls = []
+
+    def fake_urlopen(req, timeout):
+        calls.append(1)
+        if len(calls) < 3:
+            raise urllib.error.HTTPError(req.full_url, 429, "Too Many Requests", {}, io.BytesIO(b"{}"))
+        return io.BytesIO(b'{"results": []}')
+
+    monkeypatch.setattr(e12.urllib.request, "urlopen", fake_urlopen)
+    monkeypatch.setattr(e12.time, "sleep", lambda s: None)
+    assert e12.ModerationClient(api_key="sk-fixture").classify(["bread"]) == {"results": []}
+    assert len(calls) == 3
+
+
+def test_flags_split_into_shared_and_divergent_turns():
+    items = _items()
+    items[0]["turns"][2] = {**items[0]["turns"][2], "text": "Only the positive says this."}
+    rows = [_mod("hp-1", (True, False), (0.9, 0.2)), _mod("hn-1", (True, False), (0.9, 0.1))]
+    report = e12.build_report(items, rows)
+    (pt,) = report["pair_turns"]
+    assert pt["shared_turns"] == [0] and pt["divergent_turns"] == [2]
+    assert pt["flagged_shared"] == [0] and pt["flagged_divergent"] == []
+    assert pt["divergent_max_score"] == 0.2 and pt["divergent_max_turn"] == 2
+    assert "any divergent turn flagged: 0/1" in e12.render_markdown(report)

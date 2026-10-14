@@ -42,6 +42,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -121,8 +122,14 @@ class ModerationClient:
         body = json.dumps({"model": self.model, "input": texts}).encode("utf-8")
         req = urllib.request.Request(self.url, data=body, method="POST", headers={
             "Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"})
-        with urllib.request.urlopen(req, timeout=60) as resp:
-            return json.loads(resp.read().decode("utf-8"))
+        for wait in (2, 5, 10, 20, None):
+            try:
+                with urllib.request.urlopen(req, timeout=60) as resp:
+                    return json.loads(resp.read().decode("utf-8"))
+            except urllib.error.HTTPError as exc:
+                if exc.code != 429 or wait is None:
+                    raise
+                time.sleep(wait)  # rate limited: back off and retry the same request
 
 
 def moderation_row(item: dict, client) -> dict:
@@ -278,7 +285,7 @@ def oracle_threshold(items: list[dict], verdicts: dict[str, dict[str, dict]]) ->
 
 def pairs_split(items: list[dict], verdicts: dict[str, dict[str, dict]]) -> dict:
     """Matched pairs: does the positive get a strictly higher tier than its negative
-    partner? Analyzer arms only (moderation has no tier)."""
+    partner? For moderation, which has no tier: a strictly higher top category score."""
     by_id = {it["id"]: it for it in items}
     out = {}
     for arm in ANALYZER_ARMS:
@@ -292,7 +299,52 @@ def pairs_split(items: list[dict], verdicts: dict[str, dict[str, dict]]) -> dict
                 n += 1
                 k += TIER_RANK[v[it["id"]]["tier"]] > TIER_RANK[v[q]["tier"]]
         out[arm] = rate(k, n)
+    m = verdicts["moderation"]
+    k = n = 0
+    for it in items:
+        q = it.get("pair_id")
+        if (it["stratum"] == "hard_positive" and q in by_id and m.get(it["id"], {}).get("status") == "ok"
+                and m.get(q, {}).get("status") == "ok"):
+            n += 1
+            k += m[it["id"]]["max_score"] > m[q]["max_score"]
+    out["moderation"] = rate(k, n)
     return out
+
+
+def shared_turns(items: list[dict], verdicts: dict[str, dict[str, dict]]) -> list[dict]:
+    """For each matched pair: which of the positive's user turns are word for word the
+    same as its benign partner's, and which moderation flags fall on those shared turns
+    versus the turns where the two conversations diverge (where the concern lives)."""
+    by_id = {it["id"]: it for it in items}
+    m = verdicts["moderation"]
+    out = []
+    for it in items:
+        q = it.get("pair_id")
+        if it["stratum"] != "hard_positive" or q not in by_id:
+            continue
+        partner = {int(t["i"]): t["text"] for t in by_id[q]["turns"] if t["role"] == "user"}
+        shared = [int(t["i"]) for t in user_turns(it) if partner.get(int(t["i"])) == t["text"]]
+        row = {"id": it["id"], "partner": q, "shared_turns": shared,
+               "divergent_turns": [int(t["i"]) for t in user_turns(it) if int(t["i"]) not in shared]}
+        v = m.get(it["id"])
+        if v and v.get("status") == "ok":
+            row["flagged_shared"] = [t for t in v["flagged_turns"] if t in shared]
+            row["flagged_divergent"] = [t for t in v["flagged_turns"] if t not in shared]
+        out.append(row)
+    return out
+
+
+def divergent_max_scores(items: list[dict], rows: list[dict], pairs: list[dict]) -> None:
+    """Add the highest moderation category score on any divergent turn, in place."""
+    mod = {r["item_id"]: r for r in rows if r.get("arm") == "moderation" and r.get("status") == "ok"}
+    for pr in pairs:
+        r = mod.get(pr["id"])
+        if r is None:
+            continue
+        scores = [(max(t["category_scores"].values(), default=0.0), t["turn"]) for t in r["turns"]
+                  if t["turn"] in pr["divergent_turns"]]
+        if scores:
+            pr["divergent_max_score"], pr["divergent_max_turn"] = max(scores)
 
 
 def build_report(items: list[dict], rows: list[dict]) -> dict:
@@ -317,11 +369,13 @@ def build_report(items: list[dict], rows: list[dict]) -> dict:
         "strata": {s: stratum_cell(by_stratum[s], verdicts) for s in order},
         "disagreements": disagreements(items, verdicts),
         "pairs_split": pairs_split(items, verdicts),
+        "pair_turns": shared_turns(items, verdicts),
         "moderation_oracle": oracle_threshold(items, verdicts),
         "items": {it["id"]: {"stratum": it["stratum"], "gold_tier": it["gold"]["tier"],
                              **{arm: verdicts[arm].get(it["id"]) for arm in ARMS}}
                   for it in items},
     }
+    divergent_max_scores(items, rows, report["pair_turns"])
     report = json.loads(json.dumps(report, default=sorted))  # sets -> sorted lists
     check_no_pooled(report)
     return report
@@ -390,8 +444,25 @@ def render_markdown(report: dict) -> str:
                    f"flagged per message only: {', '.join(d['per_message_only']) or 'none'}.")
     ps = report["pairs_split"]
     if any(r["n"] for r in ps.values()):
-        out += ["", "Matched pairs where the positive gets a higher tier than its negative partner: " +
+        out += ["", "Matched pairs where the positive scores higher than its negative partner (analyzer: tier; "
+                "moderation: top category score): " +
                 "; ".join(f"{ARM_LABEL[a]} {_fmt(r)}" for a, r in ps.items() if r["n"]) + "."]
+
+    pt = [r for r in report.get("pair_turns", []) if "flagged_shared" in r]
+    if pt:
+        out += ["", "## Moderation flags on the turns a pair shares vs. where it diverges", "",
+                "Each hard positive shares its opening user turns word for word with its benign partner; "
+                "the concern is in the turns after they diverge.", "",
+                "| Hard positive | Shared turns | Flagged (shared) | Flagged (divergent) | Top score on a divergent turn |",
+                "|---|---|---|---|---|"]
+        for r in pt:
+            top = (f"{r['divergent_max_score']:.3f} (turn {r['divergent_max_turn']})"
+                   if "divergent_max_score" in r else "-")
+            out.append(f"| {r['id']} | {', '.join(map(str, r['shared_turns'])) or 'none'} | "
+                       f"{', '.join(map(str, r['flagged_shared'])) or 'none'} | "
+                       f"{', '.join(map(str, r['flagged_divergent'])) or 'none'} | {top} |")
+        n_div = sum(bool(r["flagged_divergent"]) for r in pt)
+        out += ["", f"Hard positives with any divergent turn flagged: {n_div}/{len(pt)}."]
 
     o = report["moderation_oracle"]
     if o:
@@ -434,12 +505,26 @@ def render_svg(items: list[dict], report: dict) -> str:
     # Sequential blues, light to dark, one per tier; orange ring for moderation.
     shade = {"none": "#eef3fa", "resource": "#bcd3ef", "friction": "#7aa8de", "review": "#2a78d6", "escalate": "#103f7a"}
     orange = "#eb6834"
-    rows = [it for s in STRATA for it in items if it["stratum"] == s]
+    # Matched pairs sit together (negative, then its positive) so a reader can compare a
+    # pair's shared opening turns directly; unpaired items follow.
+    by_id = {it["id"]: it for it in items}
+    groups: list[list[dict]] = []
+    placed: set[str] = set()
+    for it in items:
+        q = it.get("pair_id")
+        if it["stratum"] == "hard_positive" and q in by_id:
+            groups.append([by_id[q], it])
+            placed |= {q, it["id"]}
+    rest = [it for s in STRATA for it in items if it["stratum"] == s and it["id"] not in placed]
+    groups += [[it] for it in rest]
+    rows = [it for g in groups for it in g]
+    has_per_turn = any((report["items"][it["id"]].get("per_turn") or {}).get("status") == "ok" for it in rows)
     max_turns = max(len(user_turns(it)) for it in rows)
     left, top, cw, rh, gap = 150, 112, 30, 26, 14
     grid_w = cw * max_turns
     W = max(left + grid_w + 24 + 110 + 20, 640)
-    H = top + rh * len(rows) + gap * 2 + 64
+    gap = 8
+    H = top + rh * len(rows) + gap * len(groups) + 56
     p = [f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" '
          f'font-family="Helvetica, Arial, sans-serif" role="img" aria-labelledby="t d">',
          '<title id="t">One message at a time vs. the whole conversation</title>',
@@ -448,24 +533,25 @@ def render_svg(items: list[dict], report: dict) -> str:
          'conversation.</desc>',
          f'<rect width="{W}" height="{H}" fill="{surface}"/>',
          f'<text x="16" y="28" font-size="17" font-weight="600" fill="{ink}">One message at a time vs. the whole conversation</text>',
-         f'<text x="16" y="48" font-size="12" fill="{ink2}">Cells: analyzer tier on each user turn shown alone. '
-         'Ring: flagged by OpenAI\'s public moderation classifier.</text>',
-         f'<text x="16" y="64" font-size="12" fill="{ink2}">Right: the same analyzer on the whole conversation. '
-         'Hard negatives above the rule, hard positives below.</text>',
+         f'<text x="16" y="48" font-size="12" fill="{ink2}">'
+         + ('Cells: analyzer tier on each user turn shown alone. ' if has_per_turn else 'Cells: user turns. ')
+         + 'Ring: turn flagged by OpenAI\'s public moderation classifier.</text>',
+         f'<text x="16" y="64" font-size="12" fill="{ink2}">Right: the analyzer on the whole conversation. '
+         'Matched pairs together (hn- benign, hp- concerning).</text>',
          f'<text x="{left}" y="{top - 12}" font-size="11" fill="{ink2}">user turns, in order →</text>',
          f'<text x="{left + grid_w + 24}" y="{top - 12}" font-size="11" fill="{ink2}">whole conversation</text>']
     y = top
-    prev = None
+    starts = {g[0]["id"] for g in groups[1:]}
     for it in rows:
-        if prev is not None and it["stratum"] != prev:
+        if it["id"] in starts:
             p.append(f'<line x1="16" x2="{W - 16}" y1="{y + gap / 2:.1f}" y2="{y + gap / 2:.1f}" stroke="{rule}"/>')
             y += gap
-        prev = it["stratum"]
         r = report["items"][it["id"]]
         cy = y + rh / 2
         p.append(f'<text x="{left - 10}" y="{cy + 4:.1f}" font-size="11" text-anchor="end" fill="{ink}">{it["id"]}</text>')
         per, mo = r.get("per_turn"), r.get("moderation")
         mflag = set(mo["flagged_turns"]) if mo and mo.get("status") == "ok" else set()
+        mod_error = bool(mo) and mo.get("status") != "ok"
         for j, t in enumerate(user_turns(it)):
             ti = int(t["i"])
             x = left + cw * j
@@ -477,6 +563,9 @@ def render_svg(items: list[dict], report: dict) -> str:
                      f'{", moderation flagged" if ti in mflag else ""}</title></rect>')
             if ti in mflag:
                 p.append(f'<circle cx="{x + cw / 2:.1f}" cy="{cy:.1f}" r="6" fill="none" stroke="{orange}" stroke-width="2.5"/>')
+        if mod_error:
+            p.append(f'<text x="{left + cw * len(user_turns(it)) + 6}" y="{cy + 4:.1f}" font-size="10" '
+                     f'fill="{ink2}">moderation error</text>')
         w = r.get("whole")
         wx = left + grid_w + 24
         if w and w.get("status") == "ok":
