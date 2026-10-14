@@ -346,3 +346,11 @@ def test_explanation_figure_and_stability_table(corpus):
     gold = {k: v["gold"] for k, v in corpus.items()}
     svg = fig.render_svg(gold, kept, neutral)
     assert svg.startswith("<svg") and "Assistant turns neutral" in svg and "&amp; back" in svg
+
+
+def test_review_packet_covers_every_variant(corpus, variants):
+    from eval.transforms import review_packet
+
+    text = review_packet.render(corpus, variants, {})
+    for v in variants:
+        assert f"`{v['id']}`" in text
