@@ -325,3 +325,24 @@ def test_neutral_arms_score_and_inherit_review(neutral):
     assert rep["views"]["preserved"]["paraphrase"]["hard_positive"]["recall_review_or_above"]["n"] == 1
     md = e4.render_markdown(rep)
     assert "neutral acknowledgments" in md and "| original | resource | review |" in md
+
+
+# ---------------------------------------------------------- explanation figure
+
+def test_explanation_figure_and_stability_table(corpus):
+    from eval import e4_figures as fig
+
+    items = e4.load_arms()
+    kept_rows = _rows_for(items, {}, hn_tier="resource")
+    # Euphemism keeps the tier but drops FIX on every positive.
+    kept_rows = [dict(r, output=make_output(tier="review", uncertain=("FIX",)))
+                 if r["item_id"].startswith("hp-") and r["item_id"].endswith("__euphemism") else r
+                 for r in kept_rows]
+    neutral_rows = _rows_for(e4.load_arms(assistant="neutral"), {}, hn_tier="resource")
+    kept, neutral = fig.grid(kept_rows, "kept"), fig.grid(neutral_rows, "neutral")
+    st = fig.stability(kept)
+    assert st["euphemism"] == {"labels_same": 15, "labels_n": 18, "tiers_same": 3, "tiers_n": 3}
+    assert fig.stability(neutral)["euphemism"]["labels_same"] == 18
+    gold = {k: v["gold"] for k, v in corpus.items()}
+    svg = fig.render_svg(gold, kept, neutral)
+    assert svg.startswith("<svg") and "Assistant turns neutral" in svg and "&amp; back" in svg
