@@ -74,7 +74,9 @@ ids excluded (`e5_wildchat_review2.csv`), labeled before any model run on it.
 
 ## Fresh sample for testing prompt v2 (labeled 2026-10-14, before any model run)
 
-`e5_wildchat_review2_labels.csv`: 75 new conversations, first-pass labels, blind to model
-output. 3 yes, 62 no, 10 unclear; refusal type 41 capability, 26 policy, 8 none. Rule
+`e5_wildchat_review2_labels.csv`: 75 new conversations. Single-author labels, made by the
+same assistant that wrote the rule tracker and prompt v2, blind to model output but not
+checked by a person; inter-rater agreement is not measured. Before v1 vs v2 counts are
+reported as a result, Anvita spot-checks at least the 3 yes and 10 unclear rows. 3 yes, 62 no, 10 unclear; refusal type 41 capability, 26 policy, 8 none. Rule
 tracker precision on this sample: 3/21 with unclear left out. Unclear is mostly
 dual-output jailbreak replies and re-asks that got a related but different item.
