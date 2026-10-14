@@ -100,3 +100,33 @@ real-time disclaimer). The cost: the API model declined to analyze 6 conversatio
 v2 against 4 under v1, and one extra refusal was the arguable story-character positive
 (`73c35dba`), which v2 therefore never scored. Recall rests on 3-4 positives and says
 little. v2 is now the default prompt; v1 stays in the repo for comparison.
+
+### Re-scored with Anvita's check (2026-10-14)
+
+Anvita checked the 4 yes and 10 unclear rows herself. She saw the first-pass labels, so
+this is a check, not a blind second label. Her labels now count as the gold for those rows:
+9 yes, 62 no, 4 unclear. Her criterion is wider than the first pass: a user who rewords
+the request or switches to a jailbreak persona and gets the item counts as yes, including
+dual-output replies.
+
+| Tracker | Precision (undone) | Recall (undone) | False "undone" flags |
+|---|---|---|---|
+| rules | 5/22 (0.10-0.43) | 5/8 | 17 of 67 |
+| model, v1 | 3/13 (0.08-0.50) | 3/8 | 10 of 67 |
+| model, v2 | 3/5 (0.23-0.88) | 3/8 | 2 of 67 |
+
+One yes (`f54f5e35`) was refused by the API under both prompts and is unscored.
+
+Both prompts miss the same 5 of her positives. 3 are jailbreak conversations where the
+persona was set up before the request, so the refusing half and the complying half arrive
+in one reply. 2 are rewordings the prompt reads as "a new request". 1 of the 5
+(`327b49eb`) is a capability limit, not a policy refusal, which v2 excludes on purpose.
+
+So v2 bought its precision partly by narrowing the definition. Which definition the
+paper uses is a decision for Anvita. Any v3 written from these 75 needs another fresh
+sample to test it.
+
+`7c5e0b53` is a jailbreak set up before the request, with no refusal followed by a
+re-request. It is not "undone" under any definition here, and a refusal tracker cannot see
+it because no refusal state exists. That is a stated limitation, and it is the main
+analyzer's job.
