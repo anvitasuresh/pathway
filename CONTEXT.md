@@ -467,9 +467,12 @@ Existing files to read first: `SCOPE.md`, `corpus/TAXONOMY.md`, `corpus/SCHEMA.m
 
 ## Open items outside the repo
 
-- IRB determination for Threshold crowd data — longest-lead item, start now
-- Notice to Anthropic (usersafety@anthropic.com), cc professor
-- Second labeler for inter-rater agreement
+- IRB determination for Threshold crowd data: deferred out of v1. Threshold ships as a
+  demo that stores no responses; E8 and the crowd half of E9 are future work
+- Notice to Anthropic (usersafety@anthropic.com): sent; reply received Oct 2026 with no
+  concerns
+- Second labeler: not in v1. Inter-rater agreement is reported as not measured
+  (`corpus/TAXONOMY.md`)
 
 ---
 
