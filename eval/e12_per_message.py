@@ -112,6 +112,9 @@ class ModerationClient:
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
         if not self.api_key:
             raise SystemExit("OPENAI_API_KEY is not set")
+        if self.api_key.startswith("sk-ant-"):
+            raise SystemExit("OPENAI_API_KEY holds an Anthropic key (sk-ant-...). The moderation arm needs an "
+                             "OpenAI key from platform.openai.com. Nothing was sent.")
         self.model, self.url = model, url
 
     def classify(self, texts: list[str]) -> dict:

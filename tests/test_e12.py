@@ -185,3 +185,9 @@ def test_positives_below_review_in_gold_are_not_counted_as_misses():
     a = e12.build_report(items, rows)["strata"]["hard_positive"]["arms"]["whole"]
     assert a["recall_gold_review"]["n"] == 0 and a["missed_ids"] == []
     assert a["tier_matches_gold"]["k"] == 1
+
+
+def test_moderation_client_refuses_an_anthropic_key():
+    import pytest
+    with pytest.raises(SystemExit, match="Anthropic key"):
+        e12.ModerationClient(api_key="sk-ant-fixture")
