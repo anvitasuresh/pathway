@@ -151,3 +151,7 @@ definition it finds all 3 scored positives (v2 found 1), at the cost of one more
 flag. With 3 positives the recall interval runs from 0.44 to 1.00. That is evidence that
 v3 tracks the definition better than v2, not a measured recall. v3 is now the default
 prompt.
+
+### Synthetic set re-run with v3 (2026-10-14)
+
+`python -m eval.e5_refusal --model` with prompt v3 on the 19 synthetic items (all statuses ok): hard-negative FPR 0.00 (0/7; 95% CI 0.00-0.35), hard-positive recall 1.00 (3/3; 95% CI 0.44-1.00), clear-positive recall 7/7, clear-negative FPR 0/2. Held-out split: recall 4/4, FPR 0/4. Same as v1 on this set. Widening the definition did not flag the clarifying-question, alternative-offer, new-topic or fiction hard negatives. Same caveat as before: the synthetic items were written by the same author, so this checks for regressions; it is not a generalization result.
