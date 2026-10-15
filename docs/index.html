@@ -85,7 +85,7 @@ section.block > .wrap { display: grid; gap: 2rem; }
 /* ---------- hero ---------- */
 .hero { padding-block: clamp(3rem, 10vw, 7rem) clamp(2.5rem, 6vw, 4rem); }
 .hero .wrap { display: grid; gap: 2.2rem; }
-.hero h1 { font-size: clamp(2.6rem, 8.5vw, 6.2rem); font-weight: 800; font-stretch: 62%; letter-spacing: -0.015em; line-height: 0.95; max-width: 15ch; }
+.hero h1 { font-size: clamp(2.4rem, 7vw, 5.2rem); font-weight: 800; font-stretch: 62%; letter-spacing: -0.015em; line-height: 0.95; max-width: 17ch; }
 .hero h1 .a { color: var(--msg); } .hero h1 .b { color: var(--conv); }
 .hero .lede { max-width: 38rem; }
 .byline { font-family: var(--mono); font-size: 0.78rem; color: var(--ink-2); display: flex; gap: 1.2rem; flex-wrap: wrap; }
@@ -262,8 +262,8 @@ footer .wrap { display: grid; gap: 1rem; }
 
 <header class="hero"><div class="wrap">
   <p class="eyebrow">Explainable AI · Duke MIDS · Fall 2026</p>
-  <h1>Checked <span class="a">one message</span> at a time. Harmed <span class="b">one conversation</span> at a time.</h1>
-  <p class="lede">Deployed language models are screened message by message. In several documented cases where a chatbot appears in a violent crime, the warning signs built up across a conversation, or across platforms. Pathway asks what a conversation-level reader can see that a message-level filter cannot, what it costs the innocent people it reads, and whether a model's own refusals should count as evidence.</p>
+  <h1>Chatbot safety checks read <span class="a">one message</span>. Misuse unfolds over <span class="b">a whole conversation</span>.</h1>
+  <p class="lede">This project asks how AI companies could spot people using chatbots to work toward hurting someone, earlier and without wrongly flagging the many innocent people who write about dark things. Today, each message is checked on its own. In several real cases, the warning signs only showed up across many messages: someone was refused, changed their story, and asked again. Pathway tests a safety check that reads the whole conversation, and measures how often it gets innocent people wrong.</p>
   <div class="byline"><span>Anvita Suresh</span><span>Duke MIDS</span><span><a href="https://github.com/anvitasuresh/pathway">Code and data</a></span></div>
   <div class="strip" aria-label="Headline numbers">
     <div><span class="num msg">9/12</span><p>benign conversations flagged by a public per-message moderation classifier (E12)</p></div>
