@@ -53,7 +53,7 @@ Headline results, all per stratum with 95% Wilson intervals:
 - **Recall is the cost:** the analyzer routed 4/6 gold-review hard positives to review
   (original gold). Every error on positives was under-escalation; none over-escalated.
 - **The zeros are not the result.** 0/12 cannot rule out a 24% false-positive rate. At an
-  assumed 1-in-1,000 prevalence that bound allows about 300 innocent reviews per real one.
+  assumed 1-in-1,000 prevalence that bound allows about 360 innocent reviews per real one.
   Showing review costs at most 5 per real one would take roughly 1,150 hard negatives with no
   false positive.
 - **Refusal as signal:** on 19 harmless synthetic transcripts, a model-based refusal tracker
