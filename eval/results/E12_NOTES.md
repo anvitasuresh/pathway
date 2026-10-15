@@ -3,8 +3,8 @@
 Status 2026-10-14: moderation arm run (free). The whole-conversation arm reuses earlier
 analyzer runs (prompt v2, same model, effort high): `results_v2.jsonl`,
 `eval/results/e4_run.jsonl` (originals), `results_v2_batch3.jsonl`. The per-turn analyzer
-arm is built but not run (it costs one call per user turn). One moderation request
-(`hp-novelist-01`) hit a rate limit; the client now retries, and the item needs one re-run.
+arm is built but not run (it costs one call per user turn). `hp-novelist-01` hit a rate
+limit on the first pass and was re-run (`e12_moderation_novelist.jsonl`).
 Full tables: `E12_REPORT.md`. Figure: `e12_turns.svg`.
 
 ## What was compared
@@ -16,8 +16,7 @@ Full tables: `E12_REPORT.md`. Figure: `e12_turns.svg`.
   trajectories. The result says what single-message harm scoring does on this corpus, not
   what any deployed product does.
 
-Corpus: 22 fictional items, 12 hard negatives and 10 hard positives, all 10 in matched pairs
-(9 scored by moderation so far). Recall counts only the 5 hard positives whose gold tier is review or above.
+Corpus: 22 fictional items, 12 hard negatives and 10 hard positives, all 10 in matched pairs. Recall counts only the 5 hard positives whose gold tier is review or above.
 
 ## Results
 
@@ -25,13 +24,13 @@ Corpus: 22 fictional items, 12 hard negatives and 10 hard positives, all 10 in m
 |---|---|---|
 | Hard negatives flagged (headline) | 0/12 (95% CI 0.00-0.24) | 9/12 (0.47-0.91) |
 | Recall, gold review or above | 4/5 (0.38-0.96), misses crimstudent | 3/5 (0.23-0.88), misses memoir, crimstudent |
-| Pairs where the positive scores higher than its partner | 7/10 (tier) | 3/9 (top score; two of the three by under 0.002) |
+| Pairs where the positive scores higher than its partner | 7/10 (tier) | 3/10 (top score; two of the three by under 0.002) |
 
 The finding is in where the moderation flags land. Each hard positive shares its opening
 user turns word for word with its benign partner; the concerning turns come after the two
 diverge. **Every turn moderation flagged in a hard positive is one of the shared turns,
 and it flagged the same turn in the benign partner. No divergent turn was flagged in any of
-the 9 scored pairs (0/9); the highest score on any divergent turn is 0.185.** Its three "hits" on
+the 10 pairs (0/10); the highest score on any divergent turn is 0.185.** Its three "hits" on
 gold-review positives are hits on the venting opening that the benign partner shares, so
 they cannot tell the pair apart. The oracle threshold (fitted on these items, best case)
 that catches all 5 gold-review positives flags 11/12 hard negatives.

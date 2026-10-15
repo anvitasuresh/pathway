@@ -222,14 +222,14 @@
 <rect x="444" y="655" width="18" height="20" rx="3" fill="#eef3fa"/>
 <text x="470" y="669.0" font-size="11" fill="#0b0b0b">none</text>
 <text x="140" y="695.0" font-size="11" text-anchor="end" fill="#0b0b0b">hp-novelist-01</text>
-<rect x="152" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 0: not scored</title></rect>
+<rect x="152" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 0: not scored, moderation flagged</title></rect>
+<circle cx="165.0" cy="691.0" r="6" fill="none" stroke="#eb6834" stroke-width="2.5"/>
 <rect x="182" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 2: not scored</title></rect>
 <rect x="212" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 4: not scored</title></rect>
 <rect x="242" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 6: not scored</title></rect>
 <rect x="272" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 8: not scored</title></rect>
 <rect x="302" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 10: not scored</title></rect>
 <rect x="332" y="681" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-novelist-01 turn 12: not scored</title></rect>
-<text x="366" y="695.0" font-size="10" fill="#52514e">moderation error</text>
 <rect x="444" y="681" width="18" height="20" rx="3" fill="#eef3fa"/>
 <text x="470" y="695.0" font-size="11" fill="#0b0b0b">none</text>
 <line x1="16" x2="624" y1="708.0" y2="708.0" stroke="#e4e3df"/>
