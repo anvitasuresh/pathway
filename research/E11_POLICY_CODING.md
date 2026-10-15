@@ -1,13 +1,13 @@
-# E14: Policy texts coded clause by clause
+# E11: Policy texts coded clause by clause
 
 OpenAI, Anthropic and Meta, coded for how each published text handles conversation-level
 risk, refusal memory, graduated responses, referral criteria and referral accuracy.
 Desk work, no API calls. Builds on `research/POLICY_COMPARISON.md` (2026-10-08).
 
-**Accessed:** 2026-10-14. Data: `eval/e14/policy_codes.csv` (one row per provider ×
+**Accessed:** 2026-10-14. Data: `eval/e11/policy_codes.csv` (one row per provider ×
 dimension, with the evidence quote, URL, document date and source quality) and
-`eval/e14/policy_items.csv` (prohibited-use items in five harm areas). Counts:
-`python eval/e14/count.py`.
+`eval/e11/policy_items.csv` (prohibited-use items in five harm areas). Counts:
+`python eval/e11/count.py`.
 
 **What a code means.** Every code describes the *published text*. "Not stated" means we
 did not find it in the documents below; it is not a claim about internal practice.
@@ -56,7 +56,7 @@ alert are carried over from POLICY_COMPARISON.md, not re-fetched.
 
 ## Prohibited-use items per harm area
 
-`python eval/e14/count.py`:
+`python eval/e11/count.py`:
 
 | Harm area | OpenAI | Anthropic | Meta |
 |---|---|---|---|

@@ -91,15 +91,15 @@ Known weakness, left as written: in several items the user names their own shift
 makes the construct explicit, so these positives are easier than the batch 2 items, and
 analyzer recall on them should be read with that in mind.
 
-## Relabel after E9 (2026-10-14)
+## Relabel after E7 (2026-10-14)
 
 | Item | Change | Why |
 |---|---|---|
-| `hp-grief-01` | tier `review` → `friction` | E9 rubric: FIX alone tops out at friction. Old gold sent FIX alone to review but FIX plus uncertain ESC (`hp-defense-01`) to friction. The user names their own narrowing and is trying to stop |
+| `hp-grief-01` | tier `review` → `friction` | E7 rubric: FIX alone tops out at friction. Old gold sent FIX alone to review but FIX plus uncertain ESC (`hp-defense-01`) to friction. The user names their own narrowing and is trying to stop |
 
 **Made after the analyzer results were seen.** The analyzer had put this item at
 `resource`, a miss at `review` under the old label. The relabel removes that miss from
-the review-recall denominator (4/6 becomes 4/5), so any E1 or E9 number computed with the
+the review-recall denominator (4/6 becomes 4/5), so any E1 or E7 number computed with the
 new label is post hoc. Reported figures use the original gold; the regenerated reports
-(`eval/results/E1_E2_REPORT.md`, `eval/results/E9_TABLES.md`) show the new one.
+(`eval/results/E1_E2_REPORT.md`, `eval/results/E7_TABLES.md`) show the new one.
 

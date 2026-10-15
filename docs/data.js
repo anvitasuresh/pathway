@@ -686,5 +686,5 @@ window.PATHWAY_DATA = {
    "pair_id": "hn-novelist-01"
   }
  ],
- "source": "Built by docs/build_data.py from corpus/items.jsonl, eval/results/e12_moderation*.jsonl and the v2 whole-conversation analyzer rows."
+ "source": "Built by docs/build_data.py from corpus/items.jsonl, eval/results/e9_moderation*.jsonl and the v2 whole-conversation analyzer rows."
 };

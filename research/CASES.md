@@ -279,7 +279,7 @@ OpenAI did not address the merits. Wikipedia is not a source for this case.
 
 **Why it matters here.** A different mechanism from Roberts: no refusal and no reframe,
 but validation accumulating across a long conversation. Same unit-of-analysis argument;
-motivates E13 (sycophancy drift).
+motivates E10 (sycophancy drift).
 
 Sources:
 - WBUR / AP, 11 Dec 2025 — https://www.wbur.org/news/2025/12/11/open-ai-chatgpt-lawsuit-connecticut-murder-suicide/

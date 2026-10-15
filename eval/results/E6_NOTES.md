@@ -1,8 +1,8 @@
-# E7 (reduced): psychiatric diagnosis disclosure on hard negatives
+# E6 (reduced): psychiatric diagnosis disclosure on hard negatives
 
 Run 2026-10-15, prompt v2, same model and effort as every earlier v2 run, 12 calls
-(`eval/results/e7_run.jsonl`; report `e7_report.json`). Design is in the
-`eval/e7_disclosure.py` docstring: one sentence stating a diagnosis (bipolar disorder,
+(`eval/results/e6_run.jsonl`; report `e6_report.json`). Design is in the
+`eval/e6_disclosure.py` docstring: one sentence stating a diagnosis (bipolar disorder,
 schizophrenia, borderline personality disorder, PTSD; 3 items each) appended to one user
 turn of each hard negative, compared against every saved v2 run of the original.
 

@@ -1,8 +1,8 @@
-"""E15: what does remembering a refusal across sessions cost?
+"""E12: what does remembering a refusal across sessions cost?
 
 Today a refusal is forgotten when the session ends (CONTEXT.md §4.3). Carrying it into
 the next session catches someone who comes back tomorrow with a pretext, but it can also
-treat an ordinary new request as a second try at the old one. E15 measures that trade on
+treat an ordinary new request as a second try at the old one. E12 measures that trade on
 corpus/refusal_sessions.jsonl: 15 harmless two-session items. Session 1 holds a refusal
 (or not); session 2 is either a re-request of the refused item (positive) or a new,
 legitimate request that shares its topic words or a frame phrase (hard negative).
@@ -14,7 +14,7 @@ as an attempt (pretext or reask). Arms:
                   default). Cannot flag anything by construction; in the table so the
                   comparison is explicit
     carry_any     baseline: any session-1 refusal flags session 2, which is what an
-                  always-injected refusal reminder (E10) amounts to
+                  always-injected refusal reminder (E8) amounts to
     rules_carry   rule tracker, refusals carried, adjacency never crosses a boundary
     rules_concat  rule tracker on the histories simply appended
     model_carry   model tracker (prompt v3) on the full two-session transcript with a
@@ -25,10 +25,10 @@ as an attempt (pretext or reask). Arms:
 Headline: false-positive rate on hard negatives, per arm. No pooled accuracy.
 
 Usage:
-    python -m eval.e15_sessions                                   # offline arms
-    python -m eval.e15_sessions --model --dry-run                 # show the 15 calls
-    python -m eval.e15_sessions --model --out eval/results/e15_run.jsonl
-    python -m eval.e15_sessions --preds eval/results/e15_run.jsonl   # re-score, no calls
+    python -m eval.e12_sessions                                   # offline arms
+    python -m eval.e12_sessions --model --dry-run                 # show the 15 calls
+    python -m eval.e12_sessions --model --out eval/results/e12_run.jsonl
+    python -m eval.e12_sessions --preds eval/results/e12_run.jsonl   # re-score, no calls
 """
 
 from __future__ import annotations
@@ -135,7 +135,7 @@ def build_report(items: list[dict], rows: list[dict]) -> dict:
 
 
 def render_markdown(report: dict) -> str:
-    out = ["# E15 refusal state across sessions (per stratum; no pooled accuracy)", "",
+    out = ["# E12 refusal state across sessions (per stratum; no pooled accuracy)", "",
            f"{report['n_items']} two-session items. A flag = the tracker ties a session-2 "
            "request back to a session-1 refusal as a second attempt.", "",
            "## Headline", "",
@@ -175,7 +175,7 @@ def main(argv: list[str] | None = None) -> int:
     else:
         prompt = load_prompt(REFUSAL_PROMPT)
         if args.model and args.dry_run:
-            print(f"# E15 model_carry dry run: prompt {prompt.version}, {len(items)} API calls\n")
+            print(f"# E12 model_carry dry run: prompt {prompt.version}, {len(items)} API calls\n")
             for it in items:
                 print(f"## {it['id']}\n{render_transcript(it)}\n")
             return 0

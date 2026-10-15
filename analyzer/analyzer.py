@@ -71,7 +71,7 @@ def render_transcript(item: dict) -> str:
     session = None
     for turn in item["turns"]:
         if "session" in turn and turn["session"] != session:
-            if session is not None:  # E15 items: mark where a new session starts
+            if session is not None:  # E12 items: mark where a new session starts
                 lines.append(f"--- new session {turn['session']}: same user, a later day ---")
             session = turn["session"]
         role = turn["role"].upper()

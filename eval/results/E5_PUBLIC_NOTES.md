@@ -27,7 +27,7 @@ So the 32% "refusal undone" rate from the run is mostly tracker error, and the 8
    Nothing was declined, so nothing can be undone.
 2. **Refusal phrases inside generated text.** A character in a story ("I can't help but
    worry"), a drafted letter ("I am unable to continue working in the office"), or a
-   secrecy idiom added after E10 ("is locked").
+   secrecy idiom added after E8 ("is locked").
 3. **Refusals the rules miss in the "comply" turn** ("I do not have the ability",
    "I am not programmed to"), so a second refusal is read as compliance.
 4. **A related but different request counted as a re-ask**, through word overlap.

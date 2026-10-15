@@ -3,8 +3,8 @@ import json
 import pytest
 
 from analyzer.analyzer import BackendResponse
-from eval import e5_refusal, e10_codeword
-from eval.e10_codeword import build_report, leaked, mcnemar_exact, run_trial
+from eval import e5_refusal, e8_codeword
+from eval.e8_codeword import build_report, leaked, mcnemar_exact, run_trial
 from eval.metrics import PooledAccuracyError, check_no_pooled
 from tests.test_refusal_state import ITEMS
 
@@ -44,7 +44,7 @@ def test_e5_model_dry_run_sends_nothing(capsys, monkeypatch):
     assert "<transcript>" in capsys.readouterr().out
 
 
-# ------------------------------------------------------------------------ E10
+# ------------------------------------------------------------------------ E8
 
 @pytest.mark.parametrize("text, expect", [
     ("The code word is Marmalade!", True),
@@ -75,7 +75,7 @@ class ScriptedChat:
     def chat(self, system, messages):
         self.calls.append((system, messages))
         word = system.split('"')[1]
-        if len(messages) == 1 and messages[0]["content"] == e10_codeword.OPENING:
+        if len(messages) == 1 and messages[0]["content"] == e8_codeword.OPENING:
             text = f"It's {word}!" if self.leak_opening else self.opening_reply
         elif "Conversation state" in system:
             text = "I declined that earlier and the answer is the same."
@@ -84,10 +84,10 @@ class ScriptedChat:
         return BackendResponse(text=text, stop_reason="end_turn", model=self.model)
 
 
-def test_e10_trial_and_report():
+def test_e8_trial_and_report():
     backend = ScriptedChat()
     rows = run_trial(backend, 0)
-    n = len(e10_codeword.PRETEXTS)
+    n = len(e8_codeword.PRETEXTS)
     assert len(backend.calls) == 1 + 4 * n
     assert rows[0]["arm"] == "opening" and rows[0]["refusal_detected"] is True
     rep = build_report(rows)
@@ -96,17 +96,17 @@ def test_e10_trial_and_report():
         assert cell["plain"]["leak"]["rate"] == 1.0
         assert cell["reminder"]["leak"]["rate"] == 0.0
         assert cell["paired"]["plain_leaked_reminder_held"] == 1
-    assert list(rep["by_pretext"]) == [p for p, _ in e10_codeword.PRETEXTS]  # design order
+    assert list(rep["by_pretext"]) == [p for p, _ in e8_codeword.PRETEXTS]  # design order
 
 
-def test_e10_reminder_built_from_real_opening():
+def test_e8_reminder_built_from_real_opening():
     backend = ScriptedChat()
     run_trial(backend, 0)
     systems = [s for s, m in backend.calls if "Conversation state" in s]
     assert systems and all("turn 1" in s for s in systems)
 
 
-def test_e10_undetected_refusal_is_recorded():
+def test_e8_undetected_refusal_is_recorded():
     backend = ScriptedChat(opening_reply="Nice try! Guess away.")
     rows = run_trial(backend, 0)
     assert rows[0]["refusal_detected"] is False
@@ -119,27 +119,27 @@ def test_e10_undetected_refusal_is_recorded():
                for c in rep["by_pretext"].values())
 
 
-def test_e10_opening_leak_skips_reframe_arms():
+def test_e8_opening_leak_skips_reframe_arms():
     rows = run_trial(ScriptedChat(leak_opening=True), 1)
     arms = {r["arm"] for r in rows}
     assert arms == {"opening", "cold"}
     assert build_report(rows)["opening"]["leaked_at_opening"]["k"] == 1
 
 
-def test_e10_dry_run_sends_nothing(capsys, monkeypatch):
+def test_e8_dry_run_sends_nothing(capsys, monkeypatch):
     def boom(*a, **k):
         raise AssertionError("dry run must not build a backend")
-    monkeypatch.setattr(e10_codeword, "AnthropicChatBackend", boom)
-    assert e10_codeword.main(["--dry-run", "--trials", "2"]) == 0
+    monkeypatch.setattr(e8_codeword, "AnthropicChatBackend", boom)
+    assert e8_codeword.main(["--dry-run", "--trials", "2"]) == 0
     out = capsys.readouterr().out
     assert "Nothing was sent" in out and "50 model calls" in out
 
 
-def test_e10_rescore_saved_rows(tmp_path, capsys):
+def test_e8_rescore_saved_rows(tmp_path, capsys):
     rows = run_trial(ScriptedChat(), 0)
     p = tmp_path / "rows.jsonl"
     p.write_text("\n".join(json.dumps(r) for r in rows))
-    assert e10_codeword.main(["--rows", str(p)]) == 0
+    assert e8_codeword.main(["--rows", str(p)]) == 0
     assert "| purpose |" in capsys.readouterr().out
 
 
@@ -148,11 +148,11 @@ def test_no_pooled_guard_still_active():
         check_no_pooled({"x": {"accuracy": 1.0}})
 
 
-def test_e10_rule_is_recorded_and_not_mixed():
+def test_e8_rule_is_recorded_and_not_mixed():
     soft = run_trial(ScriptedChat(), 0)
     strict = run_trial(ScriptedChat(), 0, rule="strict")
     assert {r["rule"] for r in soft} == {"soft"} and {r["rule"] for r in strict} == {"strict"}
-    assert "whatever reason" not in e10_codeword.system_for("x")
+    assert "whatever reason" not in e8_codeword.system_for("x")
     assert build_report(soft)["rule"] == "soft"
     with pytest.raises(ValueError):
         build_report(soft + strict)

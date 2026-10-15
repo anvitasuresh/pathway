@@ -258,7 +258,7 @@ footer .wrap { display: grid; gap: 1rem; }
   <b>PATHWAY</b>
   <nav aria-label="Sections">
     <a href="#cases">Cases</a><a href="#pair">One conversation</a><a href="#corpus">Results</a><a href="#ladder">Ladder</a>
-    <a href="#refusal">Refusal</a><a href="#explanations">Explanations</a><a href="#policy">Policy</a><a href="#limits">Limits</a><a href="e16/">Demo</a>
+    <a href="#refusal">Refusal</a><a href="#explanations">Explanations</a><a href="#policy">Policy</a><a href="#limits">Limits</a><a href="e13/">Demo</a>
   </nav>
 </div></div>
 
@@ -268,7 +268,7 @@ footer .wrap { display: grid; gap: 1rem; }
   <p class="lede">This project asks how AI companies could spot people using chatbots to work toward hurting someone, earlier and without wrongly flagging the many innocent people who write about dark things. Today, each message is checked on its own. In several real cases, the warning signs only showed up across many messages: someone was refused, changed their story, and asked again. Pathway tests a safety check that reads the whole conversation, and measures how often it gets innocent people wrong.</p>
   <div class="byline"><span>Anvita Suresh</span><span>Duke MIDS</span><span><a href="https://github.com/anvitasuresh/pathway">Code and data</a></span></div>
   <div class="strip" aria-label="Headline numbers">
-    <div><span class="num msg">9/12</span><p>benign conversations flagged by a public per-message moderation classifier (E12)</p></div>
+    <div><span class="num msg">9/12</span><p>benign conversations flagged by a public per-message moderation classifier (E9)</p></div>
     <div><span class="num conv">0/12</span><p>sent to human review by the whole-conversation analyzer. Twelve items still allow a false-positive rate up to 24%</p></div>
     <div><span class="num">0/10</span><p>matched pairs where the per-message filter flagged any turn after the benign and concerning versions diverge</p></div>
   </div>
@@ -304,7 +304,7 @@ footer .wrap { display: grid; gap: 1rem; }
       <tr><td>Pirkkala school stabbing, Finland (May 2025)</td><td>Convicted; found not criminally responsible</td><td><span class="grade A">A/B</span></td><td><span class="grade B">B</span></td><td>The prosecutor confirmed AI use in court. The "hundreds of searches" figure is the broadcaster Yle's report, not the court's. A published manifesto is leakage.</td></tr>
       <tr><td>FSU shooting, Tallahassee (Apr 2025)</td><td>Accused, awaiting trial</td><td><span class="grade B">B</span></td><td><span class="grade B">B/C</span></td><td>Allegations from released records: individually ordinary questions that add up (the mosaic pattern). Pathway does not build a mosaic dataset.</td></tr>
       <tr><td>Acton, Massachusetts (Aug 2026)</td><td>Minor accused, indicted, pending</td><td><span class="grade B">B</span></td><td><span class="grade B">B</span></td><td>The DA described "gothic novel" stories about the family. No claim that a model supplied a plan. Used only for the reality-convergence construct.</td></tr>
-      <tr><td>Adams estate v. OpenAI, Greenwich, Connecticut (Aug 2025)</td><td>Murder-suicide; civil suit pending</td><td><span class="grade B">B</span></td><td><span class="grade C">C</span></td><td>The complaint alleges a chatbot validated persecutory beliefs over a long conversation. A different mechanism: no refusal, just accumulating agreement. Motivates E13.</td></tr>
+      <tr><td>Adams estate v. OpenAI, Greenwich, Connecticut (Aug 2025)</td><td>Murder-suicide; civil suit pending</td><td><span class="grade B">B</span></td><td><span class="grade C">C</span></td><td>The complaint alleges a chatbot validated persecutory beliefs over a long conversation. A different mechanism: no refusal, just accumulating agreement. Motivates E10.</td></tr>
       <tr><td>Hamilton County, Tennessee (Feb 2026)</td><td>Accused, awaiting trial</td><td><span class="grade B">B</span></td><td><span class="grade B">B</span></td><td>Chatbot use after the incident, from detective testimony. Out of scope for warning behavior; cited only as a contrast.</td></tr>
     </tbody>
   </table></div>
@@ -388,7 +388,7 @@ footer .wrap { display: grid; gap: 1rem; }
 <!-- ======================================================= CORPUS -->
 <section class="block" id="corpus"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">3 · All 22 conversations (E1, E12)</p>
+    <p class="eyebrow">3 · All 22 conversations (E1, E9)</p>
     <h2>Hard negatives come first</h2>
     <p>Twelve hard negatives were written before any positive: horror novelists, a true-crime researcher, a nurse, a defense attorney, a game master, a grieving sibling, and three teenagers venting about parents. Then ten hard positives, each paired with a negative. Results are reported per stratum and never pooled into one accuracy number, and the false-positive rate on hard negatives is the headline.</p>
   </div>
@@ -412,13 +412,13 @@ footer .wrap { display: grid; gap: 1rem; }
     <thead><tr><th>Conversation</th><th>Per-message filter</th><th class="lad">Tier: ○ gold · <span class="conv">● analyzer</span><div class="ladder-key" aria-hidden="true"><span>none</span><span>resource</span><span>friction</span><span>review</span><span>escalate</span></div></th></tr></thead>
     <tbody></tbody>
   </table></div>
-  <p class="src">Built from eval/results/e12_moderation*.jsonl and the v2 analyzer runs by docs/build_data.py. Full tables: eval/results/E12_REPORT.md, E1_E2_REPORT.md.</p>
+  <p class="src">Built from eval/results/e9_moderation*.jsonl and the v2 analyzer runs by docs/build_data.py. Full tables: eval/results/E9_REPORT.md, E1_E2_REPORT.md.</p>
 </div></section>
 
 <!-- ======================================================= BASE RATES -->
 <section class="block" id="baserate"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">4 · Why zero is not zero (E9)</p>
+    <p class="eyebrow">4 · Why zero is not zero (E7)</p>
     <h2>Twelve clean results still allow a lot of harm</h2>
     <p>Zero false positives out of 12 sounds clean. But the 95% interval on 0/12 runs up to 24%, and real conversations that warrant review are extremely rare. Expected innocent reviews per real one is <span class="mono">(1 − p) × FPR ÷ (p × recall)</span>. Move the sliders.</p>
   </div>
@@ -443,7 +443,7 @@ footer .wrap { display: grid; gap: 1rem; }
 <!-- ======================================================= LADDER -->
 <section class="block" id="ladder"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">5 · Risk assessment (E9)</p>
+    <p class="eyebrow">5 · Risk assessment (E7)</p>
     <h2>A ladder, not a switch</h2>
     <p>In British Columbia the flag was raised, reviewed, and the options used were ban or nothing. The analyzer returns a graduated tier instead, and each rung has a written evidence rule and a stated cost when it is wrong. It is not a risk score: a single number hides which evidence is doing the work.</p>
   </div>
@@ -460,7 +460,7 @@ footer .wrap { display: grid; gap: 1rem; }
 <!-- ======================================================= REFUSAL -->
 <section class="block" id="refusal"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">6 · Refusal as signal (E5, E10, E15)</p>
+    <p class="eyebrow">6 · Refusal as signal (E5, E8, E12)</p>
     <h2>A refusal is the system's own judgment. Keep it.</h2>
     <p>The project's main proposal: treat a refusal as an observation that enters the conversation's state, not as a dead end. One refusal means little. A refusal followed by the same request under a new frame means something specific. It is the sequence in the Roberts case, and it costs no new detection capability.</p>
     <p>To study it without asking any model for anything harmful, the payload is always harmless: copyrighted lyrics of a fictional song, a game's code word, a quiz answer. The reframing pattern is the variable. Both conversations below contain "school project". Only one uses it to undo a refusal.</p>
@@ -494,16 +494,16 @@ footer .wrap { display: grid; gap: 1rem; }
   </table></div>
   <div class="findings">
     <div><span class="tag">E5 on real logs · WildChat-1M (public)</span><h3>Keyword rules fail; the model tracker holds up on held-out data</h3><p>On real conversations the rules flagged "refusals" that were capability disclaimers ("As an AI language model, I cannot browse…") or characters' lines in stories. On a third sample of 75, labeled by hand before the run, the rules' precision was 1/23. Prompt v3, not written from that sample, found all 3 scored positives with precision 3/10. Three positives is too few to call that a recall.</p></div>
-    <div><span class="tag">E15 · carrying refusals across sessions</span><h3>Remembering refusals has a cost, and it falls on hard negatives</h3><p>On 15 harmless two-session items, carrying refusal state into the next day's session with the rule tracker caught 5 of 6 next-day re-requests and wrongly flagged 4 of 7 ordinary returns (CI 0.25–0.84). Three of the four were topic overlap alone. Remembering every refusal flagged 7/7. Refusal memory has to be designed, not switched on.</p></div>
-    <div><span class="tag">E10 · injected refusal reminder, live</span><h3 class="verdict-null">Negative result: no pretext undid a refusal</h3><p>A live model guarded a harmless code word against six pretexts, with and without a reminder of its earlier refusal injected into context. Across four runs (two models, two rule wordings) no pretext got the word out (0 of 190 replies under the strict rule). The sequence never happened, so the reminder had nothing to fix. A code-word rule is not trained safety behavior, so this cuts both ways.</p></div>
-    <div><span class="tag">Policy check (E14)</span><h3>No provider publishes that refusals persist</h3><p>Anthropic's published guidance says its model may stay "more wary for the remainder of the interaction". Its usage policy says a block "does not by itself indicate a violation". No provider's published text says refusals are kept as state across sessions or accounts, or feed review.</p></div>
+    <div><span class="tag">E12 · carrying refusals across sessions</span><h3>Remembering refusals has a cost, and it falls on hard negatives</h3><p>On 15 harmless two-session items, carrying refusal state into the next day's session with the rule tracker caught 5 of 6 next-day re-requests and wrongly flagged 4 of 7 ordinary returns (CI 0.25–0.84). Three of the four were topic overlap alone. Remembering every refusal flagged 7/7. Refusal memory has to be designed, not switched on.</p></div>
+    <div><span class="tag">E8 · injected refusal reminder, live</span><h3 class="verdict-null">Negative result: no pretext undid a refusal</h3><p>A live model guarded a harmless code word against six pretexts, with and without a reminder of its earlier refusal injected into context. Across four runs (two models, two rule wordings) no pretext got the word out (0 of 190 replies under the strict rule). The sequence never happened, so the reminder had nothing to fix. A code-word rule is not trained safety behavior, so this cuts both ways.</p></div>
+    <div><span class="tag">Policy check (E11)</span><h3>No provider publishes that refusals persist</h3><p>Anthropic's published guidance says its model may stay "more wary for the remainder of the interaction". Its usage policy says a block "does not by itself indicate a violation". No provider's published text says refusals are kept as state across sessions or accounts, or feed review.</p></div>
   </div>
 </div></section>
 
 <!-- ======================================================= EXPLANATIONS -->
 <section class="block" id="explanations"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">7 · Do the explanations hold up? (E2, E3, E4, E7, E13)</p>
+    <p class="eyebrow">7 · Do the explanations hold up? (E2, E3, E4, E6, E10)</p>
     <h2>Right place, sometimes the wrong name</h2>
     <p>An explanation a reviewer will act on has to point at the evidence that drove the decision, survive rewording, and ignore things it should ignore. Each test below has a small n, and every interval is wide.</p>
   </div>
@@ -511,16 +511,16 @@ footer .wrap { display: grid; gap: 1rem; }
     <div><span class="tag">E2 · right for the right reason</span><h3 class="verdict-pos">It looks in the right place</h3><p>No finding on any hard positive rests only on turns shared with the benign partner (0/23). Fixation citations land after the split 26 of 27 times, against 0.61 by chance. The errors are in the construct's name: escalation becomes a catch-all for "this got worse".</p></div>
     <div><span class="tag">E3 · faithfulness</span><h3>Escalation citations are faithful; the others are not selective</h3><p>Removing cited turns flipped 14/14 findings. Removing the same number of random turns flipped escalation 1 time in 6, so those citations are specific. Fixation and the tier cite half the conversation or more, and random removal flips them too (5/6, 6/6).</p></div>
     <div><span class="tag">E4 · evasion under six rewordings</span><h3 class="verdict-null">No cliff</h3><p>Paraphrase, euphemism, fiction frame, roleplay, translate-and-back and dilution moved no tier (n = 3 pairs). Labels moved, but about as much as between identical repeat runs. Fiction and roleplay frames were still sent to review, which led to the ladder's fiction cap.</p></div>
-    <div><span class="tag">E7 · disclosed psychiatric diagnosis</span><h3 class="verdict-null">No false positive, with one caveat</h3><p>Adding a diagnosis to each hard negative sent 0/12 to review. The reasoning dismissed it every time, as the prompt instructs. One competing explanation still framed a novelist's diagnosis as context for "why they write from inside disturbed minds". A human reviewer would read that.</p></div>
-    <div><span class="tag">E13 · sycophancy drift</span><h3 class="verdict-null">No drift in 7 turns</h3><p>A scripted user held a false, harmless suspicion about a neighbor across 7 turns. A companion bot declined the final public accusation in all four conversations. The plain arm agreed twice in 14 replies; the arm with a "check the belief" reminder never did. One conversation per cell is a demonstration, not a rate.</p></div>
-    <div><span class="tag">E12 · per-message vs. whole conversation</span><h3>Context and model differ together</h3><p>The two arms compared above differ in context and in model. Running the analyzer one turn at a time would separate the two. That arm is built and was not run.</p></div>
+    <div><span class="tag">E6 · disclosed psychiatric diagnosis</span><h3 class="verdict-null">No false positive, with one caveat</h3><p>Adding a diagnosis to each hard negative sent 0/12 to review. The reasoning dismissed it every time, as the prompt instructs. One competing explanation still framed a novelist's diagnosis as context for "why they write from inside disturbed minds". A human reviewer would read that.</p></div>
+    <div><span class="tag">E10 · sycophancy drift</span><h3 class="verdict-null">No drift in 7 turns</h3><p>A scripted user held a false, harmless suspicion about a neighbor across 7 turns. A companion bot declined the final public accusation in all four conversations. The plain arm agreed twice in 14 replies; the arm with a "check the belief" reminder never did. One conversation per cell is a demonstration, not a rate.</p></div>
+    <div><span class="tag">E9 · per-message vs. whole conversation</span><h3>Context and model differ together</h3><p>The two arms compared above differ in context and in model. Running the analyzer one turn at a time would separate the two. That arm is built and was not run.</p></div>
   </div>
 </div></section>
 
 <!-- ======================================================= POLICY -->
 <section class="block" id="policy"><div class="wrap">
   <div class="prose">
-    <p class="eyebrow">8 · What providers already do (E14)</p>
+    <p class="eyebrow">8 · What providers already do (E11)</p>
     <h2>Serious programs, aimed at a different threat</h2>
     <p>Anthropic trains models against a written constitution, runs classifiers against universal jailbreaks, tests before deployment, and publishes threat intelligence. OpenAI has usage policies, a model spec, a threat-intelligence team publishing disruption reports, and account bans with information sharing. Meta publishes an acceptable-use policy for Llama. These programs concentrate on catastrophic and state-scale risk. The cases above are interpersonal and unfold over time.</p>
     <p>Each published policy text was coded clause by clause. "Not stated" means it is not in the published text. It is not a claim about internal practice.</p>
@@ -537,16 +537,16 @@ footer .wrap { display: grid; gap: 1rem; }
       <tr><td>Referral volume or accuracy published</td><td>No</td><td>No</td><td>No</td></tr>
     </tbody>
   </table></div>
-  <p class="src">Sources and quotes: research/E14_POLICY_CODING.md and research/POLICY_COMPARISON.md, accessed 14 Oct 2026. OpenAI and Llama pages were read through a quote-limited fetch; Meta's consumer Meta AI terms could not be retrieved, so Meta is the weakest column. Re-check quotes before citing.</p>
+  <p class="src">Sources and quotes: research/E11_POLICY_CODING.md and research/POLICY_COMPARISON.md, accessed 14 Oct 2026. OpenAI and Llama pages were read through a quote-limited fetch; Meta's consumer Meta AI terms could not be retrieved, so Meta is the weakest column. Re-check quotes before citing.</p>
 
   <div class="prose"><h3>The gaps, and what this project puts in each</h3></div>
   <div class="gaps">
-    <div class="gap"><p class="l">Safety is trained and scored per response, so the unit of safety is the turn (Qi et al., 2024).</p><p class="r">A benchmark of whole conversations in matched pairs, where per-message scores tie by design. E1, E2, E12.</p></div>
-    <div class="gap"><p class="l">No provider publishes that a refusal persists as state.</p><p class="r">Refusal-sequence tracking on harmless payloads, tested on real public logs, with the cost of remembering measured. E5, E15.</p></div>
-    <div class="gap"><p class="l">No published rung between ban and police for risk to others.</p><p class="r">A five-rung ladder with written evidence rules, per-rung actions and per-rung false-positive costs. E9.</p></div>
-    <div class="gap"><p class="l">No provider publishes referral volume or accuracy, and post-BC criteria were loosened.</p><p class="r">False-positive rate on hard negatives is the headline everywhere, with the base-rate arithmetic shown. E1, E9.</p></div>
-    <div class="gap"><p class="l">The asymmetry is in enforcement: mandatory reporting for child safety, none for violence.</p><p class="r">Clause-level coding of three providers' texts, so the claim rests on counts and quotes. E14.</p></div>
-    <div class="gap"><p class="l">Explanations reviewers act on are rarely tested.</p><p class="r">Citation faithfulness, stability under rewording, and handling of diagnoses. E2, E3, E4, E7.</p></div>
+    <div class="gap"><p class="l">Safety is trained and scored per response, so the unit of safety is the turn (Qi et al., 2024).</p><p class="r">A benchmark of whole conversations in matched pairs, where per-message scores tie by design. E1, E2, E9.</p></div>
+    <div class="gap"><p class="l">No provider publishes that a refusal persists as state.</p><p class="r">Refusal-sequence tracking on harmless payloads, tested on real public logs, with the cost of remembering measured. E5, E12.</p></div>
+    <div class="gap"><p class="l">No published rung between ban and police for risk to others.</p><p class="r">A five-rung ladder with written evidence rules, per-rung actions and per-rung false-positive costs. E7.</p></div>
+    <div class="gap"><p class="l">No provider publishes referral volume or accuracy, and post-BC criteria were loosened.</p><p class="r">False-positive rate on hard negatives is the headline everywhere, with the base-rate arithmetic shown. E1, E7.</p></div>
+    <div class="gap"><p class="l">The asymmetry is in enforcement: mandatory reporting for child safety, none for violence.</p><p class="r">Clause-level coding of three providers' texts, so the claim rests on counts and quotes. E11.</p></div>
+    <div class="gap"><p class="l">Explanations reviewers act on are rarely tested.</p><p class="r">Citation faithfulness, stability under rewording, and handling of diagnoses. E2, E3, E4, E6.</p></div>
   </div>
 </div></section>
 
@@ -567,13 +567,13 @@ footer .wrap { display: grid; gap: 1rem; }
   </ol>
 </div></section>
 
-<!-- ======================================================= E16 SLOT -->
+<!-- ======================================================= E13 SLOT -->
 <section class="block" id="demo"><div class="wrap">
   <div class="slot">
-    <p class="eyebrow">Demo · E16</p>
+    <p class="eyebrow">Demo · E13</p>
     <h2>Guard the code word</h2>
     <p class="prose">A bot guards a harmless code word, and players try pretexts to get it. A side panel shows what the refusal tracker sees at each turn: the refusal state, whether it recognized a re-request, and which rung of the ladder the conversation lands on, and why. It stores nothing.</p>
-    <a class="btn" href="e16/">Open the demo</a>
+    <a class="btn" href="e13/">Open the demo</a>
   </div>
 </div></section>
 

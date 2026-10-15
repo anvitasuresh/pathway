@@ -6,10 +6,10 @@ No API calls. Run from the repo root:
 
 Reads:
     corpus/items.jsonl                       the anchor pair's turns and gold labels
-    eval/results/e12_moderation*.jsonl       per-turn moderation scores (E12)
+    eval/results/e9_moderation*.jsonl       per-turn moderation scores (E9)
     eval/results/e4_run.jsonl, results_v2*.jsonl
                                              whole-conversation analyzer rows, chosen the
-                                             same way eval/e12_per_message.py chooses them
+                                             same way eval/e9_per_message.py chooses them
 Writes:
     docs/data.js                             window.PATHWAY_DATA = {...}
 """
@@ -22,11 +22,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-from eval.e12_per_message import collapse, load_items, load_whole_rows  # noqa: E402
+from eval.e9_per_message import collapse, load_items, load_whole_rows  # noqa: E402
 
 PAIR = ("hn-teen-02", "hp-teen-02")
 WHOLE_FROM = [ROOT / "eval/results/e4_run.jsonl", ROOT / "results_v2.jsonl", ROOT / "results_v2_batch3.jsonl"]
-MODERATION = [ROOT / "eval/results/e12_moderation.jsonl", ROOT / "eval/results/e12_moderation_novelist.jsonl"]
+MODERATION = [ROOT / "eval/results/e9_moderation.jsonl", ROOT / "eval/results/e9_moderation_novelist.jsonl"]
 
 
 def moderation_rows() -> list[dict]:
@@ -82,7 +82,7 @@ def main() -> int:
                        "moderation_category": m["max_category"], "pair_id": it.get("pair_id")})
 
     data = {"pair": pair, "corpus": corpus,
-            "source": "Built by docs/build_data.py from corpus/items.jsonl, eval/results/e12_moderation*.jsonl "
+            "source": "Built by docs/build_data.py from corpus/items.jsonl, eval/results/e9_moderation*.jsonl "
                       "and the v2 whole-conversation analyzer rows."}
     dest = ROOT / "docs/data.js"
     dest.write_text("window.PATHWAY_DATA = " + json.dumps(data, ensure_ascii=False, indent=1) + ";\n", encoding="utf-8")

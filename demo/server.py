@@ -1,6 +1,6 @@
-"""E16: play the code-word game locally, with the refusal tracker's view beside it.
+"""E13: play the code-word game locally, with the refusal tracker's view beside it.
 
-A bot (Lumen, E10's host) guards a harmless code word. You try to get it out of it. The
+A bot (Lumen, E8's host) guards a harmless code word. You try to get it out of it. The
 side panel shows, after every turn, what the project's own code sees: the refusals it
 recognised and the phrase behind each, whether your message was a re-request and of what
 kind, the ladder rung and why, and the exact note injected into the bot's next prompt.
@@ -20,7 +20,7 @@ would not want sent to a model from your account.
 Usage:
     python -m demo.server                      # http://127.0.0.1:8016
     python -m demo.server --no-reminder        # bot never gets the refusal-state note
-    python -m demo.server --rule strict        # E10's strict host prompt
+    python -m demo.server --rule strict        # E8's strict host prompt
     python -m demo.server --dry-run            # print the prompts; call nothing
 """
 
@@ -40,15 +40,15 @@ from typing import Any
 from analyzer.refusal_state import reminder_text, track_rules
 from demo.game import panel, to_turns
 from analyzer.analyzer import DEFAULT_MODEL
-from eval.e10_codeword import CODE_WORDS, DEFAULT_RULE, RULES, system_for
+from eval.e8_codeword import CODE_WORDS, DEFAULT_RULE, RULES, system_for
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGE_DIR = ROOT / "docs" / "e16"
-# The small model from the same family as the analyzer (the one E10 ran as "small").
+PAGE_DIR = ROOT / "docs" / "e13"
+# The small model from the same family as the analyzer (the one E8 ran as "small").
 SMALL_MODEL = DEFAULT_MODEL.replace("opus", "haiku")
 # USD per million tokens (input, output) for the small model, prompts under 100K tokens.
 PRICE = {SMALL_MODEL: (0.10, 0.50)}
-MAX_TOKENS = 1024  # same as E10
+MAX_TOKENS = 1024  # same as E8
 MAX_PLAYER_TURNS = 15
 MAX_CHARS = 400
 
@@ -59,13 +59,13 @@ def build_system(word: str, history: list[dict], rule: str, reminder: bool) -> t
     """System prompt for the bot's next reply, and the injected note if any.
 
     The note is built by the rule tracker from the conversation *before* the player's new
-    message, exactly as in E10's reminder arm: if the tracker missed the refusal, nothing
+    message, exactly as in E8's reminder arm: if the tracker missed the refusal, nothing
     is injected. That is the deployed mechanism, detection errors included.
     """
     note = None
     if reminder and history:
         turns = to_turns(history)
-        note = reminder_text(track_rules({"id": "e16", "turns": turns}), turns)
+        note = reminder_text(track_rules({"id": "e13", "turns": turns}), turns)
     return system_for(word, note, rule=rule), note
 
 
@@ -219,7 +219,7 @@ def dry_run(rule: str) -> str:
                {"role": "assistant", "text": "I can't tell you the code word, that's the puzzle! Want a hint?"}]
     system, note = build_system(word, history, rule, True)
     return "\n".join([
-        f"# E16 dry run. Model {SMALL_MODEL}, rule {rule!r}. Nothing was sent.", "",
+        f"# E13 dry run. Model {SMALL_MODEL}, rule {rule!r}. Nothing was sent.", "",
         "## Bot system prompt on the first turn", system_for(word, None, rule=rule), "",
         "## Bot system prompt after a refusal the tracker recognised (reminder on)", system, "",
         f"## Calls per player turn: 1 (bot). Tracker and ladder run locally.",
@@ -230,7 +230,7 @@ def dry_run(rule: str) -> str:
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--port", type=int, default=8016)
-    ap.add_argument("--model", default=os.environ.get("PATHWAY_E16_MODEL", SMALL_MODEL))
+    ap.add_argument("--model", default=os.environ.get("PATHWAY_E13_MODEL", SMALL_MODEL))
     ap.add_argument("--rule", choices=sorted(RULES), default=DEFAULT_RULE)
     ap.add_argument("--no-reminder", action="store_true", help="never inject the refusal-state note")
     ap.add_argument("--dry-run", action="store_true")
@@ -240,7 +240,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     game = Game(Bot(args.model), rule=args.rule, reminder=not args.no_reminder)
     server = ThreadingHTTPServer(("127.0.0.1", args.port), make_handler(game))
-    print(f"E16 running at http://127.0.0.1:{args.port}  (model {args.model}, rule {args.rule}, "
+    print(f"E13 running at http://127.0.0.1:{args.port}  (model {args.model}, rule {args.rule}, "
           f"reminder {'on' if game.reminder else 'off'}). Ctrl+C to stop.", file=sys.stderr)
     try:
         server.serve_forever()

@@ -1,4 +1,4 @@
-"""E7 (reduced): does mentioning a psychiatric diagnosis raise the analyzer's tier?
+"""E6 (reduced): does mentioning a psychiatric diagnosis raise the analyzer's tier?
 
 Each of the 12 hard negatives gets one variant: a single sentence appended to one user
 turn, in which the user states a psychiatric diagnosis in passing. Nothing else in the
@@ -7,7 +7,7 @@ treatment status, and no risk content. The gold labels are the parent's: a diagn
 is not a risk signal, so any rise in tier or construct label is a false positive the
 disclosure caused, i.e. the analyzer flagging who someone is rather than what they do.
 
-Design choices (CONTEXT.md false-positive constraint, E7 in eval/PLAN.md):
+Design choices (CONTEXT.md false-positive constraint, E6 in eval/PLAN.md):
 
 * Four diagnoses that carry a violence stereotype, three items each: bipolar disorder,
   schizophrenia, borderline personality disorder, PTSD. Per-diagnosis n is 3, so the
@@ -15,7 +15,7 @@ Design choices (CONTEXT.md false-positive constraint, E7 in eval/PLAN.md):
 * The sentence goes on turn 2 unless that turn holds hostile wording or the diagnosis
   would read as explaining what that turn says (sleep, fixation, burnout); then on the
   next user turn that does not. The chosen turn is recorded per variant.
-* Dialect variants were dropped from v1, as were E6 and E11.
+* Dialect variants were dropped from v1, as were prompt ablation and injection robustness.
 
 Only the variants are sent (one call each). The originals are not re-run: every saved
 prompt-v2 row for them on main is the baseline, so a change counts only when the
@@ -28,10 +28,10 @@ disclosure turn as evidence for a present or uncertain construct, and whether an
 its reasoning text mentions the diagnosis.
 
 Usage:
-    python -m eval.e7_disclosure --build           # (re)write corpus/e7_variants.jsonl
-    python -m eval.e7_disclosure --dry-run         # 12 calls, prints what would be sent
-    python -m eval.e7_disclosure --out eval/results/e7_run.jsonl
-    python -m eval.e7_disclosure --preds eval/results/e7_run.jsonl --json-out eval/results/e7_report.json
+    python -m eval.e6_disclosure --build           # (re)write corpus/e6_variants.jsonl
+    python -m eval.e6_disclosure --dry-run         # 12 calls, prints what would be sent
+    python -m eval.e6_disclosure --out eval/results/e6_run.jsonl
+    python -m eval.e6_disclosure --preds eval/results/e6_run.jsonl --json-out eval/results/e6_report.json
 """
 
 from __future__ import annotations
@@ -49,7 +49,7 @@ from eval.metrics import REVIEW_OR_ABOVE, TIER_RANK, _fmt, check_no_pooled, rate
 
 ROOT = Path(__file__).resolve().parent.parent
 ITEMS_PATH = ROOT / "corpus" / "items.jsonl"
-VARIANTS_PATH = ROOT / "corpus" / "e7_variants.jsonl"
+VARIANTS_PATH = ROOT / "corpus" / "e6_variants.jsonl"
 TRANSFORM = "diagnosis_disclosure"
 SUFFIX = "__dx"
 
@@ -98,7 +98,7 @@ def build_variants(items: list[dict]) -> list[dict]:
     for pid, turn, diagnosis, sentence in DISCLOSURES:
         parent = by_id[pid]
         if parent["stratum"] != "hard_negative":
-            raise ValueError(f"{pid}: E7 variants are built from hard negatives only")
+            raise ValueError(f"{pid}: E6 variants are built from hard negatives only")
         v = copy.deepcopy(parent)
         t = next(t for t in v["turns"] if int(t["i"]) == turn)
         if t["role"] != "user":
@@ -106,7 +106,7 @@ def build_variants(items: list[dict]) -> list[dict]:
         t["text"] = f"{t['text'].rstrip()} {sentence}"
         v.update(id=pid + SUFFIX, parent_id=pid, transform=TRANSFORM, diagnosis=diagnosis,
                  disclosure_turn=turn, disclosure=sentence,
-                 notes=f"E7 variant of {pid}: only turn {turn} changed, by appending the disclosure. "
+                 notes=f"E6 variant of {pid}: only turn {turn} changed, by appending the disclosure. "
                        "Gold is the parent's; a diagnosis is not a risk signal.")
         v.pop("pair_id", None)
         out.append(v)
@@ -215,7 +215,7 @@ def _tally(tiers: list[str]) -> str:
 
 def render_markdown(report: dict) -> str:
     h, m = report["headline"], report["meta"]
-    out = ["# E7: psychiatric diagnosis disclosure on hard negatives", "",
+    out = ["# E6: psychiatric diagnosis disclosure on hard negatives", "",
            f"Hard negatives only. {m['n_scored']}/{m['n_variants']} variants scored "
            f"(models {m['models']}, effort {m['efforts']}, prompt {m['prompt_versions']}). "
            "Baseline: every saved prompt-v2 run of each original.", ""]
@@ -283,7 +283,7 @@ def main(argv: list[str] | None = None) -> int:
         rows = [r for path in args.preds for r in load_items(path)]
     else:
         if args.dry_run:
-            print(f"# E7 dry run: prompt {prompt.version}, {len(variants)} analyzer calls "
+            print(f"# E6 dry run: prompt {prompt.version}, {len(variants)} analyzer calls "
                   "(variants only; originals come from saved runs)")
             print("# saved original runs per item: "
                   + ", ".join(f"{v['parent_id']}={len(baseline[v['parent_id']])}" for v in variants) + "\n")

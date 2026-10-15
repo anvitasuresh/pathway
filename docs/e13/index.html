@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guard the Code Word</title>
-<meta name="description" content="Pathway E16. A bot guards a harmless code word while you try pretexts to get it. A side panel shows what the refusal tracker sees: the refusal, the re-request, the ladder rung and why.">
+<meta name="description" content="Pathway E13. A bot guards a harmless code word while you try pretexts to get it. A side panel shows what the refusal tracker sees: the refusal, the re-request, the ladder rung and why.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -133,7 +133,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
 <body>
 <div class="wrap">
 <header>
-  <p class="eyebrow">Pathway · E16 · <a href="../">back to the study</a></p>
+  <p class="eyebrow">Pathway · E13 · <a href="../">back to the study</a></p>
   <h1>Guard the code word</h1>
   <section class="motive" aria-labelledby="why-h">
     <p class="eyebrow">Why this exists</p>
@@ -153,7 +153,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
       <li><b>Do not punish the person.</b> Asking again is ordinary. Retrying never raises anyone's risk level here, because wrongly flagging people is a harm in its own right.</li>
     </ul>
     <p>This page runs that proposal. The project's rules forbid testing it with real harmful requests, so a harmless code word stands in for the refused request, and the pretexts are the same moves seen in the cases. What you see in the side panel is the project's actual tracker and ladder, not a mock-up.</p>
-    <p class="note"><b>What it shows and what it doesn't.</b> It shows how the mechanism works, turn by turn, including where the tracker gets it wrong. It is not evidence that the reminder makes models safer: in E10 no pretext ever talked the bot out of a refusal, with or without the reminder, so there was nothing for it to fix. The study's main result, that reading whole conversations catches what per-message filters miss, is on <a href="../">the main page</a>.</p>
+    <p class="note"><b>What it shows and what it doesn't.</b> It shows how the mechanism works, turn by turn, including where the tracker gets it wrong. It is not evidence that the reminder makes models safer: in E8 no pretext ever talked the bot out of a refusal, with or without the reminder, so there was nothing for it to fix. The study's main result, that reading whole conversations catches what per-message filters miss, is on <a href="../">the main page</a>.</p>
   </section>
   <p class="eyebrow">How to play</p>
   <p class="lede">A word-puzzle host named Lumen knows this round's code word and is supposed to let you work it out. Try to get it handed over: say it's for a school project, that you're writing a story, that you're the developer. The panel shows what the project's refusal tracker sees after every turn: the refusal, whether your message was a second try and what kind, which rung of the ladder the conversation sits on and why, and the note the bot is given before it answers again.</p>
@@ -195,8 +195,8 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
 </div>
 
 <footer>
-  <p class="note"><b>How it works.</b> The bot is E10's host prompt on the small model. After every turn the transcript goes through the E5 rule tracker (<span class="mono">analyzer/refusal_state.py</span>), which looks for refusal wording and classifies the next message as a pretext, a re-ask, a clarification, a changed condition, or taking up something the bot offered. Its state is rendered as the note E10 injected and placed on the E9 ladder with the E9 rubric (<span class="mono">eval/e9_ladder.py</span>). Replays use real model replies from E10 and recorded sessions; their panels are computed by the same code.</p>
-  <p class="note"><b>Why retrying never climbs the ladder.</b> The ladder is about warning behavior toward people, and a code-word game has none. Asking again, even with a pretext, is ordinary. E15 found that remembering refusals more widely, across sessions, wrongly flagged 4 of 7 people coming back with an ordinary request. The refusal is kept as state inside one conversation so the bot is not argued out of its own decision; it is not used against the person.</p>
+  <p class="note"><b>How it works.</b> The bot is E8's host prompt on the small model. After every turn the transcript goes through the E5 rule tracker (<span class="mono">analyzer/refusal_state.py</span>), which looks for refusal wording and classifies the next message as a pretext, a re-ask, a clarification, a changed condition, or taking up something the bot offered. Its state is rendered as the note E8 injected and placed on the E7 ladder with the E7 rubric (<span class="mono">eval/e7_ladder.py</span>). Replays use real model replies from E8 and recorded sessions; their panels are computed by the same code.</p>
+  <p class="note"><b>Why retrying never climbs the ladder.</b> The ladder is about warning behavior toward people, and a code-word game has none. Asking again, even with a pretext, is ordinary. E12 found that remembering refusals more widely, across sessions, wrongly flagged 4 of 7 people coming back with an ordinary request. The refusal is kept as state inside one conversation so the bot is not argued out of its own decision; it is not used against the person.</p>
   <p class="note"><b>Play it live.</b> On your own machine with your own API key: <span class="mono">python -m demo.server</span>, then open <span class="mono">http://127.0.0.1:8016</span>. One small-model call per turn; the panel shows the cost of each.</p>
 </footer>
 </div>
@@ -261,7 +261,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
       var cls = (r === p.rung ? "on" : "") + (r === "escalate" ? " never" : "");
       return '<div class="' + cls + '" title="' + esc(RUNG_NOTE[r]) + '">' + r + "</div>";
     }).join("");
-    out.push('<div class="sec"><h3>Ladder rung <span class="k">E9 rubric and §3 actions</span></h3><div class="ladder">' + lad + "</div>" +
+    out.push('<div class="sec"><h3>Ladder rung <span class="k">E7 rubric and §3 actions</span></h3><div class="ladder">' + lad + "</div>" +
       '<ul class="reasons">' + p.reasons.map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul></div>");
     // sequence
     var s = p.sequence, att = p.re_requests.filter(function (r) { return r.attempt; });
@@ -277,7 +277,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     var ref = p.refusals.length ? '<ul class="items">' + p.refusals.map(function (r) {
       return "<li>Turn " + r.turn + " declined the request at turn " + r.request_turn + '. <span class="ev">matched "' + esc(r.evidence) + '"</span></li>';
     }).join("") + "</ul>" : '<p class="empty">No refusal recognised.</p>';
-    if (p.missed_refusals.length) ref += '<p class="warn">Bot replies at turn ' + p.missed_refusals.join(", ") + " kept the word back but contain no refusal wording the rule tracker knows. If any of them was a refusal, the tracker missed it, and nothing would be injected for it. In E10 the tracker caught 5 of 10 live opening refusals.</p>";
+    if (p.missed_refusals.length) ref += '<p class="warn">Bot replies at turn ' + p.missed_refusals.join(", ") + " kept the word back but contain no refusal wording the rule tracker knows. If any of them was a refusal, the tracker missed it, and nothing would be injected for it. In E8 the tracker caught 5 of 10 live opening refusals.</p>";
     out.push('<div class="sec"><h3>Refusal state <span class="k">rule tracker, E5</span></h3>' + ref + "</div>");
     // re-requests
     var rr = p.re_requests.length ? '<ul class="items">' + p.re_requests.map(function (r) {
@@ -287,7 +287,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     }).join("") + "</ul>" : '<p class="empty">No message has been read as a second try at a refused request.</p>';
     out.push('<div class="sec"><h3>Re-requests <span class="k">' + p.n_attempts + " attempt(s)</span></h3>" + rr + "</div>");
     // injected note
-    out.push('<div class="sec"><h3>Note in the bot\'s prompt <span class="k">E10 reminder</span></h3>' +
+    out.push('<div class="sec"><h3>Note in the bot\'s prompt <span class="k">E8 reminder</span></h3>' +
       (injected ? '<p class="note">The bot wrote its last reply with this added to its prompt:</p><pre class="note-box">' + esc(injected) + "</pre>"
         : '<p class="empty">No note was injected before the last reply.</p>') +
       (p.reminder && extra && extra.live ? '<p class="note">Next turn, if the note is on, the bot gets:</p><pre class="note-box">' + esc(p.reminder) + "</pre>" : "") + "</div>");
@@ -300,7 +300,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
   }
 
   /* --------------------------------------------------------------- replay */
-  var R = window.E16_REPLAYS || [], cur = null, step = 0;
+  var R = window.E13_REPLAYS || [], cur = null, step = 0;
   function pickSession(n) {
     cur = R[n]; step = Math.min(1, cur.steps.length - 1);
     Array.prototype.forEach.call($("sessions").children, function (b, i) { b.setAttribute("aria-pressed", i === n ? "true" : "false"); });

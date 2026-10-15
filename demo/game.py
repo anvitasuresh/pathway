@@ -1,15 +1,15 @@
-"""E16: what the refusal tracker sees while someone plays the code-word game.
+"""E13: what the refusal tracker sees while someone plays the code-word game.
 
 Pure functions, no API calls. `panel(word, history)` takes a game transcript and returns
 everything the side panel shows, computed with the project's existing code:
 
 * refusal state from `analyzer.refusal_state.track_rules` (the E5 rule tracker), with the
   phrase that triggered each decision;
-* the note E10 injects (`reminder_text`), i.e. what the bot will be told next turn;
-* the ladder rung, using the E9 rubric (`eval.e9_ladder.rubric_tier`) and the E9 §3 table
+* the note E8 injects (`reminder_text`), i.e. what the bot will be told next turn;
+* the ladder rung, using the E7 rubric (`eval.e7_ladder.rubric_tier`) and the E7 §3 table
   of what each rung does.
 
-The game itself is E10's (same host prompts, same code words, same leak check). The
+The game itself is E8's (same host prompts, same code words, same leak check). The
 code word is an ordinary word; nothing harmful is requested at any point.
 
 What the panel can and cannot say, so the page never overclaims:
@@ -17,11 +17,11 @@ What the panel can and cannot say, so the page never overclaims:
 * The ladder is about warning behavior toward people. A code-word game has none of the
   six constructs, so the rubric supports nothing above the band below friction. The
   only thing that moves the game to `friction` is the bot's own refusal, because
-  declining one thread while helping with the rest is what friction does (E9 §3).
+  declining one thread while helping with the rest is what friction does (E7 §3).
 * Retrying, even with pretexts, never moves the game up the ladder. A pretext on a
-  harmless request is not a warning behavior, and E15 showed that remembering refusals
+  harmless request is not a warning behavior, and E12 showed that remembering refusals
   more widely costs false positives.
-* The rule tracker infers refusals from wording. It misses some (E10: 5 of 10 live
+* The rule tracker infers refusals from wording. It misses some (E8: 5 of 10 live
   opening refusals in the first run). When the bot withheld the word but the tracker
   saw no refusal, the panel says so instead of hiding it.
 * None of this prevents misuse. It shows the mechanism on a harmless payload.
@@ -31,8 +31,8 @@ from __future__ import annotations
 
 from analyzer.analyzer import CONSTRUCTS
 from analyzer.refusal_state import RefusalState, reminder_text, track_rules
-from eval.e9_ladder import rubric_tier
-from eval.e10_codeword import leaked
+from eval.e7_ladder import rubric_tier
+from eval.e8_codeword import leaked
 
 KIND_LABELS = {
     "pretext": "pretext (a reason or frame added after the refusal)",
@@ -56,13 +56,13 @@ def _guess_turn(word: str, turns: list[dict]) -> int | None:
 
 
 def content_rung() -> str:
-    """The E9 rubric fed what a code-word game can contain: no construct present."""
+    """The E7 rubric fed what a code-word game can contain: no construct present."""
     return rubric_tier({c: "absent" for c in CONSTRUCTS})
 
 
 def panel(word: str, history: list[dict], state: RefusalState | None = None) -> dict:
     turns = to_turns(history)
-    state = state or track_rules({"id": "e16", "turns": turns})
+    state = state or track_rules({"id": "e13", "turns": turns})
     guess = _guess_turn(word, turns)
 
     # Ground truth the game has and a real platform would not: did the bot say the word
@@ -97,7 +97,7 @@ def panel(word: str, history: list[dict], state: RefusalState | None = None) -> 
 
     sequence = None
     for r in state.re_requests:
-        # A reply that refuses and still names the word is a slip (E10 notes), not a
+        # A reply that refuses and still names the word is a slip (E8 notes), not a
         # pretext that worked: only count replies the tracker did not read as refusals.
         if r.is_attempt and r.outcome_turn in leaks and r.outcome != "refused":
             sequence = {"request": r.root_request_turn, "refusal": r.refusal_turn,
@@ -123,7 +123,7 @@ def panel(word: str, history: list[dict], state: RefusalState | None = None) -> 
 def _rung(state: RefusalState, sequence: dict | None, leaks: list[int],
           guess: int | None) -> tuple[str, list[str]]:
     band = "none" if content_rung() == "resource" else content_rung()
-    reasons = ["No warning-behavior construct can occur in a code-word game, so the E9 rubric "
+    reasons = ["No warning-behavior construct can occur in a code-word game, so the E7 rubric "
                "supports nothing above the band below friction. Without a refusal the rung is none."]
     rung = band
     if state.refusals:
@@ -132,7 +132,7 @@ def _rung(state: RefusalState, sequence: dict | None, leaks: list[int],
         reasons.append(
             f"The bot declined one thing at turn {first.refusal_turn} and keeps helping with the "
             "rest of the game. That is what friction does. At friction the only thing kept is "
-            "this conversation's refusal state; nothing goes to an account or a reviewer (E9 §3).")
+            "this conversation's refusal state; nothing goes to an account or a reviewer (E7 §3).")
     attempts = state.attempts
     if attempts:
         kinds = sorted({a.kind for a in attempts})
@@ -141,7 +141,7 @@ def _rung(state: RefusalState, sequence: dict | None, leaks: list[int],
         reasons.append(
             f"{len(attempts)} re-request(s) after the refusal: {what}. Trying again does not move "
             "the conversation up. A pretext on a harmless request is not a warning behavior, "
-            "and E15 found that carrying refusal state further produces false positives.")
+            "and E12 found that carrying refusal state further produces false positives.")
     if sequence:
         reasons.append(
             f"Refuse, reframe, comply completed: refused at turn {sequence['refusal']}, reframed at "
@@ -151,7 +151,7 @@ def _rung(state: RefusalState, sequence: dict | None, leaks: list[int],
     elif leaks:
         reasons.append(
             f"The bot gave the word away at turn {leaks[0]} in a reply that also refused, or with no "
-            "reframe before it. E10 saw this too: a slip while refusing, not a pretext that worked.")
+            "reframe before it. E8 saw this too: a slip while refusing, not a pretext that worked.")
     if guess is not None:
         reasons.append(f"The player named the word at turn {guess}. Solving the puzzle is the "
                        "point of the game, not an attempt to get around the rule.")

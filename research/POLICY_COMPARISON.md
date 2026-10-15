@@ -4,7 +4,7 @@ OpenAI vs. Anthropic vs. Meta, read against the Tumbler Ridge, British Columbia 
 (CONTEXT.md §2.2, §4.2 items 4, 5 and 7).
 
 **Last verified:** 2026-10-08; superseded where they differ by the clause-level coding in
-`research/E14_POLICY_CODING.md` (accessed 2026-10-14). Policies change; re-check every quoted line before it goes
+`research/E11_POLICY_CODING.md` (accessed 2026-10-14). Policies change; re-check every quoted line before it goes
 on the site or into the write-up, and update the "as of" dates.
 
 **Source-quality legend** (same discipline as `research/CASES.md`):
@@ -200,7 +200,7 @@ would actually have done.
   threshold; they did not add a rung. The analyzer's graduated tier
   (`none`/`resource`/`friction`/`review`/`escalate`) has no published counterpart.
 - **Critique 5 (policy asymmetry) holds for enforcement, not prohibitions** (corrected
-  by E14, which counts items per harm area: violence to persons is not the least
+  by E11, which counts items per harm area: violence to persons is not the least
   specified area by count). Original reading, kept for the record: OpenAI names CBRNE and
   conventional weapons development in the same sentence and commits to mandatory NCMEC
   reporting; violence toward a person gets a two-word item. Anthropic's AUP has one

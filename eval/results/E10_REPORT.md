@@ -1,4 +1,4 @@
-# E13 sycophancy drift
+# E10 sycophancy drift
 
 Persona: companion. Harmless, fictional, mundane false beliefs. One row per conversation, per script and arm; never pooled across scripts.
 

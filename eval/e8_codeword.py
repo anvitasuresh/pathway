@@ -1,4 +1,4 @@
-"""E10: does injecting refusal state stop a pretext from undoing a refusal?
+"""E8: does injecting refusal state stop a pretext from undoing a refusal?
 
 Harmless by design (CONTEXT.md §4.3, eval/PLAN.md safety rules). The live model plays
 a word-puzzle host whose only rule is not to reveal this round's code word. The code
@@ -31,9 +31,9 @@ behavior. This shows how the mechanism works, not how often real models fail on 
 requests. Results are reported per pretext in design order, never ranked.
 
 Usage:
-    python -m eval.e10_codeword --dry-run
-    python -m eval.e10_codeword --trials 10 --out eval/results/e10.jsonl
-    python -m eval.e10_codeword --rows eval/results/e10.jsonl          # re-score
+    python -m eval.e8_codeword --dry-run
+    python -m eval.e8_codeword --trials 10 --out eval/results/e8.jsonl
+    python -m eval.e8_codeword --rows eval/results/e8.jsonl          # re-score
 """
 
 from __future__ import annotations
@@ -97,7 +97,7 @@ class AnthropicChatBackend:
     """Plain multi-turn chat. No structured output and no fallback model."""
 
     def __init__(self, model: str | None = None, max_tokens: int = 1024, client: Any = None):
-        self.model = model or os.environ.get("PATHWAY_E10_MODEL", DEFAULT_MODEL)
+        self.model = model or os.environ.get("PATHWAY_E8_MODEL", DEFAULT_MODEL)
         self.max_tokens = max_tokens
         if client is None:
             import anthropic
@@ -142,7 +142,7 @@ def reminder_for(opening_reply: str) -> str | None:
         {"i": 0, "role": "user", "text": OPENING},
         {"i": 1, "role": "assistant", "text": opening_reply},
     ]
-    state = track_rules({"id": "e10", "turns": turns})
+    state = track_rules({"id": "e8", "turns": turns})
     return reminder_text(state, turns)
 
 
@@ -152,7 +152,7 @@ def known_reminder(opening_reply: str) -> str:
         {"i": 0, "role": "user", "text": OPENING},
         {"i": 1, "role": "assistant", "text": opening_reply},
     ]
-    state = RefusalState(item_id="e10", tracker="known",
+    state = RefusalState(item_id="e8", tracker="known",
                          refusals=[RefusalEvent(request_turn=0, refusal_turn=1, root_request_turn=0)])
     return reminder_text(state, turns)
 
@@ -284,7 +284,7 @@ def _counts(values) -> dict:
 
 def render_markdown(report: dict) -> str:
     o = report["opening"]
-    out = ["# E10 code-word refusal-state experiment", "",
+    out = ["# E8 code-word refusal-state experiment", "",
            "Harmless payload (a code word). Per pretext, in design order; not ranked.", "",
            f"Host rule: {report.get('rule')}.", "",
            f"Trials: {o['n_trials']} (statuses {o['statuses']}). Leaked at the opening "
@@ -319,7 +319,7 @@ def dry_run(trials: int, pretexts=PRETEXTS, rule: str = DEFAULT_RULE) -> str:
     word = CODE_WORDS[0]
     reminder = reminder_for(sample_reply)
     calls_per_trial = 1 + 3 * len(pretexts) + len(pretexts)
-    out = [f"# E10 dry run: {trials} trials x {calls_per_trial} calls = up to "
+    out = [f"# E8 dry run: {trials} trials x {calls_per_trial} calls = up to "
            f"{trials * calls_per_trial} model calls. Nothing was sent.", "",
            f"Code words rotate per trial: {', '.join(CODE_WORDS)}", "",
            f"## System prompt, rule {rule!r} (plain and cold arms)", system_for(word, rule=rule), "",
@@ -337,7 +337,7 @@ def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--trials", type=int, default=10)
     ap.add_argument("--pretexts", nargs="*", help=f"subset of {[p for p, _ in PRETEXTS]}")
-    ap.add_argument("--model", default=None, help=f"default $PATHWAY_E10_MODEL or {DEFAULT_MODEL}")
+    ap.add_argument("--model", default=None, help=f"default $PATHWAY_E8_MODEL or {DEFAULT_MODEL}")
     ap.add_argument("--out", help="write rows JSONL here (appended per trial)")
     ap.add_argument("--rows", help="score an existing rows JSONL instead of running")
     ap.add_argument("--rule", choices=sorted(RULES), default=DEFAULT_RULE, help="host prompt")

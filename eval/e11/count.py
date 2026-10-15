@@ -1,6 +1,6 @@
-"""E14: count named prohibited behaviours per harm area per provider.
+"""E11: count named prohibited behaviours per harm area per provider.
 
-Reads eval/e14/policy_items.csv (one row per prohibited-use item, hand-coded to a
+Reads eval/e11/policy_items.csv (one row per prohibited-use item, hand-coded to a
 harm area) and prints a markdown table. Offline, no API.
 
 Item counts are only comparable within a document: OpenAI writes short noun phrases,

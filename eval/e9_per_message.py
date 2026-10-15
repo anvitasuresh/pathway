@@ -1,4 +1,4 @@
-"""E12: does a per-message guardrail miss what the whole conversation shows?
+"""E9: does a per-message guardrail miss what the whole conversation shows?
 
 Three arms over the same corpus (`corpus/items.jsonl`), all classification only:
 
@@ -29,11 +29,11 @@ Recall is scored against gold tiers (only items whose gold is review or above co
 Wilson 95% CI. Only the fictional corpus is ever sent to either API.
 
 Usage:
-    python -m eval.e12_per_message --dry-run
-    python -m eval.e12_per_message --arms whole per_turn --out eval/results/e12_analyzer.jsonl
-    python -m eval.e12_per_message --arms moderation --out eval/results/e12_moderation.jsonl
-    python -m eval.e12_per_message --preds eval/results/e12_analyzer.jsonl eval/results/e12_moderation.jsonl \\
-        --figure eval/results/e12_turns.svg
+    python -m eval.e9_per_message --dry-run
+    python -m eval.e9_per_message --arms whole per_turn --out eval/results/e9_analyzer.jsonl
+    python -m eval.e9_per_message --arms moderation --out eval/results/e9_moderation.jsonl
+    python -m eval.e9_per_message --preds eval/results/e9_analyzer.jsonl eval/results/e9_moderation.jsonl \\
+        --figure eval/results/e9_turns.svg
 """
 
 from __future__ import annotations
@@ -386,7 +386,7 @@ def build_report(items: list[dict], rows: list[dict]) -> dict:
 def render_markdown(report: dict) -> str:
     m = report["meta"]
     arms = m["arms_present"]
-    out = ["# E12 per-message baseline (per stratum; no pooled accuracy)", "",
+    out = ["# E9 per-message baseline (per stratum; no pooled accuracy)", "",
            f"Analyzer prompt: {', '.join(m['prompt_versions']) or '-'} · Model: {', '.join(m['models']) or '-'} "
            f"· Effort: {', '.join(m['efforts']) or '-'} · Moderation model: {', '.join(m['moderation_models']) or '-'}",
            f"Arms present: {', '.join(arms) or 'none'}. User turns in corpus: {m['n_user_turns']}.",
@@ -630,7 +630,7 @@ def main(argv: list[str] | None = None) -> int:
         n_turns = sum(len(user_turns(it)) for it in turn_items)
         calls = {"whole": len(whole_items), "per_turn": n_turns, "moderation": len(items)}
         if args.dry_run:
-            print(f"# E12 dry run: prompt {prompt.version}, {len(items)} items "
+            print(f"# E9 dry run: prompt {prompt.version}, {len(items)} items "
                   f"({len(reused)} whole-conversation rows reused)")
             print("# calls: " + ", ".join(f"{a}={calls[a]}" for a in args.arms)
                   + f" (analyzer calls: {sum(calls[a] for a in ANALYZER_ARMS if a in args.arms)}; "

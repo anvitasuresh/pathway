@@ -30,7 +30,7 @@ Re-request kinds. Two count as attempts to undo the refusal; three are legitimat
     alternative        the user takes up something the assistant itself offered
 
 `reminder_text(state)` renders the state as a short note that can be injected into a
-model's context; eval/e10_codeword.py uses it for the mitigation arm.
+model's context; eval/e8_codeword.py uses it for the mitigation arm.
 
 Usage:
     python -m analyzer.refusal_state --items corpus/refusal_sequences.jsonl
@@ -73,8 +73,8 @@ REFUSAL_RE = re.compile(
     re.IGNORECASE,
 )
 
-# Idiomatic refusals that never use "can't" + verb. Added after the first live E10 run
-# (eval/results/e10_run.jsonl), where the first-person pattern above caught only 5 of
+# Idiomatic refusals that never use "can't" + verb. Added after the first live E8 run
+# (eval/results/e8_run.jsonl), where the first-person pattern above caught only 5 of
 # 10 real opening refusals. These phrases were taken from that run, so it is their
 # dev set; later live runs are the test.
 SECRECY_REFUSAL_RE = re.compile(
@@ -319,7 +319,7 @@ def session_of(turn: dict) -> int:
 
 def track_rules(item: dict, sessions: str = "carry") -> RefusalState:
     """Rule tracker. `sessions` only matters for items whose turns carry a `session`
-    field (E15, corpus/refusal_sessions.jsonl):
+    field (E12, corpus/refusal_sessions.jsonl):
 
         carry   refusals stay open across a session boundary, but a turn is never
                 "adjacent" to a refusal from an earlier session, so a later session's
