@@ -13,7 +13,7 @@ corpus/      TAXONOMY.md, SCHEMA.md, items.jsonl, CUTS.md, datasheet
 analyzer/    prompt_v*.md, analyzer.py, refusal_state.py
 eval/        PLAN.md, run_analyzer.py, metrics.py, transforms/, results/
 research/    CASES.md (with source quality), POLICY_COMPARISON.md
-site/        scrollytelling build
+docs/        scrollytelling site (GitHub Pages): index.html, data.js, build_data.py
 threshold/   public artifact
 ```
 
@@ -22,6 +22,19 @@ threshold/   public artifact
 Implementation underway. Done: analyzer plumbing, stratum-wise metrics, sourced case table,
 policy comparison, first 12 hard negatives. See `CONTEXT.md` §10 for next tasks and §11 for
 changes since the original proposal; `eval/PLAN.md` for experiment status.
+
+## Site
+
+The scrollytelling site is static and makes no API calls. Its data comes from files already in
+the repo:
+
+```
+python docs/build_data.py                 # rebuild docs/data.js from corpus/ and eval/results/
+python -m http.server 8000 -d docs        # preview at http://localhost:8000
+```
+
+To publish it, turn on GitHub Pages for this repo: Settings, Pages, deploy from branch `main`,
+folder `/docs`.
 
 ## Running
 
