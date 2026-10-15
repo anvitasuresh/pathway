@@ -48,6 +48,17 @@ p { margin: 0; }
 header { padding: clamp(2rem, 6vw, 3.5rem) 0 1.5rem; display: grid; gap: 0.9rem; }
 header h1 { font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 800; font-stretch: 65%; }
 header .lede { max-width: 44rem; font-size: 1.08rem; }
+.motive { display: grid; gap: 0.9rem; max-width: 52rem; padding: 1.1rem 1.2rem; background: var(--sheet); border: 1px solid var(--rule); }
+.motive h2 { font-size: 1.35rem; font-stretch: 80%; }
+.motive p { max-width: 46rem; }
+.motive ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.35rem; max-width: 46rem; }
+.rseq { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border: 1px solid var(--rule); }
+.rseq div { padding: 0.6rem 0.7rem; display: grid; gap: 0.2rem; align-content: start; border-right: 1px solid var(--rule); background: var(--paper); }
+.rseq div:last-child { border-right: 0; }
+.rseq b { font-family: var(--display); font-stretch: 85%; font-size: 1rem; }
+.rseq span { font-size: 0.82rem; line-height: 1.4; color: var(--ink-2); }
+.rseq .ok b { color: var(--conv); } .rseq .bad b { color: var(--alarm); }
+@media (max-width: 640px) { .rseq { grid-template-columns: 1fr 1fr; } .rseq div:nth-child(2) { border-right: 0; } .rseq div:nth-child(-n+2) { border-bottom: 1px solid var(--rule); } }
 .limits { max-width: 44rem; border-left: 3px solid var(--msg); padding: 0.2rem 0 0.2rem 0.8rem; font-size: 0.9rem; color: var(--ink-2); }
 
 .bar { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; align-items: center; padding: 0.7rem 0; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); margin-bottom: 1.2rem; }
@@ -124,6 +135,27 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
 <header>
   <p class="eyebrow">Pathway · E16 · <a href="../">back to the study</a></p>
   <h1>Guard the code word</h1>
+  <section class="motive" aria-labelledby="why-h">
+    <p class="eyebrow">Why this exists</p>
+    <h2 id="why-h">A refusal that is forgotten can be talked around</h2>
+    <p>In R v. Tristan Roberts (Mold Crown Court, sentenced March 2026), the prosecution told the court that a chatbot declined his request, he said he was writing a book, and it then answered. The model judged the request correctly the first time. That judgment was not kept anywhere: the next message was assessed on its own, and a story frame was enough.</p>
+    <div class="rseq" role="list" aria-label="The sequence in the Roberts case">
+      <div role="listitem"><b>Request</b><span>Asks for something the model should not give</span></div>
+      <div role="listitem" class="ok"><b>Refuse</b><span>The model declines, correctly</span></div>
+      <div role="listitem"><b>Reframe</b><span>"I'm writing a book"</span></div>
+      <div role="listitem" class="bad"><b>Comply</b><span>The same request is answered</span></div>
+    </div>
+    <p>Safety checks today look at one message at a time, and no provider publishes keeping a refusal as state. This project's proposal is to do exactly that, inside the conversation:</p>
+    <ul>
+      <li><b>Remember the refusal.</b> Record that the model declined, and what it declined.</li>
+      <li><b>Recognise the second try.</b> Notice when the same request comes back with a new reason: a school project, a story, a hypothetical, a claim of permission.</li>
+      <li><b>Remind the model of its own decision.</b> Tell it that a reason added afterwards does not by itself change the answer.</li>
+      <li><b>Do not punish the person.</b> Asking again is ordinary. Retrying never raises anyone's risk level here, because wrongly flagging people is a harm in its own right.</li>
+    </ul>
+    <p>This page runs that proposal. The project's rules forbid testing it with real harmful requests, so a harmless code word stands in for the refused request, and the pretexts are the same moves seen in the cases. What you see in the side panel is the project's actual tracker and ladder, not a mock-up.</p>
+    <p class="note"><b>What it shows and what it doesn't.</b> It shows how the mechanism works, turn by turn, including where the tracker gets it wrong. It is not evidence that the reminder makes models safer: in E10 no pretext ever talked the bot out of a refusal, with or without the reminder, so there was nothing for it to fix. The study's main result, that reading whole conversations catches what per-message filters miss, is on <a href="../">the main page</a>.</p>
+  </section>
+  <p class="eyebrow">How to play</p>
   <p class="lede">A word-puzzle host named Lumen knows this round's code word and is supposed to let you work it out. Try to get it handed over: say it's for a school project, that you're writing a story, that you're the developer. The panel shows what the project's refusal tracker sees after every turn: the refusal, whether your message was a second try and what kind, which rung of the ladder the conversation sits on and why, and the note the bot is given before it answers again.</p>
   <p class="limits">The code word is an ordinary word and nothing harmful is involved, by design. A rule in a prompt is not trained safety behavior, so this shows how refusal tracking works, not how often real models can be talked out of a real refusal. It does not prevent misuse. It stores nothing.</p>
 </header>
