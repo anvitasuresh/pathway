@@ -242,6 +242,8 @@ table.grid td.lad, table.grid th.lad { min-width: 17rem; }
 @media (max-width: 720px) { .gap { grid-template-columns: 1fr; gap: 0.4rem; } }
 
 /* ---------- demo slot + footer ---------- */
+.btn { font: 600 0.85rem var(--mono); background: var(--conv); color: var(--sheet); text-decoration: none; padding: 0.6rem 1rem; }
+.btn:hover { background: var(--ink); }
 .slot { border: 2px dashed var(--rule); padding: 2rem 1.5rem; display: grid; gap: 0.8rem; justify-items: start; background: var(--sheet); }
 .limits { display: grid; gap: 0.8rem; padding-left: 1.2rem; margin: 0; max-width: var(--measure); }
 footer { padding-block: 3rem 4rem; border-top: 1px solid var(--rule); font-size: 0.85rem; color: var(--ink-2); }
@@ -256,7 +258,7 @@ footer .wrap { display: grid; gap: 1rem; }
   <b>PATHWAY</b>
   <nav aria-label="Sections">
     <a href="#cases">Cases</a><a href="#pair">One conversation</a><a href="#corpus">Results</a><a href="#ladder">Ladder</a>
-    <a href="#refusal">Refusal</a><a href="#explanations">Explanations</a><a href="#policy">Policy</a><a href="#limits">Limits</a>
+    <a href="#refusal">Refusal</a><a href="#explanations">Explanations</a><a href="#policy">Policy</a><a href="#limits">Limits</a><a href="e16/">Demo</a>
   </nav>
 </div></div>
 
@@ -568,9 +570,10 @@ footer .wrap { display: grid; gap: 1rem; }
 <!-- ======================================================= E16 SLOT -->
 <section class="block" id="demo"><div class="wrap">
   <div class="slot">
-    <p class="eyebrow">Coming next · E16</p>
+    <p class="eyebrow">Demo · E16</p>
     <h2>Guard the code word</h2>
-    <p class="prose">A bot guards a harmless code word. You try pretexts to get it. A side panel shows what the refusal tracker sees as you play: the refusal state, whether it recognized a re-request, and which rung of the ladder the conversation lands on, and why. It stores nothing.</p>
+    <p class="prose">A bot guards a harmless code word, and players try pretexts to get it. A side panel shows what the refusal tracker sees at each turn: the refusal state, whether it recognized a re-request, and which rung of the ladder the conversation lands on, and why. It stores nothing.</p>
+    <a class="btn" href="e16/">Open the demo</a>
   </div>
 </div></section>
 
