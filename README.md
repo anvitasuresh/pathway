@@ -57,6 +57,7 @@ Per stratum, 95% Wilson intervals, single-author labels. Details and caveats in 
 | Hard negatives routed to review or above: whole-conversation analyzer (headline; not held out) | **0/12** (0.00-0.24) |
 | Hard negatives flagged: OpenAI public moderation classifier, one turn at a time | **9/12** (0.47-0.91) |
 | Moderation flags on a turn where a matched pair diverges | **0/10 pairs**: every flag fell on the shared, innocent opening |
+| Same analyzer, one user turn at a time, no context (3 original pairs) | 3/3 positives to review, 0/3 negatives: the gap is the scorer, not the context |
 | Analyzer recall, gold review-level hard positives | 4/6; all errors under-escalation, none over |
 | Clean hard negatives needed to show review costs at most 5 innocent reviews per real one at 1-in-1,000 prevalence | about **1,150** (the corpus has 12) |
 | Refusal tracker on synthetic transcripts (model): false positives / recall | 0/7 (0.00-0.35) / 10/10 |
@@ -77,7 +78,7 @@ Per stratum, 95% Wilson intervals, single-author labels. Details and caveats in 
 | E6 | Diagnosis disclosure (fairness) | Null: 0/12 false positives; one stereotyped explanation |
 | E7 | Escalation ladder, base rates | 12 clean negatives cannot rule out a 24% FPR |
 | E8 | Refusal-state mitigation, code word | Negative: no pretext undid a refusal, so the reminder was untested |
-| E9 | Per-message guardrail baseline | Moderation flags shared openings, never divergent turns |
+| E9 | Per-message guardrail baseline | Moderation flags shared openings, never divergent turns; the same analyzer one turn at a time still splits all 3 pairs (gap is the scorer, not the context) |
 | E10 | Sycophancy drift | Null: no drift; reminder arm 0/14 validations vs. 2/14 |
 | E11 | Policy coding | Asymmetry is in enforcement, not prohibitions |
 | E12 | Cost of remembering refusals | Rule tracker carrying state: 4/7 false positives |

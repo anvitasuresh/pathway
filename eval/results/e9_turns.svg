@@ -3,83 +3,83 @@
 <desc id="d">For each corpus conversation, the analyzer tier on each user turn shown alone, turns flagged by OpenAI's public moderation classifier, and the analyzer tier on the whole conversation.</desc>
 <rect width="640" height="836" fill="#fcfcfb"/>
 <text x="16" y="28" font-size="17" font-weight="600" fill="#0b0b0b">One message at a time vs. the whole conversation</text>
-<text x="16" y="48" font-size="12" fill="#52514e">Cells: user turns. Ring: turn flagged by OpenAI's public moderation classifier.</text>
+<text x="16" y="48" font-size="12" fill="#52514e">Cells: analyzer tier on each user turn shown alone (outlined: not run). Ring: turn flagged by OpenAI's public moderation classifier.</text>
 <text x="16" y="64" font-size="12" fill="#52514e">Right: the analyzer on the whole conversation. Matched pairs together (hn- benign, hp- concerning).</text>
 <text x="150" y="100" font-size="11" fill="#52514e">user turns, in order →</text>
 <text x="444" y="100" font-size="11" fill="#52514e">whole conversation</text>
 <text x="140" y="129.0" font-size="11" text-anchor="end" fill="#0b0b0b">hn-teen-02</text>
-<rect x="152" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 0: not scored</title></rect>
-<rect x="182" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 2: not scored, moderation flagged</title></rect>
+<rect x="152" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 0: resource</title></rect>
+<rect x="182" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 2: resource, moderation flagged</title></rect>
 <circle cx="195.0" cy="125.0" r="6" fill="none" stroke="#eb6834" stroke-width="2.5"/>
-<rect x="212" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 4: not scored</title></rect>
-<rect x="242" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 6: not scored</title></rect>
-<rect x="272" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 8: not scored</title></rect>
-<rect x="302" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 10: not scored</title></rect>
-<rect x="332" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 12: not scored</title></rect>
-<rect x="362" y="115" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-02 turn 14: not scored</title></rect>
+<rect x="212" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 4: resource</title></rect>
+<rect x="242" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 6: resource</title></rect>
+<rect x="272" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 8: resource</title></rect>
+<rect x="302" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 10: resource</title></rect>
+<rect x="332" y="115" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-02 turn 12: resource</title></rect>
+<rect x="362" y="115" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-teen-02 turn 14: none</title></rect>
 <rect x="444" y="115" width="18" height="20" rx="3" fill="#bcd3ef"/>
 <text x="470" y="129.0" font-size="11" fill="#0b0b0b">resource</text>
 <text x="140" y="155.0" font-size="11" text-anchor="end" fill="#0b0b0b">hp-teen-02</text>
-<rect x="152" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 0: not scored</title></rect>
-<rect x="182" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 2: not scored, moderation flagged</title></rect>
+<rect x="152" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 0: resource</title></rect>
+<rect x="182" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 2: resource, moderation flagged</title></rect>
 <circle cx="195.0" cy="151.0" r="6" fill="none" stroke="#eb6834" stroke-width="2.5"/>
-<rect x="212" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 4: not scored</title></rect>
-<rect x="242" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 6: not scored</title></rect>
-<rect x="272" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 8: not scored</title></rect>
-<rect x="302" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 10: not scored</title></rect>
-<rect x="332" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 12: not scored</title></rect>
-<rect x="362" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 14: not scored</title></rect>
-<rect x="392" y="141" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-02 turn 16: not scored</title></rect>
+<rect x="212" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 4: resource</title></rect>
+<rect x="242" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 6: resource</title></rect>
+<rect x="272" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 8: resource</title></rect>
+<rect x="302" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 10: resource</title></rect>
+<rect x="332" y="141" width="26" height="20" rx="3" fill="#2a78d6" stroke="none"><title>hp-teen-02 turn 12: review</title></rect>
+<rect x="362" y="141" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-02 turn 14: resource</title></rect>
+<rect x="392" y="141" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-teen-02 turn 16: none</title></rect>
 <rect x="444" y="141" width="18" height="20" rx="3" fill="#2a78d6"/>
 <text x="470" y="155.0" font-size="11" fill="#0b0b0b">review</text>
 <line x1="16" x2="624" y1="168.0" y2="168.0" stroke="#e4e3df"/>
 <text x="140" y="189.0" font-size="11" text-anchor="end" fill="#0b0b0b">hn-teen-03</text>
-<rect x="152" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 0: not scored, moderation flagged</title></rect>
+<rect x="152" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 0: resource, moderation flagged</title></rect>
 <circle cx="165.0" cy="185.0" r="6" fill="none" stroke="#eb6834" stroke-width="2.5"/>
-<rect x="182" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 2: not scored</title></rect>
-<rect x="212" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 4: not scored</title></rect>
-<rect x="242" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 6: not scored</title></rect>
-<rect x="272" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 8: not scored</title></rect>
-<rect x="302" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 10: not scored</title></rect>
-<rect x="332" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 12: not scored</title></rect>
-<rect x="362" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 14: not scored</title></rect>
-<rect x="392" y="175" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-teen-03 turn 16: not scored</title></rect>
+<rect x="182" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 2: resource</title></rect>
+<rect x="212" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 4: resource</title></rect>
+<rect x="242" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 6: resource</title></rect>
+<rect x="272" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 8: resource</title></rect>
+<rect x="302" y="175" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-teen-03 turn 10: resource</title></rect>
+<rect x="332" y="175" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-teen-03 turn 12: none</title></rect>
+<rect x="362" y="175" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-teen-03 turn 14: none</title></rect>
+<rect x="392" y="175" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-teen-03 turn 16: none</title></rect>
 <rect x="444" y="175" width="18" height="20" rx="3" fill="#bcd3ef"/>
 <text x="470" y="189.0" font-size="11" fill="#0b0b0b">resource</text>
 <text x="140" y="215.0" font-size="11" text-anchor="end" fill="#0b0b0b">hp-teen-03</text>
-<rect x="152" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 0: not scored, moderation flagged</title></rect>
+<rect x="152" y="201" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-03 turn 0: resource, moderation flagged</title></rect>
 <circle cx="165.0" cy="211.0" r="6" fill="none" stroke="#eb6834" stroke-width="2.5"/>
-<rect x="182" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 2: not scored</title></rect>
-<rect x="212" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 4: not scored</title></rect>
-<rect x="242" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 6: not scored</title></rect>
-<rect x="272" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 8: not scored</title></rect>
-<rect x="302" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 10: not scored</title></rect>
-<rect x="332" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 12: not scored</title></rect>
-<rect x="362" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 14: not scored</title></rect>
-<rect x="392" y="201" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-teen-03 turn 16: not scored</title></rect>
+<rect x="182" y="201" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-03 turn 2: resource</title></rect>
+<rect x="212" y="201" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-03 turn 4: resource</title></rect>
+<rect x="242" y="201" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-03 turn 6: resource</title></rect>
+<rect x="272" y="201" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-teen-03 turn 8: none</title></rect>
+<rect x="302" y="201" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-teen-03 turn 10: none</title></rect>
+<rect x="332" y="201" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-teen-03 turn 12: resource</title></rect>
+<rect x="362" y="201" width="26" height="20" rx="3" fill="#2a78d6" stroke="none"><title>hp-teen-03 turn 14: review</title></rect>
+<rect x="392" y="201" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-teen-03 turn 16: none</title></rect>
 <rect x="444" y="201" width="18" height="20" rx="3" fill="#2a78d6"/>
 <text x="470" y="215.0" font-size="11" fill="#0b0b0b">review</text>
 <line x1="16" x2="624" y1="228.0" y2="228.0" stroke="#e4e3df"/>
 <text x="140" y="249.0" font-size="11" text-anchor="end" fill="#0b0b0b">hn-memoir-01</text>
-<rect x="152" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 0: not scored</title></rect>
-<rect x="182" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 2: not scored</title></rect>
-<rect x="212" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 4: not scored</title></rect>
-<rect x="242" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 6: not scored</title></rect>
-<rect x="272" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 8: not scored</title></rect>
-<rect x="302" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 10: not scored</title></rect>
-<rect x="332" y="235" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hn-memoir-01 turn 12: not scored</title></rect>
+<rect x="152" y="235" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hn-memoir-01 turn 0: resource</title></rect>
+<rect x="182" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 2: none</title></rect>
+<rect x="212" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 4: none</title></rect>
+<rect x="242" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 6: none</title></rect>
+<rect x="272" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 8: none</title></rect>
+<rect x="302" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 10: none</title></rect>
+<rect x="332" y="235" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hn-memoir-01 turn 12: none</title></rect>
 <rect x="444" y="235" width="18" height="20" rx="3" fill="#eef3fa"/>
 <text x="470" y="249.0" font-size="11" fill="#0b0b0b">none</text>
 <text x="140" y="275.0" font-size="11" text-anchor="end" fill="#0b0b0b">hp-memoir-01</text>
-<rect x="152" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 0: not scored</title></rect>
-<rect x="182" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 2: not scored</title></rect>
-<rect x="212" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 4: not scored</title></rect>
-<rect x="242" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 6: not scored</title></rect>
-<rect x="272" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 8: not scored</title></rect>
-<rect x="302" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 10: not scored</title></rect>
-<rect x="332" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 12: not scored</title></rect>
-<rect x="362" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 14: not scored</title></rect>
-<rect x="392" y="261" width="26" height="20" rx="3" fill="#fcfcfb" stroke="#e4e3df"><title>hp-memoir-01 turn 16: not scored</title></rect>
+<rect x="152" y="261" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-memoir-01 turn 0: none</title></rect>
+<rect x="182" y="261" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-memoir-01 turn 2: none</title></rect>
+<rect x="212" y="261" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-memoir-01 turn 4: resource</title></rect>
+<rect x="242" y="261" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-memoir-01 turn 6: resource</title></rect>
+<rect x="272" y="261" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-memoir-01 turn 8: none</title></rect>
+<rect x="302" y="261" width="26" height="20" rx="3" fill="#bcd3ef" stroke="none"><title>hp-memoir-01 turn 10: resource</title></rect>
+<rect x="332" y="261" width="26" height="20" rx="3" fill="#2a78d6" stroke="none"><title>hp-memoir-01 turn 12: review</title></rect>
+<rect x="362" y="261" width="26" height="20" rx="3" fill="#7aa8de" stroke="none"><title>hp-memoir-01 turn 14: friction</title></rect>
+<rect x="392" y="261" width="26" height="20" rx="3" fill="#eef3fa" stroke="none"><title>hp-memoir-01 turn 16: none</title></rect>
 <rect x="444" y="261" width="18" height="20" rx="3" fill="#2a78d6"/>
 <text x="470" y="275.0" font-size="11" fill="#0b0b0b">review</text>
 <line x1="16" x2="624" y1="288.0" y2="288.0" stroke="#e4e3df"/>

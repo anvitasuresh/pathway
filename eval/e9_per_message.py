@@ -534,7 +534,7 @@ def render_svg(items: list[dict], report: dict) -> str:
          f'<rect width="{W}" height="{H}" fill="{surface}"/>',
          f'<text x="16" y="28" font-size="17" font-weight="600" fill="{ink}">One message at a time vs. the whole conversation</text>',
          f'<text x="16" y="48" font-size="12" fill="{ink2}">'
-         + ('Cells: analyzer tier on each user turn shown alone. ' if has_per_turn else 'Cells: user turns. ')
+         + ('Cells: analyzer tier on each user turn shown alone (outlined: not run). ' if has_per_turn else 'Cells: user turns. ')
          + 'Ring: turn flagged by OpenAI\'s public moderation classifier.</text>',
          f'<text x="16" y="64" font-size="12" fill="{ink2}">Right: the analyzer on the whole conversation. '
          'Matched pairs together (hn- benign, hp- concerning).</text>',
