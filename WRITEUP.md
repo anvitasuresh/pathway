@@ -1000,6 +1000,34 @@ everything here. Training was out of scope.
 - **No human baseline.** Without it, any agreement figure is hard to interpret: the model might
   be inside the band of ordinary human disagreement, or far outside it.
 
+### Stakeholders, misuse and deployment
+
+- **Who carries the cost.** The people a conversation-level reader would score are mostly not
+  dangerous: teenagers venting, writers, nurses, lawyers, people grieving. They carry the
+  false-positive cost, and the corpus is built around them for that reason. Potential victims
+  carry the false-negative cost. Trust and safety reviewers carry the workload each rung
+  creates (E7). Police and clinicians receive whatever a referral rung sends them.
+- **The same reader is a surveillance tool.** A system that reads trajectories across a
+  conversation could be pointed at dissent, sexuality, immigration status or mental health as
+  easily as at warning behavior. The design limits this only partly: the constructs are narrow
+  and behavioral, the analyzer stops at `review`, and `escalate` is reserved for a human. A
+  deployer could remove all of that.
+- **Remembering refusals means storing what people asked.** Carrying refusal state across
+  sessions is a retention decision, and E12 shows it charges ordinary users when linking is
+  loose (4/7 next-day requests wrongly linked). Any deployment needs short retention, narrow
+  linking and no use of the state outside the safety review it was kept for.
+- **Explanations invite over-trust.** A reviewer shown cited turns and a rationale may defer to
+  them. E3 found only the ESC citations faithful, so a review packet built on this analyzer
+  should say which parts of the explanation were tested.
+- **Evasion knowledge.** Per-pretext success rates would read as a playbook. The repo reports
+  results in design order and never ranks which rewording or pretext worked.
+- **Disparate impact is mostly untested.** Only diagnosis disclosure was probed (E6). Dialect,
+  non-native phrasing and disability are open, and are where over-flagging is most likely to
+  land.
+- **Before any deployment** this would need, at minimum: a held-out hard-negative set on the
+  order E7 estimates (about 1,150), a second labeler, a human baseline, a published referral
+  accuracy, and an appeal path for the people flagged.
+
 ---
 
 ## 12. Future work

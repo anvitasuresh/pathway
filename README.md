@@ -87,26 +87,53 @@ Per stratum, 95% Wilson intervals, single-author labels. Details and caveats in 
 Experiments were renumbered on 2026-10-15; older commits use old numbers (mapping in
 [`eval/PLAN.md`](./eval/PLAN.md)).
 
-## Running it
+## Setup
+
+Tested on Python 3.13. The offline path needs only `pytest`; the `anthropic` package is used
+for live runs.
 
 ```
+git clone https://github.com/anvitasuresh/pathway.git && cd pathway
+python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python -m pytest -q          # 199 pass, 1 expected failure; no network, no API key
 ```
 
-Every reported number regenerates offline from saved runs, with no API calls:
+**Data.** Everything the reported numbers need is in the repo: the 22 fictional conversations
+(`corpus/items.jsonl`), the refusal sequences and sessions, the E4/E6 variants, and every saved
+model run under `eval/results/` plus three earlier analyzer runs at the root
+(`results_v2*.jsonl`). Nothing needs downloading and there are no model weights. The one
+external dataset is WildChat-1M (`allenai/WildChat-1M`, ODC-BY, ungated) for E5's real-log arm;
+only id-level tracker rows are committed, and re-scanning it needs the optional `datasets` and
+`pyarrow` packages listed in `requirements.txt`.
 
-```
-python -m eval.e1_e2 > eval/results/E1_E2_REPORT.md
-python -m eval.e3_faithfulness --preds eval/results/e3_run.jsonl
-python -m eval.e5_refusal
-python -m eval.e7_ladder > eval/results/E7_TABLES.md
-python -m eval.e12_sessions > eval/results/E12_REPORT.md
-python eval/e11/count.py
-```
+**API keys (live runs only).** `export ANTHROPIC_API_KEY=...` for the analyzer, refusal tracker,
+E8, E10 and the demo. `export OPENAI_API_KEY=...` only for E9's moderation arm (called with the
+standard library, no extra package). Live runs cost money; every script has `--dry-run`, which
+prints the requests and sends nothing.
 
-Live runs need `ANTHROPIC_API_KEY` (E9's moderation arm also needs `OPENAI_API_KEY`) and cost
-money. Every script has `--dry-run`, which prints the requests and sends nothing:
+## Reproducing every number offline
+
+Each command re-scores saved runs and makes no API calls.
+
+| Experiment | Command |
+|---|---|
+| E1, E2 | `python -m eval.e1_e2 > eval/results/E1_E2_REPORT.md` |
+| E3 | `python -m eval.e3_faithfulness --preds eval/results/e3_run.jsonl` |
+| E4 | `python -m eval.e4_evasion --preds eval/results/e4_run.jsonl` |
+| E5 (synthetic; rule tracker, then model tracker) | `python -m eval.e5_refusal` and `python -m eval.e5_refusal --preds eval/results/e5_run_v3.jsonl` |
+| E5 (WildChat) | `python -m eval.e5_public --rows eval/results/e5_wildchat.jsonl` |
+| E6 | `python -m eval.e6_disclosure --preds eval/results/e6_run.jsonl` |
+| E7 | `python -m eval.e7_ladder > eval/results/E7_TABLES.md` |
+| E8 | `python -m eval.e8_codeword --rows eval/results/e8_run.jsonl` |
+| E9 | `python -m eval.e9_per_message --preds eval/results/e9_per_turn.jsonl eval/results/e9_moderation.jsonl eval/results/e9_moderation_novelist.jsonl --whole-from eval/results/e4_run.jsonl results_v2.jsonl results_v2_batch3.jsonl > eval/results/E9_REPORT.md` |
+| E10 | `python -m eval.e10_sycophancy --rows eval/results/e10_run.jsonl > eval/results/E10_REPORT.md` |
+| E11 | `python eval/e11/count.py` |
+| E12 | `python -m eval.e12_sessions > eval/results/E12_REPORT.md` |
+
+The committed reports match these outputs byte for byte.
+
+## Live runs
 
 ```
 python -m analyzer.analyzer --items corpus/items.jsonl --dry-run
@@ -115,8 +142,8 @@ python -m eval.metrics --items corpus/items.jsonl --preds eval/results/run.jsonl
 ```
 
 The model is `DEFAULT_MODEL` in `analyzer/analyzer.py`; override with `--model` or
-`PATHWAY_MODEL` (effort: `--effort` or `PATHWAY_EFFORT`). See each `eval/e*.py` docstring for
-its live command and call count.
+`PATHWAY_MODEL` (effort: `--effort` or `PATHWAY_EFFORT`). Each `eval/e*.py` docstring gives its
+live command and call count; `eval/PLAN.md` records run order and status.
 
 ### The site
 
@@ -140,6 +167,30 @@ python -m demo.server --dry-run           # print the prompts; call nothing
 Runs only on your machine and your key, one small-model call per turn, 15 turns per round,
 stores nothing. Use harmless pretexts only. `docs/e13/` is the no-cost replay.
 
+## Design decisions
+
+- **Matched pairs.** Every hard positive shares its opening turns word for word with a hard
+  negative, so a detector can only separate them by reading where the conversation goes.
+- **Hard negatives first.** The corpus is built around people who sound alarming and are not
+  (venting teens, a horror novelist, a nurse, a defense attorney), because false positives are
+  treated as a primary harm. False-positive rate on them is the headline number.
+- **Explanations are structured and tested.** The analyzer must cite turns, give a
+  counterfactual and a benign reading; E3 then checks whether the cited turns actually drive
+  the decision instead of trusting them.
+- **A ladder, not a verdict.** Output is a rung (`none` to `review`); `escalate` is reserved for
+  a human. No component predicts violence.
+- **Harmless payloads.** Refusal experiments use a code word and song lyrics, so the reframing
+  pattern is the variable and no harmful content is ever requested.
+- **Per-stratum metrics with Wilson intervals,** never pooled accuracy.
+
+## Known limitations
+
+Small (22 items), fictional, written and labeled by one person; inter-rater reliability not
+measured; prompt v2 and the ladder rubric were written after seeing the items, so results are
+not held out; one model and one prompt for analyzer comparisons; in the three pairs scored one turn at a
+time, each positive had a single turn that gave it away, so the unit-of-analysis claim still
+needs sequence-only items. Full list in [`WRITEUP.md` §11](./WRITEUP.md#11-limitations).
+
 ## Layout
 
 ```
@@ -155,6 +206,7 @@ research/       CASES.md (graded sources), POLICY_COMPARISON.md, E11_POLICY_CODI
 demo/           the code-word game (game.py, server.py, replays.py)
 docs/           the site (index.html, data.js) and the demo replay (e13/)
 tests/          offline tests with bland fixtures
+results_v2*.jsonl  the first prompt-v2 analyzer runs, reused by E1, E2, E7 and E9
 ```
 
 ## Content rules
