@@ -336,7 +336,7 @@ footer .wrap { display: grid; gap: 1rem; }
       </div></div>
       <div class="step" data-step="4" data-side="b"><div>
         <p class="eyebrow"><span class="msg">The worrying messages slip past the filter</span></p>
-        <p>Read one at a time by the filter, none of these messages gets flagged. <em>"he doesn't get two more years"</em> scores <strong>0.005</strong> out of 1. To the filter, it reads like a teenager counting down to college. (My own analyzer, shown that one message alone, does send it to review: what misses it is the filter, not the single message.)</p>
+        <p>Read one at a time by the filter, none of these messages gets flagged. <em>"he doesn't get two more years"</em> scores <strong>0.005</strong> out of 1. To the filter, it reads like a teenager counting down to college. (My own analyzer, shown that one message alone, does send it to human review. The filter misses it because it scores insults and threats, not warning signs.)</p>
       </div></div>
       <div class="step" data-step="5" data-side="b"><div>
         <p class="eyebrow"><span class="conv">Reading the whole conversation</span></p>
@@ -374,17 +374,18 @@ footer .wrap { display: grid; gap: 1rem; }
   </div>
   <div class="versus">
     <div>
-      <p class="eyebrow"><span class="msg">One message at a time</span></p>
+      <p class="eyebrow"><span class="msg">Public filter, one message at a time</span></p>
       <div class="people" id="people-msg" aria-hidden="true"></div>
       <p><strong>9 of 12</strong> innocent conversations flagged</p>
     </div>
     <div>
-      <p class="eyebrow"><span class="conv">The whole conversation</span></p>
+      <p class="eyebrow"><span class="conv">My analyzer, whole conversation</span></p>
       <div class="people" id="people-conv" aria-hidden="true"></div>
       <p><strong>0 of 12</strong> sent to human review</p>
     </div>
   </div>
   <div class="prose">
+    <p>Part of that gap is the checker, not just how much it reads. When I showed my analyzer one message at a time on three of the pairs, it still told the safe and worrying teens apart, because each worrying conversation has one line that sounds bad on its own. What reading the whole conversation added there was the explanation: which pattern, and which messages show it.</p>
     <p>That's promising, but 12 is a small test. Real threats are also extremely rare, so even a small error rate means many innocent people get reviewed for every real case. Try it:</p>
   </div>
   <div class="tool">
@@ -480,6 +481,7 @@ footer .wrap { display: grid; gap: 1rem; }
   <ul class="limits">
     <li>It does not predict or prevent violence. It decides how much of a response a conversation supports, and a human makes every serious call.</li>
     <li>The test set is small and fictional (22 conversations), written by one person. The results are promising, not proof.</li>
+    <li>In my worrying conversations, one message usually sounds worrying on its own too. I haven't yet tested conversations where every message is harmless alone and only the sequence gives it away, which is the case this project is really about.</li>
     <li>All refusal experiments used harmless requests. That shows how the idea works, not how often real chatbots fail.</li>
   </ul>
   <div class="prose">
