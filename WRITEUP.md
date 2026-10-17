@@ -1,11 +1,11 @@
-# Pathway: Reading Conversations, Not Messages
+# Between the Lines: What AI Safety Systems Miss
 
 **Conversation-level warning behavior, refusal as signal, and the gap between moderation and review in deployed language models**
 
-Anvita Suresh · Duke MIDS · Explainable AI, Fall 2026 · v1, October 2026
+Anvita Suresh · Duke MIDS · Explainable AI, Fall 2026 · v1, October 2026 · Project name in the repository: Pathway
 
-Repository: <https://github.com/anvitasuresh/pathway> · Site: `docs/` (see the README for how to
-open it) · Demo: `docs/e13/` and `python -m demo.server`
+Repository: <https://github.com/anvitasuresh/pathway> · Site: <https://anvitasuresh.github.io/pathway/>
+(built from `docs/`) · Demo: <https://anvitasuresh.github.io/pathway/e13/> (replay) and `python -m demo.server` (live, local)
 
 ---
 
@@ -73,6 +73,27 @@ Headline results, all per stratum with 95% Wilson intervals:
   no sycophantic drift over seven turns (E10).
 - **Policy:** no provider publishes a rung between ban and police referral for risk to
   others, that refusals persist across sessions, or how often referrals are right.
+
+---
+
+## Who this is for and what it contributes
+
+**Audience.** Trust and safety teams who decide when a conversation should reach a human
+reviewer; policy makers and regulators weighing referral rules after Tumbler Ridge; and
+researchers evaluating conversation-level safety and explanation faithfulness.
+
+**Contributions.**
+
+1. A **matched-pair benchmark** of 22 fictional conversations in which harmless and concerning
+   versions share their opening turns word for word, so only the trajectory differs (Section 7.2).
+2. An **explainable analyzer** that returns cited turns, a rationale, a counterfactual and a
+   mandatory benign reading per construct, with its faithfulness tested by erasure (E2, E3).
+3. A **five-rung response ladder** with a written rubric and per-rung false-positive costs at
+   assumed base rates, as an alternative to ban or nothing (E7).
+4. A **refusal tracker** that keeps a model's own refusal as state, tested on synthetic and real
+   logs, with the cost of carrying it across sessions (E5, E12), and a **demo** that runs it on a
+   harmless code word (E13).
+5. A **clause-by-clause policy coding** of OpenAI, Anthropic and Meta texts (E11).
 
 ---
 

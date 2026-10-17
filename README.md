@@ -6,7 +6,7 @@ refusal as signal instead of a discarded, one-message event.
 
 - **Full write-up:** [`WRITEUP.md`](./WRITEUP.md) (motivation, cases, provider policies, the
   gaps, method, every experiment, limitations)
-- **Site:** [`docs/`](./docs/index.html), a scrolling explainer of the results
+- **Site:** <https://anvitasuresh.github.io/pathway/> (source in [`docs/`](./docs/index.html)), a scrolling explainer of the results
 - **Demo:** [`docs/e13/`](./docs/e13/index.html) (replay) and `python -m demo.server` (live, local)
 
 ## What this cannot do
