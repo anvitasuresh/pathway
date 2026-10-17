@@ -803,7 +803,7 @@ stands on its own. No ranking of pretexts is given.
 **Question.** Does a per-message guardrail miss what the whole conversation shows?
 
 **Method.** Each user turn of the 22 items sent alone to OpenAI's public moderation endpoint
-(`omni-moderation-latest`); an item is flagged if any turn is flagged. Compared with the
+(`omni-moderation-latest`); an item is flagged if any turn is flagged, where "flagged" is the endpoint's own `flagged` yes/no field at its default thresholds (no threshold of ours). Compared with the
 analyzer on the whole conversation (tier review or above). This is **one public classifier,
 not ChatGPT's whole safety stack**, and it was never meant to read trajectories. Because those
 two arms differ in model as well as context, a third arm runs the same analyzer (same model,
