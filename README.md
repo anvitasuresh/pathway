@@ -1,6 +1,6 @@
-# Exploring AI Safety
+# Between the Lines: What AI Safety Systems Miss
 
-**Between the Lines: What AI Safety Systems Miss** (the poster and site title). Repository name: pathway. **Reading conversations, not messages.** An Explainable AI project (Duke MIDS, Fall 2026) on
+An Explainable AI project (Duke MIDS, Fall 2026) on
 conversation-level warning behavior in chatbot conversations, and on treating a model's own
 refusal as signal instead of a discarded, one-message event.
 
