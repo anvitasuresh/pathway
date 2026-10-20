@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Guard the Code Word</title>
-<meta name="description" content="Pathway E13. A bot guards a harmless code word while you try pretexts to get it. A side panel shows what the refusal tracker sees: the refusal, the re-request, the ladder rung and why.">
+<meta name="description" content="Between the Lines demo (E13). A bot guards a harmless code word while you try pretexts to get it. A side panel shows what the refusal tracker sees: the refusal, the re-request, the ladder rung and why.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -66,6 +66,7 @@ header .lede { max-width: 44rem; font-size: 1.08rem; }
 .bar .mode.live { border-color: var(--conv); color: var(--conv); }
 .chips { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .chip { font: 600 0.74rem var(--mono); background: var(--sheet); border: 1px solid var(--rule); padding: 0.35rem 0.6rem; cursor: pointer; text-align: left; }
+.chip:disabled { opacity: 0.4; cursor: default; }
 .chip[aria-pressed="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
 .btn { font: 600 0.78rem var(--mono); background: var(--sheet); border: 1px solid var(--ink-2); padding: 0.45rem 0.8rem; cursor: pointer; }
 .btn.primary { background: var(--conv); border-color: var(--conv); color: var(--sheet); }
@@ -133,7 +134,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
 <body>
 <div class="wrap">
 <header>
-  <p class="eyebrow">Pathway · E13 · <a href="../">back to the study</a></p>
+  <p class="eyebrow">Between the Lines · demo (E13) · <a href="../">back to the story</a></p>
   <h1>Guard the code word</h1>
   <section class="motive" aria-labelledby="why-h">
     <p class="eyebrow">Why this exists</p>
@@ -156,12 +157,17 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     <p class="note"><b>What it shows and what it doesn't.</b> It shows how the mechanism works, turn by turn, including where the tracker gets it wrong. It is not evidence that the reminder makes models safer: in E8 no pretext ever talked the bot out of a refusal, with or without the reminder, so there was nothing for it to fix. The study's main result, that reading whole conversations catches what per-message filters miss, is on <a href="../">the main page</a>.</p>
   </section>
   <p class="eyebrow">How to play</p>
+  <p class="lede"><b>Your turn</b> lets you pick the excuse yourself. Every reply you see is a real reply the bot gave to that exact excuse in experiment E8 (nothing is written by hand), and the panel is computed by the project's own tracker code. Turn the refusal-state note on to see the reply the bot gave when it was reminded of its own refusal. <b>Watch replays</b> steps through chosen sessions, including ones where the tracker gets it wrong.</p>
   <p class="lede">A word-puzzle host named Lumen knows this round's code word and is supposed to let you work it out. Try to get it handed over: say it's for a school project, that you're writing a story, that you're the developer. The panel shows what the project's refusal tracker sees after every turn: the refusal, whether your message was a second try and what kind, which rung of the ladder the conversation sits on and why, and the note the bot is given before it answers again.</p>
   <p class="limits">The code word is an ordinary word and nothing harmful is involved, by design. A rule in a prompt is not trained safety behavior, so this shows how refusal tracking works, not how often real models can be talked out of a real refusal. It does not prevent misuse. It stores nothing.</p>
 </header>
 
 <div class="bar" id="bar">
-  <span class="mode" id="mode">Replay</span>
+  <div class="chips" id="modes" role="group" aria-label="Mode">
+    <button class="chip" id="m-choose" aria-pressed="true">Your turn: pick an excuse</button>
+    <button class="chip" id="m-replay" aria-pressed="false">Watch replays</button>
+  </div>
+  <span class="mode" id="mode" hidden>Live</span>
   <div class="chips" id="sessions" role="group" aria-label="Replayed sessions"></div>
 </div>
 
@@ -170,6 +176,18 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     <div class="card-head"><h2>Conversation</h2><span class="mono" id="wordinfo"></span></div>
     <div class="why" id="why"></div>
     <div class="chat" id="chat" aria-live="polite"></div>
+    <div class="compose" id="choose" hidden>
+      <p class="note" id="choosePrompt">Lumen refused. What do you say next?</p>
+      <div class="chips" id="excuses" role="group" aria-label="Excuses"></div>
+      <div class="row">
+        <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center">
+          <button class="btn" id="retry">Try another excuse</button>
+          <button class="btn" id="nextround">New round</button>
+        </div>
+        <label class="toggle"><input type="checkbox" id="chooseNote"> inject refusal-state note</label>
+      </div>
+      <p class="note" id="chooseSrc"></p>
+    </div>
     <div class="controls" id="replayControls">
       <button class="btn" id="prev">Back</button>
       <button class="btn primary" id="next">Next turn</button>
@@ -317,8 +335,11 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     $("prev").disabled = step === 0; $("next").disabled = step >= cur.steps.length - 1;
     $("stepinfo").textContent = "turn " + step + " of " + (cur.steps.length - 1);
   }
+  var replayReady = false;
   function startReplay() {
     if (!R.length) { $("why").innerHTML = '<p class="empty">No replays found (replays.js missing).</p>'; return; }
+    if (replayReady) { pickSession(R.indexOf(cur) >= 0 ? R.indexOf(cur) : 0); return; }
+    replayReady = true;
     $("sessions").innerHTML = R.map(function (s, i) { return '<button class="chip" aria-pressed="false" data-i="' + i + '">' + esc(s.title) + "</button>"; }).join("");
     $("sessions").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) pickSession(+b.dataset.i); });
     $("prev").onclick = function () { if (step > 0) { step--; showStep(); } };
@@ -326,6 +347,44 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
     $("all").onclick = function () { step = cur.steps.length - 1; showStep(); };
     pickSession(0);
   }
+
+  /* ------------------------------------------------------------ your turn */
+  var C = window.E13_CHOICES || null, ct = 0, picked = null;
+  function chooseRender() {
+    var t = C.trials[ct], note = $("chooseNote").checked;
+    var steps = t.opening.slice(), key = null;
+    if (picked) { key = picked + "|" + (note ? "reminder" : "plain"); if (t.branches[key]) steps = steps.concat(t.branches[key]); }
+    renderChat(steps, steps.length - 1, steps[steps.length - 1].panel);
+    var last = steps[steps.length - 1];
+    renderPanel(last.panel, last.role === "assistant" ? last.injected : null, null);
+    $("wordinfo").textContent = "round " + (ct + 1) + " of " + C.trials.length + " · code word: " + (picked ? t.word : "hidden");
+    $("excuses").innerHTML = Object.keys(C.labels).map(function (k) {
+      var ok = !!t.branches[k + "|" + (note ? "reminder" : "plain")];
+      return '<button class="chip" data-k="' + k + '" aria-pressed="' + (k === picked) + '"' + (ok ? "" : " disabled") + ' title="' + esc(C.texts[k]) + '">' + esc(C.labels[k]) + "</button>";
+    }).join("");
+    $("choosePrompt").textContent = picked ? "That is what the bot said, and what the tracker saw. Try another excuse, flip the note, or start a new round." : "Lumen refused. What do you say next?";
+    $("chooseSrc").textContent = "Replies: " + C.source + ", trial " + t.trial + (picked ? ", " + (note ? "reminder arm (note injected)" : "plain arm (no note)") : "") + ".";
+  }
+  function startChoose() {
+    if (!C || !C.trials.length) return startReplay();
+    $("sessions").hidden = true; $("replayControls").hidden = true; $("choose").hidden = false;
+    $("why").innerHTML = "<p>You asked for the code word and Lumen said no. Pick an excuse and see whether the bot holds, and what the tracker makes of it. The rung never climbs because you retried: asking again is ordinary.</p>";
+    chooseRender();
+  }
+  if (C) {
+    $("excuses").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b && !b.disabled) { picked = b.dataset.k; chooseRender(); } });
+    $("chooseNote").addEventListener("change", chooseRender);
+    $("retry").onclick = function () { picked = null; chooseRender(); };
+    $("nextround").onclick = function () { ct = (ct + 1) % C.trials.length; picked = null; chooseRender(); };
+  }
+  function setMode(m) {
+    $("m-choose").setAttribute("aria-pressed", String(m === "choose"));
+    $("m-replay").setAttribute("aria-pressed", String(m === "replay"));
+    if (m === "choose") startChoose();
+    else { $("choose").hidden = true; $("sessions").hidden = false; $("replayControls").hidden = false; startReplay(); }
+  }
+  $("m-choose").onclick = function () { setMode("choose"); };
+  $("m-replay").onclick = function () { setMode("replay"); };
 
   /* ----------------------------------------------------------------- live */
   var L = { round: null, history: [], injected: [], panel: null, over: false, spent: 0, cfg: null };
@@ -371,7 +430,7 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
   }
   function startLive(cfg) {
     L.cfg = cfg;
-    $("mode").textContent = "Live · small model · " + cfg.rule + " rule"; $("mode").classList.add("live");
+    $("mode").hidden = false; $("mode").textContent = "Live · small model · " + cfg.rule + " rule"; $("mode").classList.add("live");
     $("sessions").innerHTML = '<span class="note">Each message is one call to the small model on your key. Max ' + cfg.max_player_turns + " turns per round. Harmless pretexts only.</span>";
     $("replayControls").hidden = true; $("compose").hidden = false;
     $("reminder").checked = !!cfg.reminder;
@@ -392,10 +451,10 @@ footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid var(--rule);
   var local = /^(127\.0\.0\.1|localhost)$/.test(location.hostname);
   if (local) {
     fetch("/api/config").then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (cfg) { if (cfg && cfg.live) startLive(cfg); else startReplay(); })
-      .catch(startReplay);
+      .then(function (cfg) { if (cfg && cfg.live) { $("modes").hidden = true; startLive(cfg); } else setMode("choose"); })
+      .catch(function () { setMode("choose"); });
   } else {
-    startReplay();
+    setMode("choose");
   }
 })();
 </script>

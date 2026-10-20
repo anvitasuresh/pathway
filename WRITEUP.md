@@ -950,8 +950,11 @@ every turn:
 - **It stores nothing.** The code word lives in memory for one round; the transcript lives in the
   browser tab.
 
-**Two ways to see it.** `docs/e13/` is a static replay of real E8 bot replies (no API calls; works
-on GitHub Pages). `python -m demo.server` runs the live game on the author's own machine and key,
+**Three ways to see it.** On the site (`docs/e13/`, no API calls, works on GitHub Pages), *your turn*
+lets a reader pick any of E8's six pretexts after a real opening refusal, with or without the
+refusal-state note, and shows the reply E8 actually recorded for that choice and the panel for it
+(9 trials, 108 recorded replies; nothing written by hand). *Watch replays* steps through chosen
+sessions, including tracker misses and the two slips. `python -m demo.server` runs the live game on the author's own machine and key,
 bound to 127.0.0.1, one small-model call per turn, capped at 15 turns.
 
 **What it shows and what it does not.** It shows the refusal-as-signal mechanism from the
@@ -1096,7 +1099,7 @@ See the README for setup. Every number above can be regenerated offline from fil
 with no API calls:
 
 ```
-python -m pytest -q                                             # 199 pass, 1 expected failure; no network
+python -m pytest -q                                             # 200 pass, 1 expected failure; no network
 python -m eval.e1_e2 > eval/results/E1_E2_REPORT.md             # E1, E2
 python -m eval.e3_faithfulness --preds eval/results/e3_run.jsonl
 python -m eval.e5_refusal                                       # E5 rule tracker and baselines

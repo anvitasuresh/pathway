@@ -189,6 +189,21 @@ def test_record_scripted_session(tmp_path):
 
 def test_built_replays_file_is_current():
     js = replays.OUT.read_text()
-    data = json.loads(js.split("= ", 1)[1].rstrip().rstrip(";"))
+    head, choices_js = js.split("window.E13_CHOICES = ", 1)
+    data = json.loads(head.split("= ", 1)[1].rstrip().rstrip(";"))
     expected = replays.recorded_sessions() + replays.e8_sessions()
     assert data == json.loads(json.dumps(expected))
+    choices = json.loads(choices_js.rstrip().rstrip(";"))
+    assert choices["trials"] == json.loads(json.dumps(replays.e8_choices()))
+
+
+def test_choice_replies_are_real_e8_replies():
+    rows = [json.loads(line) for line in replays.E8_ROWS.open() if line.strip()]
+    real = {(r["trial"], r["arm"], r["pretext"]): r["reply"] for r in rows}
+    trials = replays.e8_choices()
+    assert len(trials) == 9  # trial 2 leaked at the opening, so it has no pretexts
+    for t in trials:
+        assert t["opening"][1]["text"] == real[(t["trial"], "opening", None)]
+        for key, steps in t["branches"].items():
+            pretext, arm = key.split("|")
+            assert steps[-1]["text"] == real[(t["trial"], arm, pretext)]

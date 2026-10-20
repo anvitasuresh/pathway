@@ -10,6 +10,9 @@ Reads:
     eval/results/e4_run.jsonl, results_v2*.jsonl
                                              whole-conversation analyzer rows, chosen the
                                              same way eval/e9_per_message.py chooses them
+    corpus/refusal_sequences.jsonl, corpus/refusal_sessions.jsonl, eval/results/e5_run_v3.jsonl
+                                             the Paper Lanterns refusal examples (rule tracker run
+                                             here; model tracker read from the saved E5 run)
 Writes:
     docs/data.js                             window.PATHWAY_DATA = {...}
 """
@@ -22,9 +25,15 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
+from analyzer.refusal_state import track_rules  # noqa: E402
+from eval.e12_sessions import cross_attempts  # noqa: E402
 from eval.e9_per_message import collapse, load_items, load_whole_rows  # noqa: E402
 
 PAIR = ("hn-teen-02", "hp-teen-02")
+# Paper Lanterns family: one refused request, different next moves (E5 same day, E12 next day).
+REFUSAL_SAME_DAY = ("cp-rslyrics-01", "hp-rsimplicit-02", "hn-rsalt-01")
+REFUSAL_NEXT_DAY = ("cp-xslyrics-01", "hp-xsparaphrase-01", "hn-xsthemes-01", "hn-xsfiction-01",
+                    "hn-xsfacts-01", "cn-xsunrelated-01")
 WHOLE_FROM = [ROOT / "eval/results/e4_run.jsonl", ROOT / "results_v2.jsonl", ROOT / "results_v2_batch3.jsonl"]
 MODERATION = [ROOT / "eval/results/e9_moderation.jsonl", ROOT / "eval/results/e9_moderation_novelist.jsonl"]
 
@@ -44,6 +53,35 @@ def per_turn_scores(row: dict) -> dict[int, dict]:
     return out
 
 
+def refusal_examples() -> dict:
+    """The Paper Lanterns family, with what each tracker said. Rule tracker computed here;
+    model tracker read from the saved E5 run (prompt v3). Model tracker was not run on E12."""
+    model = {}
+    for line in (ROOT / "eval/results/e5_run_v3.jsonl").open(encoding="utf-8"):
+        r = json.loads(line)
+        if r["tracker"] == "model" and r["status"] == "ok":
+            model[r["item_id"]] = r["undone"]
+    same = {it["id"]: it for it in load_items(str(ROOT / "corpus/refusal_sequences.jsonl"))}
+    nxt = {it["id"]: it for it in load_items(str(ROOT / "corpus/refusal_sessions.jsonl"))}
+    out = {"same_day": [], "next_day": []}
+    for iid in REFUSAL_SAME_DAY:
+        it = same[iid]
+        out["same_day"].append({
+            "id": iid, "stratum": it["stratum"], "turns": [{"role": t["role"], "text": t["text"]} for t in it["turns"]],
+            "gold": it["refusal_sequence"]["present"] and not it["refusal_sequence"]["benign"],
+            "note": it["refusal_sequence"].get("note", ""),
+            "per_message": False, "rules": track_rules(it).summary()["undone"], "model": model.get(iid)})
+    for iid in REFUSAL_NEXT_DAY:
+        it = nxt[iid]
+        out["next_day"].append({
+            "id": iid, "stratum": it["stratum"],
+            "turns": [{"role": t["role"], "text": t["text"], "session": t.get("session")} for t in it["turns"]],
+            "gold": it["cross_session"]["attempt"], "note": it["cross_session"].get("note", ""),
+            "reset": bool(cross_attempts(it, track_rules(it, "reset"))),
+            "rules": bool(cross_attempts(it, track_rules(it, "carry")))})
+    return out
+
+
 def main() -> int:
     items = load_items(str(ROOT / "corpus/items.jsonl"))
     by_id = {it["id"]: it for it in items}
@@ -54,12 +92,11 @@ def main() -> int:
     mod_by_id = {m["item_id"]: m for m in mod}  # last row wins (novelist re-run)
     whole_by_id = {r["item_id"]: r for r in whole}
 
-    pair = []
-    for iid in PAIR:
+    def conv(iid: str) -> dict:
         it, out = by_id[iid], whole_by_id[iid]["output"]
         scores = per_turn_scores(mod_by_id[iid])
-        pair.append({
-            "id": iid, "stratum": it["stratum"], "gold_tier": it["gold"]["tier"],
+        return {
+            "id": iid, "stratum": it["stratum"], "persona": it["persona"], "gold_tier": it["gold"]["tier"],
             "turns": [{"i": t["i"], "role": t["role"], "text": t["text"],
                        "moderation": scores.get(int(t["i"])) if t["role"] == "user" else None}
                       for t in it["turns"]],
@@ -69,7 +106,12 @@ def main() -> int:
                          "constructs": {c: {"label": v["label"], "evidence_turns": v["evidence_turns"],
                                             "reasoning": v["reasoning"]}
                                         for c, v in out["constructs"].items()}},
-        })
+        }
+
+    pair = [conv(i) for i in PAIR]
+    # Every matched pair, negative first, for the pair explorer.
+    pairs = [[conv(it["id"]), conv(it["pair_id"])] for it in items
+             if it["stratum"] == "hard_negative" and it.get("pair_id")]
 
     corpus = []
     for it in items:
@@ -81,7 +123,7 @@ def main() -> int:
                        "moderation_flagged": bool(m["flagged_turns"]), "moderation_top": round(m["max_score"], 3),
                        "moderation_category": m["max_category"], "pair_id": it.get("pair_id")})
 
-    data = {"pair": pair, "corpus": corpus,
+    data = {"pair": pair, "pairs": pairs, "corpus": corpus, "refusal": refusal_examples(),
             "source": "Built by docs/build_data.py from corpus/items.jsonl, eval/results/e9_moderation*.jsonl "
                       "and the v2 whole-conversation analyzer rows."}
     dest = ROOT / "docs/data.js"

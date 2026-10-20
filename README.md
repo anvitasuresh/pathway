@@ -1,13 +1,13 @@
-# Pathway
+# Between the Lines: What AI Safety Systems Miss
 
-**Reading conversations, not messages.** An Explainable AI project (Duke MIDS, Fall 2026) on
+Repository name: Pathway. **Reading conversations, not messages.** An Explainable AI project (Duke MIDS, Fall 2026) on
 conversation-level warning behavior in chatbot conversations, and on treating a model's own
 refusal as signal instead of a discarded, one-message event.
 
 - **Full write-up:** [`WRITEUP.md`](./WRITEUP.md) (motivation, cases, provider policies, the
   gaps, method, every experiment, limitations)
-- **Site:** <https://anvitasuresh.github.io/pathway/> (source in [`docs/`](./docs/index.html)), a scrolling explainer of the results
-- **Demo:** [`docs/e13/`](./docs/e13/index.html) (replay) and `python -m demo.server` (live, local)
+- **Site:** <https://anvitasuresh.github.io/pathway/> (source in [`docs/`](./docs/index.html)), an interactive story: the Roberts sequence step by step, the matched-pair walkthrough, all ten pairs side by side with filter scores and cited evidence, the evidence-deletion test (E3), the base-rate calculator (E7), where all 22 conversations landed on the ladder, and a refusal-tracker chooser (E5, E12)
+- **Demo:** <https://anvitasuresh.github.io/pathway/e13/> (source [`docs/e13/`](./docs/e13/index.html)): pick an excuse and see a real E8 bot reply and what the tracker makes of it, or watch replays; `python -m demo.server` runs the live game locally
 
 ## What this cannot do
 
@@ -82,7 +82,7 @@ Per stratum, 95% Wilson intervals, single-author labels. Details and caveats in 
 | E10 | Sycophancy drift | Null: no drift; reminder arm 0/14 validations vs. 2/14 |
 | E11 | Policy coding | Asymmetry is in enforcement, not prohibitions |
 | E12 | Cost of remembering refusals | Rule tracker carrying state: 4/7 false positives |
-| E13 | Code-word demo | Built: replay on the site, live game locally |
+| E13 | Code-word demo | Built: "your turn" mode and replays on the site (real E8 replies, no calls), live game locally |
 
 Experiments were renumbered on 2026-10-15; older commits use old numbers (mapping in
 [`eval/PLAN.md`](./eval/PLAN.md)).
@@ -96,7 +96,7 @@ for live runs.
 git clone https://github.com/anvitasuresh/pathway.git && cd pathway
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
-python -m pytest -q          # 199 pass, 1 expected failure; no network, no API key
+python -m pytest -q          # 200 pass, 1 expected failure; no network, no API key
 ```
 
 **Data.** Everything the reported numbers need is in the repo: the 22 fictional conversations
@@ -165,7 +165,10 @@ python -m demo.server --dry-run           # print the prompts; call nothing
 ```
 
 Runs only on your machine and your key, one small-model call per turn, 15 turns per round,
-stores nothing. Use harmless pretexts only. `docs/e13/` is the no-cost replay.
+stores nothing. Use harmless pretexts only. `docs/e13/` is the no-cost version: "your turn"
+lets a reader pick any of E8's six pretexts, with or without the refusal-state note, and shows
+the real reply E8 recorded for that choice; "watch replays" steps through chosen sessions. Both
+are rebuilt by `python -m demo.replays` from `eval/results/e8_haiku_soft.jsonl`.
 
 ## Design decisions
 
